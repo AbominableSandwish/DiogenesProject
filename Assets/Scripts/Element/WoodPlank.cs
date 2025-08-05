@@ -1,0 +1,6 @@
+﻿
+class WoodPlank : Element
+{
+
+}
+

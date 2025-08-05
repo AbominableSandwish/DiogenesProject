@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get => _instance; protected set => _instance = value; }
 
     [SerializeField] private Tilemap _ground;
-    [SerializeField] private Tilemap _wall;
     private Map _map;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,13 +15,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
 
-        _map = new Map(_ground, _wall);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _map = new Map(_ground);
     }
 
     public static Map GetMap()

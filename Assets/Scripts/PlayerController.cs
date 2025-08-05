@@ -1,11 +1,12 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
-public class PlayerController : Character
+public class PlayerController : MonoBehaviour
 {
     Map _map;
-
+    private Character _character;
     Vector2 input = Vector2.zero;
     [SerializeField] private float _timeToMove = 2.0f;
     private float _timer = 0.0f;
@@ -18,7 +19,9 @@ public class PlayerController : Character
 
         _targetPos = transform.position;
         _lastPos = transform.position;
-        _name = "Francis";
+        this._character  = new Character("Francis");
+
+        this._character.Elements.Add(new Coil());
     }
     void Update()
     {
@@ -52,8 +55,8 @@ public class PlayerController : Character
                     move += Vector3.down;
                 }
 
-                TileBase wall = _map.GetTile(new Vector2Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y));
-                if(wall == null) {
+                Structure structure = _map.GetStructure((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y);
+                if(structure == null) {
                    
                     _targetPos += new Vector3((int)move.x, (int)move.y);
                 }
@@ -71,5 +74,40 @@ public class PlayerController : Character
     public void Move(InputAction.CallbackContext contex)
     {
         input = contex.ReadValue<Vector2>();
-    }  
+    }
+
+    public void AddElement(InputAction.CallbackContext contex)
+    {
+        if (contex.performed)
+        {
+            float action = contex.ReadValue<float>();
+
+            if (_character.Select != null)
+            {
+                ((Coil)_character.Select).ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
+            }
+        }
+    }
+
+    public void RemoveElement(InputAction.CallbackContext contex)
+    {
+        float action = contex.ReadValue<float>();
+    }
+
+
+
+    public bool SelectStructure(int id)
+    {
+        bool isSelect = false;
+        if (this._character.Select != this._character.Elements[id])
+        {
+            this._character.Select = this._character.Elements[id];
+            isSelect = true;
+        }
+        else
+        {
+            this._character.Select = null;
+        }
+        return isSelect;
+    }
 }
