@@ -15,13 +15,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lastPos = Vector3.zero;
     private void Start()
     {
-        _map = GameManager.GetMap();
+        _map = Map.Instance;
 
         _targetPos = transform.position;
         _lastPos = transform.position;
         this._character  = new Character("Francis");
 
-        this._character.Elements.Add(new Coil());
+        this._character.Structures.Add(new Coil()); 
+        this._character.Structures.Add(new SolarPanel());
     }
     void Update()
     {
@@ -64,11 +65,6 @@ public class PlayerController : MonoBehaviour
                 _timer = 0.0f;
             }
         }
-
-
-        //transform.position += Time.deltaTime * ((Vector3)move) * PIXEL_PER_UNIT;
-      
-
     }
 
     public void Move(InputAction.CallbackContext contex)
@@ -84,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
             if (_character.Select != null)
             {
-                ((Coil)_character.Select).ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
+                _character.Select.ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
             }
         }
     }
@@ -99,9 +95,9 @@ public class PlayerController : MonoBehaviour
     public bool SelectStructure(int id)
     {
         bool isSelect = false;
-        if (this._character.Select != this._character.Elements[id])
+        if (this._character.Select != this._character.Structures[id])
         {
-            this._character.Select = this._character.Elements[id];
+            this._character.Select = this._character.Structures[id];
             isSelect = true;
         }
         else

@@ -15,8 +15,4 @@ public class Element
 
     }
 
-    public virtual bool ToPlace(Vector2Int pos)
-    {
-        return false;
-    }
 }

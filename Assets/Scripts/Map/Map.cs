@@ -8,45 +8,45 @@ struct DTile
     public Structure structure;
 }
 
-public class Map
+public class Map : MonoBehaviour
 {
+    #region Private Data
     private static Map _instance = null;
     private DTile[,] _tileMap;
     private int _height = 40;
     private int _width = 40;
-    public TileBase ground;
+    private TileBase _ground;
     private Tilemap _tilemap;
+    #endregion
 
+    #region Public Data
     public static Map Instance { get => _instance; protected set => _instance = value; }
     public int Height { get => _height; set => _height = value; }
     public int Width { get => _width; set => _width = value; }
+    #endregion
 
-    public Map()
+    #region Mono
+    public void Awake()
     {
         Instance = this;
         _tileMap = new DTile[Width, Height];
-        ground = Resources.Load<TileBase>("Sprite/Ground");
-    }
+        _ground = Resources.Load<TileBase>("Tile/Ground");
 
-    public Map(Tilemap tilemap)
-    {
-        _instance = this;
-        _tileMap = new DTile[Width, Height];
-        TileBase tileBase = Resources.Load<TileBase>("Sprite/Ground");
-        ground = tileBase;
-        _tilemap = tilemap;
+        _tilemap = GetComponent<Tilemap>();
 
         for (int i = 0; i < _height; i++)
         {
             for (int j = 0; j < _width; j++)
             {
-                TileBase tile = ground;
+                TileBase tile = _ground;
                 _tileMap[i, j].structure = null;
-                _tilemap.SetTile(new Vector3Int(i, j), ground);
+                _tilemap.SetTile(new Vector3Int(i, j), _ground);
             }
         }
     }
+    #endregion
 
+    #region Public Method
     public Structure GetStructure(int x, int y)
     {
         Structure structure = null;
@@ -59,4 +59,5 @@ public class Map
     {
         return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
     }
+    #endregion
 }

@@ -2,34 +2,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class CoilMap : MonoBehaviour
+public class StructureMap : MonoBehaviour
 {
-    private static CoilMap _instance = null;
+    #region Private Data
+    private static StructureMap _instance = null;
     private GameManager _game;
     private Map _map;
+    private Tilemap _tilemap;
+    private List<Circuit> _circuits;
+    private int counterCoil = 0;
+    //Coil Tile
     private TileBase _zeroConnect;
     private List<TileBase> _oneConnect;
     private List<TileBase> _twoConnect;
     private List<TileBase> _threeConnect;
     private TileBase _fourConnect;
-    private Tilemap _tilemap;
-    private List<Circuit> _circuits;
+    #endregion
 
+    public static StructureMap Instance { get => _instance; protected set => _instance = value; }
 
-    public static CoilMap Instance { get => _instance; protected set => _instance = value; }
+    #region Mono
     private void Start()
     {
         Instance = this;
         DontDestroyOnLoad(this);
 
         _game = GameManager.Instance;
-        _map = GameManager.GetMap();
+        _map = Map.Instance;
+
         _tilemap = GetComponent<Tilemap>();
         _circuits = new List<Circuit>();
 
         LoadSprite();
-        //Generate();
     }
+    #endregion
 
     #region Private methods
     private void Generate()
@@ -259,6 +265,7 @@ public class CoilMap : MonoBehaviour
     public bool AddCoil(Vector2Int pos)
     {
         TileBase tile = null;
+
         List<TileBase> neighboors = new List<TileBase>();
 
         if ((pos.x > -1 || pos.x < _map.Height) || (pos.y > -1 || pos.y < _map.Width))
@@ -266,11 +273,13 @@ public class CoilMap : MonoBehaviour
 
             if (_tilemap.GetTile(new Vector3Int(pos.x, pos.y)) != null) return false; // END
 
+            counterCoil++;
 
             //Self
             _tilemap.SetTile(new Vector3Int(pos.x, pos.y), _zeroConnect);
             RefreshTile(pos);
             tile = _tilemap.GetTile(new Vector3Int(pos.x, pos.y));
+            tile.name = "Coil_" + counterCoil.ToString();
             //neighboor
             if (_tilemap.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right) != null)
             {
