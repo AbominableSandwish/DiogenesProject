@@ -27,6 +27,11 @@ public class UIManager : MonoBehaviour
     
     public void SelectStructure(int id)
     {
+        foreach(Image image in _images)
+        {
+            image.color = Color.grey;
+        }
+
         bool isSelect = this._player.SelectStructure(id);
         if (isSelect)
         {

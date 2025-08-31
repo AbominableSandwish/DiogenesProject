@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
 
         this._character.Structures.Add(new Coil()); 
         this._character.Structures.Add(new SolarPanel());
+        this._character.Structures.Add(new Lamp());
     }
     void Update()
     {
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
                     move += Vector3.down;
                 }
 
-                Structure structure = _map.GetStructure((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y);
+                TileBase structure = _map?.GetStructure(new Vector2Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureType.Basic);
                 if(structure == null) {
                    
                     _targetPos += new Vector3((int)move.x, (int)move.y);
@@ -80,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
             if (_character.Select != null)
             {
-                _character.Select.ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
+               _character.Select.ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
             }
         }
     }

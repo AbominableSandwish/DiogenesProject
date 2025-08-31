@@ -31,4 +31,9 @@ public class SolarPanel : Generator
     {
         _isEnabled = false;
     }
+
+    public override bool ToPlace(Vector2Int pos)
+    {
+        return Map.AddStructure<SolarPanel>(pos);
+    }
 }

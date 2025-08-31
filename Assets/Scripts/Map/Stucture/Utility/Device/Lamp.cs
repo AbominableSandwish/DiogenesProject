@@ -1,4 +1,4 @@
-﻿using Unity.VisualScripting;
+﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 class Lamp : Engine
@@ -18,6 +18,11 @@ class Lamp : Engine
 
         if (EnginePerformance > 1.0f)
             EnginePerformance = 1.0f;
+    }
+
+    public override bool ToPlace(Vector2Int pos)
+    {
+        return Map.AddStructure<Lamp>(pos);
     }
 
     private void Update()

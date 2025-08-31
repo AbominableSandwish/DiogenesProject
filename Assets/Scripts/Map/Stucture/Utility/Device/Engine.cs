@@ -1,9 +1,10 @@
-﻿
+﻿using System;
 
-class Engine : Structure
+[Serializable]
+public class Engine : Structure
 {
-    protected float _electricityConsumption = 0.0f;
-    protected float _electricityCurrent = 0.0f;
+    public float _electricityConsumption = 0.0f;
+    public float _electricityCurrent = 0.0f;
     public float EnginePerformance = 0.0f;
     public virtual void Consumption(float _electricity)
     {
