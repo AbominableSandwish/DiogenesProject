@@ -1,14 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Tilemaps;
 
-class Lamp : Engine
+public class Lamp : Engine
 {
     protected new float _electricityConsumption = 50.0f;  
-    private Light2D light;
+    private Light2D _light;
 
-    public void Start()
+    public Lamp()
     {
-        //light = this.AddComponent<Light2D>();
+        Debug.Log("hello");
+    }
+
+    public Lamp(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
+    {
+        Debug.Log("Holla");
+        if (tilemap != null) {
+            _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));
+            _light = _object.GetComponent<Light2D>();
+        }
     }
 
     public override void Consumption(float _electricity)
@@ -18,16 +28,13 @@ class Lamp : Engine
 
         if (EnginePerformance > 1.0f)
             EnginePerformance = 1.0f;
+        _light.intensity = EnginePerformance;
     }
 
     public override bool ToPlace(Vector2Int pos)
     {
         return Map.AddStructure<Lamp>(pos);
-    }
 
-    private void Update()
-    {
-        light.intensity = EnginePerformance;
     }
 }
 
