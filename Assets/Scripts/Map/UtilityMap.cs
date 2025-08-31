@@ -359,13 +359,14 @@ public class UtilityMap : StructureMap<UtilityMap>
                 path.AddRange(neighboors);
 
                 Circuit circuit = new Circuit(path);
-                circuit.AddEngine((Engine)typeof(T).Instantiate());
+                circuit.AddEngine((Engine)typeof(T).Instantiate(false ,_tilemap, pos.x, pos.y));
                 _circuits.Add(circuit);
             }
             else
             {
                 Circuit newCircuit = new Circuit();
-                newCircuit.AddEngine((Engine)typeof(T).Instantiate());
+               
+                newCircuit.AddEngine((Engine)typeof(T).Instantiate(false, new object[] { _tilemap, pos.x, pos.y}));
                 while (targets.Count != 0)
                 {
                     Circuit toMerge = targets.Dequeue();
