@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 
 public class UtilityMap : StructureMap<UtilityMap>
@@ -26,11 +27,11 @@ public class UtilityMap : StructureMap<UtilityMap>
     private int counterStorage = 0;
     private int counterEngine = 0;
     //Coil
-    private TileBase _zeroConnect;
-    private List<TileBase> _oneConnect;
-    private List<TileBase> _twoConnect;
-    private List<TileBase> _threeConnect;
-    private TileBase _fourConnect;
+    private Sprite _zeroConnect;
+    private List<Sprite> _oneConnect;
+    private List<Sprite> _twoConnect;
+    private List<Sprite> _threeConnect;
+    private Sprite _fourConnect;
     //Solar Panel
     private TileBase _solarPanel;
     //Storage Battery
@@ -65,27 +66,27 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     private void LoadSprite()
     {
-        _zeroConnect = Resources.LoadAll<TileBase>("Sprite/Coils/0_connect")[0];
+        _zeroConnect = Resources.LoadAll<Sprite>("Sprite/Coils/0_connect")[0];
 
-        _oneConnect = new List<TileBase>();
-        foreach (TileBase tileBase in Resources.LoadAll<TileBase>("Sprite/Coils/1_connect"))
+        _oneConnect = new List<Sprite>();
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/1_connect"))
         {
-            _oneConnect.Add(tileBase);
+            _oneConnect.Add(sprite);
         }
 
-        _twoConnect = new List<TileBase>();
-        foreach (TileBase tileBase in Resources.LoadAll<TileBase>("Sprite/Coils/2_connect"))
+        _twoConnect = new List<Sprite>();
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/2_connect"))
         {
-            _twoConnect.Add(tileBase);
+            _twoConnect.Add(sprite);
         }
 
-        _threeConnect = new List<TileBase>();
-        foreach (TileBase tileBase in Resources.LoadAll<TileBase>("Sprite/Coils/3_connect"))
+        _threeConnect = new List<Sprite>();
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/3_connect"))
         {
-            _threeConnect.Add(tileBase);
+            _threeConnect.Add(sprite);
         }
 
-        _fourConnect = Resources.LoadAll<TileBase>("Sprite/Coils/4_connect")[0];
+        _fourConnect = Resources.LoadAll<Sprite>("Sprite/Coils/4_connect")[0];
         _solarPanel = Resources.LoadAll<TileBase>("Sprite/Generator/SolarPanel")[0];
         _lamp = Resources.LoadAll<TileBase>("Sprite/Engine/Lamp")[0];
     }
@@ -105,7 +106,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 if (_electric.GetTile(new Vector3Int(pos.x, pos.y)) == null)
                     return;
 
-                TileBase tile = _zeroConnect;
+                Sprite sprite = _zeroConnect;
 
                 if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || _tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
@@ -135,22 +136,22 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect)
                     {
-                        tile = _oneConnect[0];
+                        sprite = _oneConnect[0];
                     }
 
                     if (upConnect)
                     {
-                        tile = _oneConnect[1];
+                        sprite = _oneConnect[1];
                     }
 
                     if (rightConnect)
                     {
-                        tile = _oneConnect[2];
+                        sprite = _oneConnect[2];
                     }
 
                     if (downConnect)
                     {
-                        tile = _oneConnect[3];
+                        sprite = _oneConnect[3];
                     }
                 }
 
@@ -158,32 +159,32 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect && upConnect)
                     {
-                        tile = _twoConnect[0];
+                        sprite = _twoConnect[0];
                     }
 
                     if (leftConnect && rightConnect)
                     {
-                        tile = _twoConnect[1];
+                        sprite = _twoConnect[1];
                     }
 
                     if (leftConnect && downConnect)
                     {
-                        tile = _twoConnect[2];
+                        sprite = _twoConnect[2];
                     }
 
                     if (upConnect && downConnect)
                     {
-                        tile = _twoConnect[3];
+                        sprite = _twoConnect[3];
                     }
 
                     if (upConnect && rightConnect)
                     {
-                        tile = _twoConnect[4];
+                        sprite = _twoConnect[4];
                     }
 
                     if (rightConnect && downConnect)
                     {
-                        tile = _twoConnect[5];
+                        sprite = _twoConnect[5];
                     }
 
                 }
@@ -192,31 +193,37 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect && upConnect && rightConnect)
                     {
-                        tile = _threeConnect[0];
+                        sprite = _threeConnect[0];
                     }
 
                     if (upConnect && rightConnect && downConnect)
                     {
-                        tile = _threeConnect[1];
+                        sprite = _threeConnect[1];
                     }
 
                     if (leftConnect && downConnect && rightConnect)
                     {
-                        tile = _threeConnect[2];
+                        sprite = _threeConnect[2];
                     }
 
                     if (downConnect && leftConnect && upConnect)
                     {
-                        tile = _threeConnect[3];
+                        sprite = _threeConnect[3];
                     }
                 }
 
                 if (connectCounter == 4)
                 {
-                    tile = _fourConnect;
+                    sprite = _fourConnect;
                 }
 
+                //Tile tile = new Tile();
+                //tile.name = ((Tile)_electric.GetTile(new Vector3Int(pos.x, pos.y))).name;
+                Tile tile = (Tile)_electric.GetTile(new Vector3Int(pos.x, pos.y));
+                tile.sprite = sprite;
+                tile.colliderType = Tile.ColliderType.Grid;
                 _electric.SetTile(new Vector3Int(pos.x, pos.y), tile);
+                _electric.RefreshTile(new Vector3Int(pos.x, pos.y));
             }
         }
     }
@@ -309,7 +316,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                     break;
                 // add
             }
-
             
             //Self
             _tilemap.SetTile(new Vector3Int(pos.x, pos.y), tileBase);
@@ -318,23 +324,23 @@ public class UtilityMap : StructureMap<UtilityMap>
             //neighboor
             if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right));
                 RefreshTile(pos + Vector2Int.right);
+                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right));
             }
             if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.left) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.left));
                 RefreshTile(pos + Vector2Int.left);
+                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.left));
             }
             if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.up) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.up));
                 RefreshTile(pos + Vector2Int.up);
+                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.up));
             }
             if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.down) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.down));
                 RefreshTile(pos + Vector2Int.down);
+                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.down));
             }
 
 
@@ -343,7 +349,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             Queue<Circuit> targets = new Queue<Circuit>();
             foreach (Circuit circuit in _circuits)
             {
-                foreach (TileBase neighboor in neighboors)
+                foreach (Tile neighboor in neighboors)
                 {
                     if (!circuit.Contains(neighboor))
                     {
@@ -426,7 +432,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             Queue<Circuit> targets = new Queue<Circuit>();
             foreach (Circuit circuit in _circuits)
             {
-                foreach (TileBase neighboor in neighboors)
+                foreach (Tile neighboor in neighboors)
                 {
                     if (!circuit.Contains(neighboor))
                     {
@@ -464,41 +470,46 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     public bool AddCoil(Vector2Int pos)
     {
-        TileBase tile = null;
+        Tile tile = null;
 
-        List<TileBase> neighboors = new List<TileBase>();
+        List<Tile> neighboors = new List<Tile>();
 
         if ((pos.x > -1 || pos.x < _map.Height) || (pos.y > -1 || pos.y < _map.Width))
         {
 
             if (_electric.GetTile(new Vector3Int(pos.x, pos.y)) != null) return false; // END
 
-            counterCoil++;
-
             //Self
-            _electric.SetTile(new Vector3Int(pos.x, pos.y), _zeroConnect);
-            RefreshTile(pos);
-            tile = _electric.GetTile(new Vector3Int(pos.x, pos.y));
+            tile = new Tile();
             tile.name = "Coil_" + counterCoil.ToString();
+            tile.sprite = _zeroConnect;
+            tile.colliderType = Tile.ColliderType.Grid;
+            _electric.SetTile(new Vector3Int(pos.x, pos.y), tile);
+
+            RefreshTile(pos);
+
+           
+            counterCoil++;
+           
             //neighboor
-            if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right) != null)
+            if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.right));
+                neighboors.Add((Tile)_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)));
                 RefreshTile(pos + Vector2Int.right);
             }
-            if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.left) != null)
+            if (_electric.GetTile(new Vector3Int(pos.x - 1, pos.y)) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.left));
+                neighboors.Add((Tile)_electric.GetTile(new Vector3Int(pos.x - 1, pos.y)));
                 RefreshTile(pos + Vector2Int.left);
             }
-            if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.up) != null)
+            if (_electric.GetTile(new Vector3Int(pos.x, pos.y + 1)) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.up));
+                neighboors.Add((Tile)_electric.GetTile(new Vector3Int(pos.x, pos.y + 1)));
                 RefreshTile(pos + Vector2Int.up);
             }
-            if (_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.down) != null)
+            if (_electric.GetTile(new Vector3Int(pos.x, pos.y - 1)) != null)
             {
-                neighboors.Add(_electric.GetTile(new Vector3Int(pos.x, pos.y) + Vector3Int.down));
+                neighboors.Add((Tile)_electric.GetTile(new Vector3Int(pos.x, pos.y - 1)));
                 RefreshTile(pos + Vector2Int.down);
             }
 
@@ -508,9 +519,9 @@ public class UtilityMap : StructureMap<UtilityMap>
             Queue<Circuit> targets = new Queue<Circuit>();
             foreach (Circuit circuit in _circuits)
             {
-                foreach (TileBase neighboor in neighboors)
+                foreach (Tile neighboor in neighboors)
                 {
-                    if (!circuit.Contains(neighboor))
+                    if (circuit.Contains(neighboor))
                     {
                         targets.Enqueue(circuit);
                         break;
@@ -526,7 +537,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
                 Circuit circuit = new Circuit(path);
                 _circuits.Add(circuit);
-            }
+             }
             else
             {
                 Circuit newCircuit = new Circuit();

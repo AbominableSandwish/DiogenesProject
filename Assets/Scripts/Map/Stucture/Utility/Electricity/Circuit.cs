@@ -52,7 +52,7 @@ public class Circuit
         }
     }
 
-    public bool Contains(TileBase tile)
+    public bool Contains(Tile tile)
     {
         return _path.Contains(tile);
     }
