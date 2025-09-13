@@ -27,9 +27,12 @@ public class Circuit
         _engines = new List<Engine>();
 
         _path = path;
-        _idStructures = structures;
-        _generators = generators;
-        _engines = engines;
+        if(structures != null)
+            _idStructures = structures;
+        if(generators != null)
+            _generators = generators;
+        if(engines != null)
+            _engines = engines;
     }
 
     public void Update()

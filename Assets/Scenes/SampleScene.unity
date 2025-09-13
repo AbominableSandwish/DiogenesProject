@@ -742,7 +742,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 10
+  m_PointLightOuterRadius: 5
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -2258,6 +2258,7 @@ MonoBehaviour:
   _electric: {fileID: 615992651}
   _liquid: {fileID: 188869003}
   _gas: {fileID: 1471324983}
+  _circuits: []
 --- !u!1 &1703034601
 GameObject:
   m_ObjectHideFlags: 0
