@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: SolarPanel26
+  m_Name: Battery
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: a1ad526cc2e19864ba42f8b609ac1aa8, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -3017979480325208809, guid: 11bda96dabf48b345a90178e54e2db6e, type: 3}
+  m_Color: {r: 0.122641504, g: 0.122641504, b: 0.122641504, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -31,6 +31,6 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 1
-  m_InstancedGameObject: {fileID: 0}
+  m_InstancedGameObject: {fileID: 8799141818977497935, guid: 852686d954d71884898ac5433963e5bd, type: 3}
   m_Flags: 1
-  m_ColliderType: 1
+  m_ColliderType: 2

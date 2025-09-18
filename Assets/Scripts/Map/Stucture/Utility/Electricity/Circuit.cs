@@ -11,6 +11,7 @@ public class Circuit
     public List<int> _idStructures;
     public List<Generator> _generators;
     public List<Engine> _engines;
+    public List<Storage> _storages;
 
     public Circuit()
     {
@@ -18,13 +19,15 @@ public class Circuit
         _idStructures = new List<int>();
         _generators = new List<Generator>();
         _engines = new List<Engine>();
+        _storages = new List<Storage>();
     }
-    public Circuit(List<TileBase> path, List<int> structures = null, List<Generator> generators = null, List<Engine> engines = null)
+    public Circuit(List<TileBase> path, List<int> structures = null, List<Generator> generators = null, List<Engine> engines = null, List<Storage> storages = null)
     {
         _path = new List<TileBase>();
         _idStructures = new List<int>();
         _generators = new List<Generator>();
         _engines = new List<Engine>();
+        _storages = new List<Storage>();
 
         _path = path;
         if(structures != null)
@@ -33,12 +36,27 @@ public class Circuit
             _generators = generators;
         if(engines != null)
             _engines = engines;
+        if(storages != null)
+            _storages = storages;
     }
 
     public void Update()
     {
+
+        //Connaitre la quantité d'energie demandé
+        float total = 0.0f;
+        if (_engines != null && _generators.Count != 0)
+        {
+            foreach (Engine engine in _engines)
+            {
+                total += engine._electricityConsumption;
+            }
+        }
+
+
+        //Récupéré la production des générateur
         float Watt = 0;
-        if (_generators != null)
+        if (_generators != null && _generators.Count != 0)
         {
             foreach (Generator generator in _generators)
             {
@@ -46,11 +64,25 @@ public class Circuit
             }
         }
 
+        //Si quantité total d'energie insuffisant
+        if(Watt < total)
+        {
+            //Si il y a du stockage
+            if(_storages != null && _storages.Count != 0)
+            {
+                //Calculer le manquant d'energie
+                float wattNeeded = total - Watt;
+                foreach (Storage storage in _storages) {
+                    Watt += storage.Output(wattNeeded/_storages.Count);
+                }
+            }
+        }
+
         if (_engines != null)
         {
             foreach (Engine engine in _engines)
             {
-                engine.Consumption(Watt / _engines.Count);
+                Watt = engine.Consumption(Watt);
             }
         }
     }

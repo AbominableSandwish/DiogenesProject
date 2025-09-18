@@ -18,19 +18,17 @@ public class Lamp : Engine
         }
     }
 
-    public override void Consumption(float _electricity)
+    public override float Consumption(float _electricity)
     {
-        _electricityCurrent = _electricity;
-        EnginePerformance = _electricityCurrent / _electricityConsumption;
-
-        if (EnginePerformance > 1.0f)
-            EnginePerformance = 1.0f;
-
+        _electricity = base.Consumption(_electricity);
+        
         if (_light != null)
         {
             _light.intensity = EnginePerformance;
             _light.pointLightOuterRadius = OuterRadius * EnginePerformance;
         }
+
+        return _electricity;
     }
 
     public override bool ToPlace(Vector2Int pos)

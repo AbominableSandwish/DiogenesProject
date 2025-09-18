@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 public class Map : MonoBehaviour

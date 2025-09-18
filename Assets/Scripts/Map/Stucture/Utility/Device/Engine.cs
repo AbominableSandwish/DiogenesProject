@@ -19,8 +19,23 @@ public class Engine : Structure
         }
     }
 
-    public virtual void Consumption(float _electricity)
+    public virtual float Consumption(float electricity)
     {
-        _electricityCurrent = _electricity;
+        float _electricity = electricity;
+        if(_electricity >= _electricityConsumption)
+        {
+            _electricityCurrent = _electricityConsumption;
+            _electricity = _electricity - _electricityConsumption;
+            EnginePerformance = 1.0f;
+        }
+
+        if(_electricity < _electricityConsumption)
+        {
+            _electricityCurrent = _electricity;
+            _electricity = 0;
+            EnginePerformance = _electricityCurrent / _electricityConsumption;
+        }
+
+        return _electricity;
     }
 }

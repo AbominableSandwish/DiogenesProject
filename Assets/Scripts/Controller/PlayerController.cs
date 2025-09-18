@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
         this._character.Structures.Add(new Coil()); 
         this._character.Structures.Add(new SolarPanel());
         this._character.Structures.Add(new Lamp());
+        this._character.Structures.Add(new SmallBattery());
     }
     void Update()
     {
