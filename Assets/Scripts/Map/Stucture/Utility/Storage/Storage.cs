@@ -7,11 +7,12 @@ public class Storage : Structure
 {
     protected GameObject _object;
     protected SpriteRenderer _renderer;
+    protected float _capacity = 0.0f;
 
-    public float _Capacity = 0.0f;
-    public float OUT_MAX = 0.0f;
+    public const float OUT_MAX = 0.0f;
     public const float CAPACITY_MAX = 10000.0f;
 
+    #region Nested Method
     public Storage(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
         if (tilemap != null)
@@ -20,21 +21,23 @@ public class Storage : Structure
             _renderer = _object.GetComponent<SpriteRenderer>();
         }
     }
+    #endregion
 
+    #region Public Method
     public virtual void Input(float _electricity)
     {
-        _Capacity += _electricity;
-        if (_Capacity > CAPACITY_MAX)
-            _Capacity = CAPACITY_MAX;
+        _capacity += _electricity;
+        if (_capacity > CAPACITY_MAX)
+            _capacity = CAPACITY_MAX;
     }
 
     public virtual float Output(float required = 0)
     {
         float collect = 0.0f;
-        if (_Capacity != 0)
+        if (_capacity != 0)
         {
            
-            if (_Capacity >= OUT_MAX)
+            if (_capacity >= OUT_MAX)
             {
 
                 if (required != 0)
@@ -42,32 +45,32 @@ public class Storage : Structure
                     if (required > OUT_MAX)
                         required = OUT_MAX;
                     collect = required;
-                    _Capacity -= required;
+                    _capacity -= required;
                 }
                 else
                 {
                     collect = OUT_MAX;
-                    _Capacity -= OUT_MAX;
+                    _capacity -= OUT_MAX;
                 }
             }
 
-            if (_Capacity < OUT_MAX)
+            if (_capacity < OUT_MAX)
             {
                 if (required != 0)
                 {
-                    if (required > _Capacity)
-                        required = _Capacity;
+                    if (required > _capacity)
+                        required = _capacity;
                     collect = required;
-                    _Capacity -= required;
+                    _capacity -= required;
                 }
                 else
                 {
-                    collect = _Capacity;
-                    _Capacity -= _Capacity;
+                    collect = _capacity;
+                    _capacity -= _capacity;
                 }
-
             } 
         }
         return collect;
     }
+    #endregion
 }

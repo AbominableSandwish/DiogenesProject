@@ -5,12 +5,16 @@ using UnityEngine.Tilemaps;
 [Serializable]
 public class Engine : Structure
 {
-    protected GameObject _object;
-
-    public float _electricityConsumption = 0.0f;
-    public float _electricityCurrent = 0.0f;
+    #region Public data
     public float EnginePerformance = 0.0f;
+    #endregion
 
+    #region Private data
+    protected GameObject _object;
+    protected float _electricityConsumption = 0.0f;
+    #endregion
+
+    #region Constructor
     public Engine(Tilemap tilemap = null, int pos_x = 0 , int pos_y = 0)
     {
         if(tilemap != null)
@@ -19,23 +23,18 @@ public class Engine : Structure
         }
     }
 
-    public virtual float Consumption(float electricity)
-    {
-        float _electricity = electricity;
-        if(_electricity >= _electricityConsumption)
-        {
-            _electricityCurrent = _electricityConsumption;
-            _electricity = _electricity - _electricityConsumption;
-            EnginePerformance = 1.0f;
-        }
 
-        if(_electricity < _electricityConsumption)
-        {
-            _electricityCurrent = _electricity;
-            _electricity = 0;
-            EnginePerformance = _electricityCurrent / _electricityConsumption;
-        }
+    #endregion
 
-        return _electricity;
+    #region Public method
+    public float ElectricityConsumption { get => _electricityConsumption; set => _electricityConsumption = value; }
+
+    public virtual float Input(float electricity)
+    { 
+        EnginePerformance = electricity / _electricityConsumption;
+        if (EnginePerformance > 1.0f)
+            EnginePerformance = 1.0f;   
+        return electricity - _electricityConsumption;
     }
+    #endregion
 }

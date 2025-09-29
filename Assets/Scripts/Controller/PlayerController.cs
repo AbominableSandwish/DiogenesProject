@@ -5,14 +5,18 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    Map _map;
-    private Character _character;
-    Vector2 input = Vector2.zero;
+    #region Private Data
     [SerializeField] private float _timeToMove = 2.0f;
-    private float _timer = 0.0f;
 
+    private Map _map;
+    private Character _character;   
+    private float _timer = 0.0f;
+    private Vector2 _input = Vector2.zero;
     private Vector3 _targetPos = Vector3.zero;
     private Vector3 _lastPos = Vector3.zero;
+    #endregion
+
+    #region Mono
     private void Start()
     {
         _map = Map.Instance;
@@ -26,6 +30,7 @@ public class PlayerController : MonoBehaviour
         this._character.Structures.Add(new Lamp());
         this._character.Structures.Add(new SmallBattery());
     }
+
     void Update()
     {
         _timer += Time.deltaTime;
@@ -35,30 +40,30 @@ public class PlayerController : MonoBehaviour
         if (_timer >= _timeToMove)
         {
             
-            if (input.magnitude != 0)
+            if (_input.magnitude != 0)
             {
                 _lastPos = _targetPos;
-                if (input.x > 0)
+                if (_input.x > 0)
                 {
                     move += Vector3.right;
                 }
 
-                if (input.x < 0)
+                if (_input.x < 0)
                 {
                     move += Vector3.left;
                 }
 
-                if (input.y > 0)
+                if (_input.y > 0)
                 {
                     move += Vector3.up;
                 }
 
-                if (input.y < 0)
+                if (_input.y < 0)
                 {
                     move += Vector3.down;
                 }
 
-                TileBase structure = _map?.GetStructure(new Vector2Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureType.Basic);
+                TileBase structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureType.Basic);
                 if(structure == null) {
                    
                     _targetPos += new Vector3((int)move.x, (int)move.y);
@@ -68,10 +73,12 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    #region Public Method
     public void Move(InputAction.CallbackContext contex)
     {
-        input = contex.ReadValue<Vector2>();
+        _input = contex.ReadValue<Vector2>();
     }
 
     public void AddElement(InputAction.CallbackContext contex)
@@ -82,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
             if (_character.Select != null)
             {
-               _character.Select.ToPlace(new Vector2Int((int)transform.position.x, (int)transform.position.y));
+               _character.Select.ToPlace(new Vector3Int((int)transform.position.x, (int)transform.position.y));
             }
         }
     }
@@ -91,8 +98,6 @@ public class PlayerController : MonoBehaviour
     {
         float action = contex.ReadValue<float>();
     }
-
-
 
     public bool SelectStructure(int id)
     {
@@ -108,4 +113,5 @@ public class PlayerController : MonoBehaviour
         }
         return isSelect;
     }
+    #endregion
 }

@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    protected static UIManager _instance = null;
+    #region Private Data
     [SerializeField] private TextMeshProUGUI _elementText;
+    [SerializeField] private List<Image> _images;
+   
     private PlayerController _player;
 
-    [SerializeField] private List<Image> _images;
+    protected static UIManager _instance = null;
+    #endregion
 
-    public static UIManager Instance { get => _instance; protected set => _instance = value; }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    #region Mono
     void Start()
     {
         Instance = this;
@@ -20,6 +22,11 @@ public class UIManager : MonoBehaviour
 
         _player = FindFirstObjectByType<PlayerController>();
     }
+    #endregion
+
+    #region Public Method
+    public static UIManager Instance { get => _instance; protected set => _instance = value; }
+
     public static void SetTextElement(string nameElement)
     {
         Instance._elementText.text = nameElement;
@@ -40,7 +47,7 @@ public class UIManager : MonoBehaviour
         else
         {
             _images[id].color = Color.grey;
-        }
-        
+        }     
     }
+    #endregion
 }

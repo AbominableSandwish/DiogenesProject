@@ -10,21 +10,27 @@ public enum StructureType
 }
 public class Structure
 {
-    StructureType type = StructureType.None;
-    private string _name = "";
-    List<Element> _elements = null;    
+    #region Private Method
     protected bool _isEnabled = false;
 
-    public string Name { get => _name; }
+    private StructureType _type = StructureType.None;
+    private string _name = "";
+    private List<Element> _elements = null;
+    #endregion
 
+    #region Nested Method
     public Structure()
     {
         return;
     }
+    #endregion
 
-    public virtual bool ToPlace(Vector2Int pos)
+    #region Public Method
+    public string Name { get => _name; }
+
+    public virtual bool ToPlace(Vector3Int pos)
     {
-        switch (type)
+        switch (_type)
         {
             case StructureType.Basic:
                 break;
@@ -35,4 +41,5 @@ public class Structure
         }
         return false;
     }
+    #endregion
 }

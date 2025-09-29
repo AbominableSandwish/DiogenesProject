@@ -1,5 +1,4 @@
-﻿
-class GlassPlate : Element
+﻿class GlassPlate : Element
 {
 
 }

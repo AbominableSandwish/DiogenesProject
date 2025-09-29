@@ -5,7 +5,8 @@ public class SolarPanel : Generator
     [SerializeField] protected new float _electricProduction = 100.0f;
     [SerializeField] protected new float _electricPower;
 
-    public override float Production()
+    #region Public Method
+    public override float Output()
     {
         return _electricProduction;
     }
@@ -22,8 +23,9 @@ public class SolarPanel : Generator
         _isEnabled = false;
     }
 
-    public override bool ToPlace(Vector2Int pos)
+    public override bool ToPlace(Vector3Int pos)
     {
         return Map.AddStructure<SolarPanel>(pos);
     }
+    #endregion
 }

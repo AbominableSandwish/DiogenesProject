@@ -2,6 +2,7 @@
 using UnityEngine.Tilemaps;
 public class SmallBattery : Storage
 {
+    #region Nested Method
     public SmallBattery(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
         if (tilemap != null)
@@ -10,6 +11,7 @@ public class SmallBattery : Storage
           
         }
     }
+    #endregion
 }
 
 

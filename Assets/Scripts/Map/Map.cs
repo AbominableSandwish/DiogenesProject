@@ -37,25 +37,25 @@ public class Map : MonoBehaviour
     #endregion
 
     #region Public Method
-    public TileBase GetStructure(Vector2Int position, StructureType type)
+    public TileBase GetStructure(Vector3Int position, StructureType type)
     {
         TileBase tileBase = null;
         switch (type)
         {
             case StructureType.Basic:
-                _basicMap?.GetStructure(new Vector2Int(position.x, position.y));
+                _basicMap?.GetStructure(position);
                 break;  
             case StructureType.Utility:
-                _utilityMap?.GetStructure(new Vector2Int(position.x, position.y));
+                _utilityMap?.GetStructure(position);
                 break;
             case StructureType.Decoration:
-                _decorationMap?.GetStructure(new Vector2Int(position.x, position.y));
+                _decorationMap?.GetStructure(position);
                 break;
         }
         return tileBase;
     }
 
-    public static bool AddStructure<T>(Vector2Int position)
+    public static bool AddStructure<T>(Vector3Int position)
     {
         Map map = Instance;
         if (map == null)

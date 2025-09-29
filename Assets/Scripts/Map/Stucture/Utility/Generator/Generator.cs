@@ -3,7 +3,7 @@
 [Serializable]
 public class Generator : Structure
 {
-    public float _electricProduction = 0.0f;
+    protected float _electricProduction = 0.0f;
     protected float _electricPower;
 
     public Generator()
@@ -11,7 +11,7 @@ public class Generator : Structure
 
     }
 
-    public virtual float Production()
+    public virtual float Output()
     {
         return _electricProduction;
     }

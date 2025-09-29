@@ -1,5 +1,4 @@
-﻿
-class WoodPlank : Element
+﻿class WoodPlank : Element
 {
 
 }
