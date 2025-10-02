@@ -13,7 +13,7 @@ public class Structure
     #region Private Method
     protected bool _isEnabled = false;
 
-    private StructureType _type = StructureType.None;
+    protected StructureType _type = StructureType.None;
     private string _name = "";
     private List<Element> _elements = null;
     #endregion
@@ -27,6 +27,7 @@ public class Structure
 
     #region Public Method
     public string Name { get => _name; }
+    public StructureType Type { get => _type; set => _type = value; }
 
     public virtual bool ToPlace(Vector3Int pos)
     {
@@ -35,6 +36,20 @@ public class Structure
             case StructureType.Basic:
                 break;
             case StructureType.Utility: 
+                break;
+            case StructureType.Decoration:
+                break;
+        }
+        return false;
+    }
+
+    public virtual bool ToRemove(Vector3Int pos)
+    {
+        switch (_type)
+        {
+            case StructureType.Basic:
+                break;
+            case StructureType.Utility:
                 break;
             case StructureType.Decoration:
                 break;

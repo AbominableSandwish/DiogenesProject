@@ -7,6 +7,8 @@ public class Lamp : Engine
     #region Private data
     private Light2D _light;
     private float _outerRadius;
+
+    protected new StructureType _type = StructureType.Utility;
     #endregion
 
     #region Constructor
@@ -40,6 +42,10 @@ public class Lamp : Engine
     public override bool ToPlace(Vector3Int pos)
     {
         return Map.AddStructure<Lamp>(pos);
+    }
+    public override bool ToRemove(Vector3Int pos)
+    {
+        return Map.RemoveStructure<Lamp>(pos);
     }
     #endregion
 }

@@ -10,25 +10,31 @@ public class Circuit
 
     #region Public Data
     public Dictionary<Vector3Int,  Tile> _path;
-    public List<int> _idStructures;
+    public HashSet<int> _idStructures;
     public Dictionary<Vector3Int, Generator> _generators;
     public Dictionary<Vector3Int, Engine> _engines;
     public Dictionary<Vector3Int, Storage> _storages;
+
+    [Flags]
+    public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
+
+    public Dictionary<int, Vector3Int> _position; // circuitId -> position  
+    Dictionary<Vector3Int, Conn> connMask = new(); // position -> bitmask connexions
     #endregion
 
     #region Nested Method
     public Circuit()
     {
         _path = new Dictionary<Vector3Int, Tile>();
-        _idStructures = new List<int>();
+        _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
     }
-    public Circuit(Dictionary<Vector3Int, Tile> path, List<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null)
+    public Circuit(Dictionary<Vector3Int, Tile> path, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null)
     {
         _path = new Dictionary<Vector3Int, Tile>();
-        _idStructures = new List<int>();
+        _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
@@ -94,6 +100,17 @@ public class Circuit
     public bool Contains(Tile tile)
     {
         return _path.ContainsValue(tile);
+    }
+
+
+    public bool ContainsEngine(Vector3Int position)
+    {
+        return _engines.ContainsKey(position);
+    }
+
+    public bool ContainsGenerator(Vector3Int position)
+    {
+        return _generators.ContainsKey(position);
     }
 
     public void Merge(Circuit circuit)

@@ -1,7 +1,11 @@
-using UnityEngine.InputSystem;
+using System;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.TextCore.Text;
 using UnityEngine.Tilemaps;
-using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
@@ -96,7 +100,15 @@ public class PlayerController : MonoBehaviour
 
     public void RemoveElement(InputAction.CallbackContext contex)
     {
-        float action = contex.ReadValue<float>();
+        if (contex.performed)
+        {
+            float action = contex.ReadValue<float>();
+
+            if (_character.Select != null)
+            {
+                _character.Select.ToRemove(new Vector3Int((int)transform.position.x, (int)transform.position.y));
+            }
+        }
     }
 
     public bool SelectStructure(int id)

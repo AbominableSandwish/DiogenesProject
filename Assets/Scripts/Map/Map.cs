@@ -97,5 +97,49 @@ public class Map : MonoBehaviour
 
         return true;
     }
+
+    public static bool RemoveStructure<T>(Vector3Int position)
+    {
+        Map map = Instance;
+        if (map == null)
+        {
+            Debug.LogWarning("Map is null");
+            return false;
+        }
+
+        switch (typeof(T).ToString())
+        {
+            case "Ground":
+                map._basicMap.RemoveStructure<Ground>(position);
+                break;
+            case "Door":
+                map._basicMap.RemoveStructure<Door>(position);
+                break;
+            case "Wall":
+                map._basicMap.RemoveStructure<Wall>(position);
+                break;
+            case "Glass":
+                map._basicMap.RemoveStructure<Glass>(position);
+                break;
+
+            case "Coil":
+                map._utilityMap.RemoveStructure<Coil>(position);
+                break;
+            case "Generator":
+                map._utilityMap.RemoveStructure<Generator>(position);
+                break;
+            case "Engine":
+                map._utilityMap.RemoveStructure<Engine>(position);
+                break;
+            case "SolarPanel":
+                map._utilityMap.RemoveStructure<SolarPanel>(position);
+                break;
+            case "Lamp":
+                map._utilityMap.RemoveStructure<Lamp>(position);
+                break;
+        }
+
+        return true;
+    }
     #endregion
 }

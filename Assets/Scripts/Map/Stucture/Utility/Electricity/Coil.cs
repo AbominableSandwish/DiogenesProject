@@ -14,5 +14,10 @@ public class Coil : Structure
     {
         return Map.AddStructure<Coil>(pos);
     }
+
+    public override bool ToRemove(Vector3Int pos)
+    {
+        return Map.RemoveStructure<Coil>(pos);
+    }
     #endregion
 }

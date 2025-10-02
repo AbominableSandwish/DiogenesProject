@@ -27,5 +27,10 @@ public class SolarPanel : Generator
     {
         return Map.AddStructure<SolarPanel>(pos);
     }
+
+    public override bool ToRemove(Vector3Int pos)
+    {
+        return Map.RemoveStructure<SolarPanel>(pos);
+    }
     #endregion
 }
