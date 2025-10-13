@@ -1,8 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
@@ -275,8 +274,8 @@ public class UtilityMap : StructureMap<UtilityMap>
     }
     #endregion
 
-    #region Public Method
 
+    #region Public Method
     public override bool AddStructure<T>(Vector3Int pos)
     {
         bool canAdd = false;
@@ -389,7 +388,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                 _circuits.Add(newCircuit);
             }
         }
-
         return true; // END
     }
 
@@ -457,10 +455,8 @@ public class UtilityMap : StructureMap<UtilityMap>
                 _circuits.Add(newCircuit);
             }
         }
-
         return true; // END
     }
-
 
     static readonly Vector3Int[] DIRS = {
     new(0, 1, 0),  // Up
@@ -480,27 +476,30 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
         return result;
     }
-    public bool AddCoil(Vector3Int pos)
+
+
+    public bool AddCoil(Vector3Int position)
     {
         Tile tile = null;
         Dictionary<Vector3Int, Tile> neighboors = new Dictionary<Vector3Int, Tile>();
 
-        if ((pos.x > -1 || pos.x < _map.Height) || (pos.y > -1 || pos.y < _map.Width))
+        if ((position.x > -1 || position.x < _map.Height) 
+           || (position.y > -1 || position.y < _map.Width))
         {
 
-            if (_electric.GetTile(pos) != null) return false; // END
+            if (_electric.GetTile(position) != null) return false; // END
 
             //Self
             tile = new Tile();
             tile.name = "Coil_" + _counterCoil.ToString();
             tile.sprite = _zeroConnect;
             tile.colliderType = Tile.ColliderType.Grid;
-            _electric.SetTile(new Vector3Int(pos.x, pos.y), tile);
-            RefreshTile(pos);
+            _electric.SetTile(new Vector3Int(position.x, position.y), tile);
+            RefreshTile(position);
             _counterCoil++;
 
             //neighboor
-            neighboors = GetConnectedNeighborsIgnoring(pos);
+            neighboors = GetConnectedNeighborsIgnoring(position);
             foreach (var neighboor in neighboors)
             {
                 RefreshTile(neighboor.Key);
@@ -508,38 +507,53 @@ public class UtilityMap : StructureMap<UtilityMap>
 
             if (neighboors.Count == 0) return true; // END
 
-            Queue<Circuit> targets = new Queue<Circuit>();
+            Queue<Circuit> neighborCircuits = new Queue<Circuit>();
             foreach (Circuit circuit in _circuits)
             {
                 foreach (Tile neighboor in neighboors.Values)
                 {
                     if (circuit.Contains(neighboor))
                     {
-                        targets.Enqueue(circuit);
+                        neighborCircuits.Enqueue(circuit);
                         break;
                     }
                 }
             }
 
-            if(targets.Count == 0)
+            // Cas A: Aucun voisin → nouveau circuit indépendant
+            if (neighborCircuits.Count == 0)
             {
                 Dictionary<Vector3Int, Tile> path = new Dictionary<Vector3Int, Tile>();
-                path.Add(pos, tile);
-                path.AddRange(neighboors);
+                path.Add(position, tile);
 
                 Circuit circuit = new Circuit(path);
-                _circuits.Add(circuit);
-             }
-            else
-            {
-                Circuit newCircuit = new Circuit();
-                newCircuit.AddTile(pos, tile);
-                while (targets.Count != 0)
+                foreach(var key in neighboors.Keys)
                 {
-                    Circuit toMerge = targets.Dequeue();
+                    circuit.AddCable(key, neighboors[key]);
+                }
+
+                _circuits.Add(circuit);
+            }
+
+            // Cas B: Un seul circuit → ajouter la tuile au même circuit
+            if (neighborCircuits.Count == 1)
+            {
+                Circuit circuit = neighborCircuits.Dequeue();
+                circuit.AddCable(position, tile);
+            }
+
+            // Cas C: Plusieurs circuits connectés → fusion
+            if (neighborCircuits.Count > 1)
+            {
+                Circuit newCircuit = new Circuit(); 
+                while (neighborCircuits.Count != 0)
+                {
+                    Circuit toMerge = neighborCircuits.Dequeue();
                     _circuits.Remove(toMerge);
                     newCircuit.Merge(toMerge);
                 }
+
+                newCircuit.AddCable(position, tile);
                 _circuits.Add(newCircuit);
             }
         }
@@ -547,27 +561,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         return true; // END
     }
 
-    private void BFS(Vector3Int pos)
-    {
-        List<Circuit> circuits = new List<Circuit>();
-        Queue<Tile> search = new Queue<Tile>();
-        search.Enqueue((Tile)_electric.GetTile(pos));
-
-        int _try = 0;
-
-        while (search.Count != 0 || _try < 1000)
-        {
-            Tile tile = search.Dequeue();
-            Queue<Tile> queue = Search(tile);
-
-            while(queue.Count != 0)
-            {
-                search.Enqueue(queue.Dequeue());
-            }
-
-            _try++;
-        }
-    }
 
     private Queue<Tile> Search(Tile tile)
     {
@@ -602,24 +595,20 @@ public class UtilityMap : StructureMap<UtilityMap>
                 if (target != null)
                 {
                     //Self
-                    target.RemoveTile(position);
+                    target.RemoveCable(position);
                     //neighboor
                     neighboors = GetConnectedNeighborsIgnoring(position);
+
+                    if(neighboors.Count > 1)
+                    {
+                        //Maybe split
+
+                    }
 
                     foreach (var neighboor in neighboors)
                     {
                         RefreshTile(neighboor.Key);
                     }
-
-                    //if (neighboors.Count > 0)
-                    //{
-                    //    List<Circuit> newCircuit = new List<Circuit>();
-                    //    foreach(Tile neighboor in neighboors.Values)
-                    //    {
-                    //        BFS(position);
-                    //    }                    
-                    //}
-
 
                 }
                 canRemove = true;
@@ -627,8 +616,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
         return canRemove;
     }
-
-
     public bool RemoveGenerator(Vector3Int position)
     {
         Tile self = null;
@@ -666,17 +653,13 @@ public class UtilityMap : StructureMap<UtilityMap>
                     {
                         RefreshTile(neighboor.Key);
                     }                 
-                }
-
-             
+                } 
 
                 canRemove = true;
             }
         }
         return canRemove;
     }
-
-
     public bool RemoveEngine(Vector3Int position)
     {
         Tile self = null;
@@ -709,17 +692,11 @@ public class UtilityMap : StructureMap<UtilityMap>
                     //neighboor
                     neighboors = GetConnectedNeighborsIgnoring(position);
                 
-
                     foreach (var neighboor in neighboors)
                     {
                         RefreshTile(neighboor.Key);
-                    }
-
-                   
+                    }                  
                 }
-
-               
-
                 canRemove = true;
             }
         }

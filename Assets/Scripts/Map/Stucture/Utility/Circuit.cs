@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
+
+[Flags]
+public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
+
+
 
 [Serializable]
 public class Circuit
 {
-
     #region Public Data
     public Dictionary<Vector3Int,  Tile> _path;
     public HashSet<int> _idStructures;
@@ -15,11 +20,15 @@ public class Circuit
     public Dictionary<Vector3Int, Engine> _engines;
     public Dictionary<Vector3Int, Storage> _storages;
 
-    [Flags]
-    public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
+    static readonly Vector3Int[] DIRS = {
+    new(0, 1, 0),  // Up
+    new(1, 0, 0),  // Right
+    new(0,-1, 0),  // Down
+    new(-1,0, 0),  // Left
+    };
 
     public Dictionary<int, Vector3Int> _position; // circuitId -> position  
-    Dictionary<Vector3Int, Conn> connMask = new(); // position -> bitmask connexions
+    private Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
     #endregion
 
     #region Nested Method
@@ -30,14 +39,18 @@ public class Circuit
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
+
+        _connMask = new Dictionary<Vector3Int, Conn>();
     }
-    public Circuit(Dictionary<Vector3Int, Tile> path, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null)
+    public Circuit(Dictionary<Vector3Int, Tile> path, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
     {
         _path = new Dictionary<Vector3Int, Tile>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
+
+        _connMask = new Dictionary<Vector3Int, Conn>();
 
         _path = path;
         if(structures != null)
@@ -48,6 +61,9 @@ public class Circuit
             _engines = engines;
         if(storages != null)
             _storages = storages;
+
+        if(connMask != null)
+            _connMask = connMask;
     }
     #endregion
 
@@ -96,23 +112,18 @@ public class Circuit
             }
         }
     }
-
     public bool Contains(Tile tile)
     {
         return _path.ContainsValue(tile);
     }
-
-
     public bool ContainsEngine(Vector3Int position)
     {
         return _engines.ContainsKey(position);
     }
-
     public bool ContainsGenerator(Vector3Int position)
     {
         return _generators.ContainsKey(position);
     }
-
     public void Merge(Circuit circuit)
     {
         _path.AddRange(circuit._path);
@@ -122,9 +133,11 @@ public class Circuit
             _generators.AddRange(circuit._generators);
         if (circuit._engines != null)
             _engines.AddRange(circuit._engines);
+        if (circuit._connMask != null)
+            _connMask.AddRange(circuit._connMask);
+
         circuit = null;
     }
-
     public Tuple<Circuit> Split()
     {
         Tuple<Circuit> circuits = new Tuple<Circuit>(new Circuit());
@@ -136,28 +149,69 @@ public class Circuit
     {
         _engines.Add(position, engine);
     }
-
     public void RemoveEngine(Vector3Int position)
     {
         _engines.Remove(position);
     }
-
     public void AddGenerator(Vector3Int position, Generator generator)
     {
         _generators.Add(position, generator);
     }
-
     public void RemoveGenerator(Vector3Int position)
     {
         _generators.Remove(position);
     }
-
-    public void AddTile(Vector3Int position, Tile tile)
+    static bool AreNeighborsConnected(Conn aMask, int aDirIndex, Conn bMask)
     {
+        // A doit sortir vers dir, B doit sortir vers la dir opposée
+        Conn aNeed = (Conn)(1 << aDirIndex);
+        Conn bNeed = (Conn)(1 << ((aDirIndex + 2) % 4));
+        return (aMask & aNeed) != 0 && (bMask & bNeed) != 0;
+    }
+    public void AddCable(Vector3Int position, Tile tile)
+    {
+        Conn mask = Conn.None;
+
+        for (int d = 0; d < 4; d++)
+        {
+            Vector3Int n = position + DIRS[d];
+            if (_path.ContainsKey(n))
+            {
+                // Si le voisin existe, on connecte dans les deux sens
+                mask |= (Conn)(1 << d);
+
+                Conn oppDir = (Conn)(1 << ((d + 2) % 4));
+                if (_connMask.ContainsKey(n))
+                    _connMask[n] |= oppDir;
+                else
+                    _connMask[n] = oppDir;
+            }
+        }
+
+        _connMask[position] = mask;
         _path.Add(position, tile);
     }
-    public void RemoveTile(Vector3Int position)
+    public void RemoveCable(Vector3Int position)
     {
+        if (!_connMask.ContainsKey(position)) return;
+
+        // Couper les connexions chez les voisins
+        for (int d = 0; d < 4; d++)
+        {
+            var n = position + DIRS[d];
+            if (_connMask.TryGetValue(n, out var nMask))
+            {
+                // Supprime la direction opposée
+                Conn opposite = (Conn)(1 << ((d + 2) % 4));
+                _connMask[n] = nMask & ~opposite;
+            }
+        }
+
+        // Retirer la tuile
+        _connMask.Remove(position);
+
+        // Puis effectuer le split éventuel
+        //SplitCircuitAfterChange(position);
         _path.Remove(position);
     }
     #endregion

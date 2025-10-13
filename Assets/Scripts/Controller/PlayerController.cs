@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
 
             if (_character.Select != null)
             {
-                _character.Select.ToRemove(new Vector3Int((int)transform.position.x, (int)transform.position.y));
+               _character.Select.ToRemove(new Vector3Int((int)transform.position.x, (int)transform.position.y));
             }
         }
     }
