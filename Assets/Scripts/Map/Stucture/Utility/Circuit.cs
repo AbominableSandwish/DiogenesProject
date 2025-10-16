@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static UnityEditor.PlayerSettings;
 
 [Flags]
 public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
@@ -153,23 +150,32 @@ public class Circuit
     }
 
     public void AddEngine(Vector3Int position, Engine engine)
-    {
+    {      
         _engines.Add(position, engine);
+        _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
+
     public void RemoveEngine(Vector3Int position)
     {
         _engines.Remove(position);
+        // Retirer la tuile
+        _connMask.Remove(position);
         RecomputeStates();
     }
+
     public void AddGenerator(Vector3Int position, Generator generator)
     {
         _generators.Add(position, generator);
+        _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
+
     public void RemoveGenerator(Vector3Int position)
     {
         _generators.Remove(position);
+        // Retirer la tuile
+        _connMask.Remove(position);
         RecomputeStates();
     }
 
@@ -183,8 +189,7 @@ public class Circuit
         return (aMask & aNeed) != 0 && (bMask & bNeed) != 0;
     }
 
-
-    public void AddCable(Vector3Int position, Tile tile)
+    Conn NewConnection(Vector3Int position)
     {
         Conn mask = Conn.None;
 
@@ -203,8 +208,13 @@ public class Circuit
                     _connMask[n] = oppDir;
             }
         }
+        return mask;
+    }
 
-        _connMask[position] = mask;
+
+    public void AddCable(Vector3Int position, Tile tile)
+    {
+        _connMask[position] = NewConnection(position);
         _path.Add(position, tile);
         RecomputeStates();
     }
@@ -234,9 +244,7 @@ public class Circuit
         _connMask.Remove(position);
         RecomputeStates();
     }
-
     #endregion
-
 
     List<Vector3Int> GetConnectedNeighborsIgnoring(Vector3Int center)
     {
@@ -249,6 +257,31 @@ public class Circuit
             if (_path.ContainsKey(n)) result.Add(n);
         }
         return result;
+    }
+
+    // Dans class Circuit
+    public List<List<Vector3Int>> ComputeComponentsAfterChange(Vector3Int posChanged)
+    {
+        // 1) Points de départ = voisins câblés encore présents
+        var starts = GetConnectedNeighborsIgnoring(posChanged);
+        var comps = new List<List<Vector3Int>>();
+        if (starts.Count == 0) return comps;        // plus rien autour
+        if (starts.Count == 1)                      // un seul voisin => une seule composante (pas de split)
+        {
+            comps.Add(FloodFillComponent(starts[0], new HashSet<Vector3Int>()));
+            return comps;
+        }
+
+        // 2) BFS/DFS par "îlots" en respectant la connectivité via _connMask
+        var visited = new HashSet<Vector3Int>();
+        foreach (var s in starts)
+        {
+            if (visited.Contains(s)) continue;
+            var comp = FloodFillComponent(s, visited);
+            if (comp.Count > 0) comps.Add(comp);
+        }
+
+        return comps; // La 1re pourra garder le circuit; les autres deviendront de nouveaux circuits
     }
 
     List<Vector3Int> FloodFillComponent(Vector3Int start, HashSet<Vector3Int> visited)

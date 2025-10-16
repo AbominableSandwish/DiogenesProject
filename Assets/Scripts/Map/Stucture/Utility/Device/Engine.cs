@@ -22,8 +22,6 @@ public class Engine : Structure
             _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));
         }
     }
-
-
     #endregion
 
     #region Public method
