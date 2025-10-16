@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
@@ -20,6 +23,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     [SerializeField] private Tilemap _liquid;
     [SerializeField] private Tilemap _gas;
     [SerializeField] private List<Circuit> _circuits;
+    public Dictionary<Vector3Int, Circuit> OwnerAt = new();
 
     private int _counterCoil = 0;
     private int _counterGenerator = 0;
@@ -34,7 +38,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     private Sprite _fourConnect;
 
     //Solar Panel
-    private TileBase _solarPanel;
+    private Sprite _solarPanel;
 
     //Storage Battery
     private TileBase _storageBattery;
@@ -89,7 +93,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         _fourConnect = Resources.LoadAll<Sprite>("Sprite/Coils/4_connect")[0];
-        _solarPanel = Resources.LoadAll<TileBase>("Sprite/Generator/SolarPanel")[0];
+        _solarPanel = Resources.LoadAll<Sprite>("Sprite/Generator/SolarPanel")[0];
         _lamp = Resources.LoadAll<TileBase>("Sprite/Engine/Lamp")[0];
     }
 
@@ -391,71 +395,170 @@ public class UtilityMap : StructureMap<UtilityMap>
         return true; // END
     }
 
-    public bool AddGenerator<T>(Vector3Int pos)
+    public bool AddGenerator<T>(Vector3Int position)
     {
 
-        TileBase tile = null;
+        Tile tile = null;
 
-        Dictionary<Vector3Int,Tile> neighboors = new Dictionary<Vector3Int, Tile>();
-
-        if ((pos.x > -1 || pos.x < _map.Height) || (pos.y > -1 || pos.y < _map.Width))
+        if ((position.x > -1 || position.x < _map.Height)
+            || (position.y > -1 || position.y < _map.Width))
         {
 
-            if (_tilemap.GetTile(pos) != null) return false; // END
+            if (_tilemap.GetTile(position) != null) return false; // END
 
             _counterGenerator++;
 
             //Self
-            _tilemap.SetTile(pos, _solarPanel);
-            tile = _tilemap.GetTile(pos);
+            tile = new Tile();
             tile.name = typeof(T) + _counterGenerator.ToString();
-            
-            //neighboor
-            neighboors = GetConnectedNeighborsIgnoring(pos);
+            tile.sprite = _solarPanel;
+            tile.colliderType = Tile.ColliderType.Grid;
+            _electric.SetTile(new Vector3Int(position.x, position.y), tile);
 
-            foreach(var neighboor in neighboors)
+            //neighboor
+            Dictionary<Vector3Int, Tile> neighboors = GetTileNeighbor(position);
+            foreach (var neighboor in neighboors)
             {
                 RefreshTile(neighboor.Key);
             }
 
             if (neighboors.Count == 0) return true; // END
 
-            Queue<Circuit> targets = new Queue<Circuit>();
-            foreach (Circuit circuit in _circuits)
-            {
-                foreach (var neighboor in neighboors)
-                {
-                    if (circuit.Contains(neighboor.Value))
-                    {
-                        targets.Enqueue(circuit);
-                        break;
-                    }
-                }
-            }
+            Queue<Circuit> neighborCircuits = GetCircuitNeighbors(neighboors);
 
-            if (targets.Count == 0)
+            // Cas A: Aucun voisin → nouveau circuit indépendant
+            if (neighborCircuits.Count == 0)
             {
-                Dictionary<Vector3Int, Tile> path = new();
-                path.AddRange(neighboors);
+                Dictionary<Vector3Int, Tile> path = new Dictionary<Vector3Int, Tile>();
 
                 Circuit circuit = new Circuit(path);
-                circuit.AddGenerator(pos, (Generator)typeof(T).Instantiate());
+                foreach (var key in neighboors.Keys)
+                {
+                    circuit.AddCable(key, neighboors[key]);
+                }
+
+                circuit.AddGenerator(position, (Generator)typeof(T).Instantiate());
                 _circuits.Add(circuit);
             }
-            else
+
+            // Cas B: Un seul circuit → ajouter la tuile au même circuit
+            if (neighborCircuits.Count == 1)
+            {
+                Circuit circuit = neighborCircuits.Dequeue();
+                circuit.AddGenerator(position, (Generator)typeof(T).Instantiate());
+            }
+
+            // Cas C: Plusieurs circuits connectés → fusion
+            if (neighborCircuits.Count > 1)
             {
                 Circuit newCircuit = new Circuit();
-                newCircuit.AddGenerator(pos, (Generator)typeof(T).Instantiate());
-                while (targets.Count != 0)
+                while (neighborCircuits.Count != 0)
                 {
-                    Circuit toMerge = targets.Dequeue();
+                    Circuit toMerge = neighborCircuits.Dequeue();
                     _circuits.Remove(toMerge);
                     newCircuit.Merge(toMerge);
                 }
+
+                newCircuit.AddGenerator(position, (Generator)typeof(T).Instantiate());
                 _circuits.Add(newCircuit);
             }
         }
+
         return true; // END
+    }
+
+    Tuple<Circuit> Split(Vector3Int position)
+    {
+        //neighboor
+        Dictionary<Vector3Int, Tile> neighboors = GetTileNeighbor(position);
+        foreach (var neighboor in neighboors)
+        {
+            RefreshTile(neighboor.Key);
+        }
+
+        Queue<Circuit> neighborCircuitsQ = GetCircuitNeighbors(neighboors);
+
+        Tuple<Circuit> circuits = new Tuple<Circuit>(new Circuit());
+        // TODO
+        // 3) Dédoublonner la queue -> ensemble ordonné
+        var neighborCircuits = new List<Circuit>();
+        var seen = new HashSet<Circuit>();
+        while (neighborCircuitsQ.Count > 0)
+        {
+            var c = neighborCircuitsQ.Dequeue();
+            if (c != null && seen.Add(c)) neighborCircuits.Add(c);
+        }
+
+        // 4) Aucun voisin : nouveau circuit (si tu ne le gères pas déjà)
+        if (neighborCircuits.Count == 0)
+        {
+            // soit tu laisses la tuile orpheline en attendant d'autres poses
+            // soit tu crées un circuit ici
+            return null;
+        }
+
+        // 5) Un seul voisin : on rattache la tuile à ce circuit
+        if (neighborCircuits.Count == 1)
+        {
+            var target = neighborCircuits[0];
+            // Ajoute pos à target (si pas déjà fait par AddCable) :
+            target._path[position] = target._path.ContainsKey(position) ? target._path[position] : /* ta Tile */ null;
+            target._connMask[position] = target._connMask.TryGetValue(position, out var m) ? m : Conn.None;
+            // (si tu maintiens un index OwnerAt, mets-le à jour)
+            return null;
+        }
+
+        // 6) Plusieurs circuits : MERGE → choisir un "principal" et y fusionner les autres
+        // Politique simple : garder le plus gros
+        neighborCircuits = neighborCircuits
+            .OrderByDescending(c => c._path.Count)
+            .ToList();
+
+        var primary = neighborCircuits[0];
+        for (int i = 1; i < neighborCircuits.Count; i++)
+        {
+            var from = neighborCircuits[i];
+            MoveAll(from, primary);
+            _circuits.Remove(from); // si tu tiens une liste globale
+        }
+
+        // S’assurer que la tuile posée est bien dans le primary
+        if (!primary._path.ContainsKey(position))
+            primary._path[position] = /* ta Tile */ null;
+        if (!primary._connMask.ContainsKey(position))
+            primary._connMask[position] = Conn.None;
+
+        ReindexCircuit(primary);   // si tu as OwnerAt
+        primary.RecomputeStates();  // optionnel (powered, capacité, etc.)
+
+
+        return circuits;
+    }
+
+    void ReindexCircuit(Circuit c)
+    {
+        foreach (var p in c._path.Keys)
+            OwnerAt[p] = c;
+    }
+
+    // Déplace *tout* le contenu d’un circuit vers un autre
+    void MoveAll(Circuit from, Circuit to)
+    {
+        foreach (var kv in from._path) to._path[kv.Key] = kv.Value;
+        foreach (var kv in from._connMask) to._connMask[kv.Key] = kv.Value;
+        foreach (var kv in from._generators) to._generators[kv.Key] = kv.Value;
+        foreach (var kv in from._engines) to._engines[kv.Key] = kv.Value;
+        foreach (var kv in from._storages) to._storages[kv.Key] = kv.Value;
+
+        // Si tu as un index inverse
+        foreach (var p in from._path.Keys) OwnerAt[p] = to;
+
+        // Clear "from" si nécessaire
+        from._path.Clear();
+        from._connMask.Clear();
+        from._generators.Clear();
+        from._engines.Clear();
+        from._storages.Clear();
     }
 
     static readonly Vector3Int[] DIRS = {
@@ -478,10 +581,33 @@ public class UtilityMap : StructureMap<UtilityMap>
     }
 
 
+    private Queue<Circuit> GetCircuitNeighbors(Dictionary<Vector3Int, Tile> tileNeighbor)
+    {
+        Queue<Circuit> neighborCircuits = new Queue<Circuit>();
+        foreach (Circuit circuit in _circuits)
+        {
+            foreach (Tile neighboor in tileNeighbor.Values)
+            {
+                if (circuit.Contains(neighboor))
+                {
+                    neighborCircuits.Enqueue(circuit);
+                    break;
+                }
+            }
+        }
+        return neighborCircuits;
+    }
+
+    private Dictionary<Vector3Int, Tile> GetTileNeighbor(Vector3Int position)
+    {
+        //neighboor
+        Dictionary<Vector3Int, Tile> neighboors = GetConnectedNeighborsIgnoring(position);
+        return neighboors;
+    }
+
     public bool AddCoil(Vector3Int position)
     {
         Tile tile = null;
-        Dictionary<Vector3Int, Tile> neighboors = new Dictionary<Vector3Int, Tile>();
 
         if ((position.x > -1 || position.x < _map.Height) 
            || (position.y > -1 || position.y < _map.Width))
@@ -499,7 +625,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             _counterCoil++;
 
             //neighboor
-            neighboors = GetConnectedNeighborsIgnoring(position);
+            Dictionary<Vector3Int, Tile> neighboors = GetTileNeighbor(position);
             foreach (var neighboor in neighboors)
             {
                 RefreshTile(neighboor.Key);
@@ -507,18 +633,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
             if (neighboors.Count == 0) return true; // END
 
-            Queue<Circuit> neighborCircuits = new Queue<Circuit>();
-            foreach (Circuit circuit in _circuits)
-            {
-                foreach (Tile neighboor in neighboors.Values)
-                {
-                    if (circuit.Contains(neighboor))
-                    {
-                        neighborCircuits.Enqueue(circuit);
-                        break;
-                    }
-                }
-            }
+            Queue<Circuit> neighborCircuits = GetCircuitNeighbors(neighboors);
 
             // Cas A: Aucun voisin → nouveau circuit indépendant
             if (neighborCircuits.Count == 0)
@@ -562,10 +677,19 @@ public class UtilityMap : StructureMap<UtilityMap>
     }
 
 
-    private Queue<Tile> Search(Tile tile)
+    Circuit FindNeighborCircuit(Vector3Int posChanged)
     {
+        // On inspecte les 4 voisins pour retrouver le circuit impacté
+        var dirs = new Vector3Int[] { new(0, 1, 0), new(1, 0, 0), new(0, -1, 0), new(-1, 0, 0) };
+        foreach (var d in dirs)
+        {
+            var n = posChanged + d;
+            if (OwnerAt.TryGetValue(n, out var c))
+                return c;
+        }
         return null;
     }
+
 
     public bool RemoveCoil(Vector3Int position)
     {
@@ -601,8 +725,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
                     if(neighboors.Count > 1)
                     {
-                        //Maybe split
-
+                        Split(position);
                     }
 
                     foreach (var neighboor in neighboors)

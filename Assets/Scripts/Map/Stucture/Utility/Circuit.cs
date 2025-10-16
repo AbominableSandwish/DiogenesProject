@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static UnityEditor.PlayerSettings;
@@ -13,6 +15,11 @@ public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
 [Serializable]
 public class Circuit
 {
+    public float Production;
+    public float Consumption;
+    public float TotalCapacity;
+    public float Capacity;
+
     #region Public Data
     public Dictionary<Vector3Int,  Tile> _path;
     public HashSet<int> _idStructures;
@@ -28,7 +35,7 @@ public class Circuit
     };
 
     public Dictionary<int, Vector3Int> _position; // circuitId -> position  
-    private Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
+    public Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
     #endregion
 
     #region Nested Method
@@ -70,36 +77,18 @@ public class Circuit
     #region Public Method
     public void Update()
     {
-        //Connaitre la quantité d'energie demandé
-        float total = 0.0f;
-        if (_engines != null && _generators.Count != 0)
-        {
-            foreach (Engine engine in _engines.Values)
-            {
-                total += engine.ElectricityConsumption;
-            }
-        }
-
-        //Récupéré la production des générateur
-        float Watt = 0;
-        if (_generators != null && _generators.Count != 0)
-        {
-            foreach (Generator generator in _generators.Values)
-            {
-                Watt += generator.Output();
-            }
-        }
-
+        float Power = Production;
         //Si quantité total d'energie insuffisant
-        if(Watt < total)
+        if (Production < Consumption)
         {
             //Si il y a du stockage
-            if(_storages != null && _storages.Count != 0)
+            if (_storages != null && _storages.Count != 0)
             {
                 //Calculer le manquant d'energie
-                float wattNeeded = total - Watt;
-                foreach (Storage storage in _storages.Values) {
-                    Watt += storage.Output(wattNeeded / _storages.Count);
+                Power = Production - Consumption;
+                foreach (Storage storage in _storages.Values)
+                {
+                    Power += storage.Output(Power / _storages.Count);
                 }
             }
         }
@@ -108,7 +97,7 @@ public class Circuit
         {
             foreach (Engine engine in _engines.Values)
             {
-                engine.Input(Watt / _engines.Count);
+                engine.Input(Power / _engines.Count);
             }
         }
     }
@@ -137,37 +126,64 @@ public class Circuit
             _connMask.AddRange(circuit._connMask);
 
         circuit = null;
+        RecomputeStates();
     }
-    public Tuple<Circuit> Split()
+
+    public void RecomputeStates()
     {
-        Tuple<Circuit> circuits = new Tuple<Circuit>(new Circuit());
-        // TODO
-        return circuits;
+        Consumption = 0;
+        //Connaitre la quantité d'energie demandé
+        if (_engines != null && _generators.Count != 0)
+        {
+            foreach (Engine engine in _engines.Values)
+            {
+                Consumption += engine.ElectricityConsumption;
+            }
+        }
+
+        Production = 0;
+        //Récupéré la production des générateur
+        if (_generators != null && _generators.Count != 0)
+        {
+            foreach (Generator generator in _generators.Values)
+            {
+                Production += generator.Output();
+            }
+        }
     }
 
     public void AddEngine(Vector3Int position, Engine engine)
     {
         _engines.Add(position, engine);
+        RecomputeStates();
     }
     public void RemoveEngine(Vector3Int position)
     {
         _engines.Remove(position);
+        RecomputeStates();
     }
     public void AddGenerator(Vector3Int position, Generator generator)
     {
         _generators.Add(position, generator);
+        RecomputeStates();
     }
     public void RemoveGenerator(Vector3Int position)
     {
         _generators.Remove(position);
+        RecomputeStates();
     }
-    static bool AreNeighborsConnected(Conn aMask, int aDirIndex, Conn bMask)
+
+    bool AreNeighborsConnected(Vector3Int a, int d, Vector3Int b)
     {
-        // A doit sortir vers dir, B doit sortir vers la dir opposée
-        Conn aNeed = (Conn)(1 << aDirIndex);
-        Conn bNeed = (Conn)(1 << ((aDirIndex + 2) % 4));
+        if (!_connMask.TryGetValue(a, out var aMask)) return false;
+        if (!_connMask.TryGetValue(b, out var bMask)) return false;
+
+        Conn aNeed = (Conn)(1 << d);
+        Conn bNeed = (Conn)(1 << ((d + 2) % 4));
         return (aMask & aNeed) != 0 && (bMask & bNeed) != 0;
     }
+
+
     public void AddCable(Vector3Int position, Tile tile)
     {
         Conn mask = Conn.None;
@@ -190,7 +206,9 @@ public class Circuit
 
         _connMask[position] = mask;
         _path.Add(position, tile);
+        RecomputeStates();
     }
+
     public void RemoveCable(Vector3Int position)
     {
         if (!_connMask.ContainsKey(position)) return;
@@ -213,6 +231,49 @@ public class Circuit
         // Puis effectuer le split éventuel
         //SplitCircuitAfterChange(position);
         _path.Remove(position);
+        _connMask.Remove(position);
+        RecomputeStates();
     }
+
     #endregion
+
+
+    List<Vector3Int> GetConnectedNeighborsIgnoring(Vector3Int center)
+    {
+        // On ignore le centre (retiré/masqué), on ne fait que lister
+        // les voisins qui sont encore des câbles.
+        var result = new List<Vector3Int>(4);
+        for (int d = 0; d < 4; d++)
+        {
+            var n = center + DIRS[d];
+            if (_path.ContainsKey(n)) result.Add(n);
+        }
+        return result;
+    }
+
+    List<Vector3Int> FloodFillComponent(Vector3Int start, HashSet<Vector3Int> visited)
+    {
+        var comp = new List<Vector3Int>();
+        var q = new Queue<Vector3Int>();
+        q.Enqueue(start);
+        visited.Add(start);
+
+        while (q.Count > 0)
+        {
+            var p = q.Dequeue();
+            comp.Add(p);
+
+            for (int d = 0; d < 4; d++)
+            {
+                var n = p + DIRS[d];
+                if (visited.Contains(n)) continue;
+                if (!_path.ContainsKey(n)) continue;
+                if (!AreNeighborsConnected(p, d, n)) continue;
+
+                visited.Add(n);
+                q.Enqueue(n);
+            }
+        }
+        return comp;
+    }
 }
