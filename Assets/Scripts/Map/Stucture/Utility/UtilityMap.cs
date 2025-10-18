@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
@@ -437,7 +438,11 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (old == null) return null; // rien à splitter
 
         // 2) Demander au circuit ses composantes restantes
-        var components = old.ComputeComponentsAfterChange(position);
+        // Exemple rapide d'usage
+        var components = old.ComputeComponentsAfterChangeData(position)
+                       .OrderByDescending(c => c.Tiles.Count) // garder la plus grande
+                       .ToList();
+
         if (components == null || components.Count <= 1)
         {
             ReindexCircuit(old);
@@ -445,26 +450,23 @@ public class UtilityMap : StructureMap<UtilityMap>
             return null;
         }
 
-        // (Optionnel) garder la composante la plus grande
-        components = components.OrderByDescending(c => c.Count).ToList();
-
-        var keep = components[0];
-        var keepSet = new HashSet<Vector3Int>(keep);
-
-        // 3) Créer un circuit par composante > 1 et déplacer les sous-ensembles
         for (int i = 1; i < components.Count; i++)
         {
-            var comp = components[i];
             var neo = new Circuit();
             _circuits.Add(neo);
-
-            MoveSubset(old, neo, comp);
-            ReindexCircuit(neo);
+            MoveSubset(old, neo, components[i].Tiles); // déplace tuiles +, et tes entités suivent
             neo.RecomputeStates();
+            // (Tu peux aussi exploiter comps[i].Generators/Engines/Storages si tu veux optimiser)
         }
 
+
+        var keep = components[0];
+        RetainSubset(old, new HashSet<Vector3Int>(keep.Tiles)); // conserve la composante principale
+        old.RecomputeStates();
+
+        
+
         // 4) Ne garder dans 'old' que la composante principale
-        RetainSubset(old, keepSet);
         ReindexCircuit(old);
         old.RecomputeStates();
         return _circuits;
@@ -751,12 +753,32 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
     }
 
-    void RetainSubset(Circuit c, HashSet<Vector3Int> keep)
+    void RetainSubset(Circuit circuit, HashSet<Vector3Int> keep)
     {
-        foreach (var p in c._path.Keys.Where(p => !keep.Contains(p)).ToList()) { c._path.Remove(p); OwnerAt.Remove(p); }
-        foreach (var p in c._connMask.Keys.Where(p => !keep.Contains(p)).ToList()) c._connMask.Remove(p);
-        foreach (var p in c._generators.Keys.Where(p => !keep.Contains(p)).ToList()) c._generators.Remove(p);
-        foreach (var p in c._engines.Keys.Where(p => !keep.Contains(p)).ToList()) c._engines.Remove(p);
-        foreach (var p in c._storages.Keys.Where(p => !keep.Contains(p)).ToList()) c._storages.Remove(p);
+        // --- PATH (tuiles câble) ---
+        foreach (var pos in circuit._path.Keys.Where(p => !keep.Contains(p)).ToList())
+            circuit._path.Remove(pos);
+
+        // --- CONNEXIONS ---
+        foreach (var pos in circuit._connMask.Keys.Where(p => !keep.Contains(p)).ToList())
+            circuit._connMask.Remove(pos);
+
+        // --- GÉNÉRATEURS ---
+        foreach (var pos in circuit._generators.Keys.Where(p => !keep.Contains(p)).ToList())
+            circuit._generators.Remove(pos);
+
+        // --- MOTEURS ---
+        foreach (var pos in circuit._engines.Keys.Where(p => !keep.Contains(p)).ToList())
+            circuit._engines.Remove(pos);
+
+        // --- STOCKAGES ---
+        foreach (var pos in circuit._storages.Keys.Where(p => !keep.Contains(p)).ToList())
+            circuit._storages.Remove(pos);
+
+        // --- (Optionnel) Structures globales ---
+        // Si tu as _idStructures non spatialisé, tu peux soit les garder,
+        // soit recalcule leur appartenance à partir des positions restantes.
+        // Exemple (si tu peux les mapper à des positions connues) :
+        // circuit._idStructures.RemoveWhere(id => !keep.Contains(structurePos[id]));
     }
 }

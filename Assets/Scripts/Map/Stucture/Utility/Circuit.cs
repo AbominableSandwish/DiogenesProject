@@ -260,53 +260,60 @@ public class Circuit
     }
 
     // Dans class Circuit
-    public List<List<Vector3Int>> ComputeComponentsAfterChange(Vector3Int posChanged)
+    public List<ComponentData> ComputeComponentsAfterChangeData(Vector3Int posChanged)
     {
-        // 1) Points de départ = voisins câblés encore présents
         var starts = GetConnectedNeighborsIgnoring(posChanged);
-        var comps = new List<List<Vector3Int>>();
-        if (starts.Count == 0) return comps;        // plus rien autour
-        if (starts.Count == 1)                      // un seul voisin => une seule composante (pas de split)
-        {
-            comps.Add(FloodFillComponent(starts[0], new HashSet<Vector3Int>()));
-            return comps;
-        }
+        var comps = new List<ComponentData>();
+        if (starts.Count == 0) return comps;
 
-        // 2) BFS/DFS par "îlots" en respectant la connectivité via _connMask
         var visited = new HashSet<Vector3Int>();
         foreach (var s in starts)
         {
             if (visited.Contains(s)) continue;
-            var comp = FloodFillComponent(s, visited);
-            if (comp.Count > 0) comps.Add(comp);
+            var comp = FloodFillComponentData(s, visited);
+            if (comp.Tiles.Count > 0) comps.Add(comp);
         }
-
-        return comps; // La 1re pourra garder le circuit; les autres deviendront de nouveaux circuits
+        return comps;
     }
 
-    List<Vector3Int> FloodFillComponent(Vector3Int start, HashSet<Vector3Int> visited)
+    // ----- Résultat complet d'une composante -----
+    public class ComponentData
     {
-        var comp = new List<Vector3Int>();
+        public readonly List<Vector3Int> Tiles = new();
+        public readonly Dictionary<Vector3Int, Generator> Generators = new();
+        public readonly Dictionary<Vector3Int, Engine> Engines = new();
+        public readonly Dictionary<Vector3Int, Storage> Storages = new();
+    }
+
+    // ----- Flood-fill qui récolte aussi les entités -----
+    ComponentData FloodFillComponentData(Vector3Int start, HashSet<Vector3Int> visited)
+    {
+        var data = new ComponentData();
         var q = new Queue<Vector3Int>();
-        q.Enqueue(start);
         visited.Add(start);
+        q.Enqueue(start);
 
         while (q.Count > 0)
         {
             var p = q.Dequeue();
-            comp.Add(p);
+            data.Tiles.Add(p);
 
+            // Si des entités sont posées sur cette tuile, on les ajoute
+            if (_generators.TryGetValue(p, out var g)) data.Generators[p] = g;
+            if (_engines.TryGetValue(p, out var e)) data.Engines[p] = e;
+            if (_storages.TryGetValue(p, out var s)) data.Storages[p] = s;
+
+            // Parcours des voisins réellement connectés
             for (int d = 0; d < 4; d++)
             {
                 var n = p + DIRS[d];
                 if (visited.Contains(n)) continue;
-                if (!_path.ContainsKey(n)) continue;
                 if (!AreNeighborsConnected(p, d, n)) continue;
 
                 visited.Add(n);
                 q.Enqueue(n);
             }
         }
-        return comp;
+        return data;
     }
 }
