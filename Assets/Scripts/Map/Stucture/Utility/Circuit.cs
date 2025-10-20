@@ -18,7 +18,7 @@ public class Circuit
     public float Capacity;
 
     #region Public Data
-    public Dictionary<Vector3Int,  Tile> _path;
+    public Dictionary<Vector3Int,  Tile> _tiles;
     public HashSet<int> _idStructures;
     public Dictionary<Vector3Int, Generator> _generators;
     public Dictionary<Vector3Int, Engine> _engines;
@@ -38,7 +38,7 @@ public class Circuit
     #region Nested Method
     public Circuit()
     {
-        _path = new Dictionary<Vector3Int, Tile>();
+        _tiles = new Dictionary<Vector3Int, Tile>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
@@ -46,9 +46,9 @@ public class Circuit
 
         _connMask = new Dictionary<Vector3Int, Conn>();
     }
-    public Circuit(Dictionary<Vector3Int, Tile> path, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
+    public Circuit(Dictionary<Vector3Int, Tile> tiles, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
     {
-        _path = new Dictionary<Vector3Int, Tile>();
+        _tiles = new Dictionary<Vector3Int, Tile>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
@@ -56,7 +56,7 @@ public class Circuit
 
         _connMask = new Dictionary<Vector3Int, Conn>();
 
-        _path = path;
+        _tiles = tiles;
         if(structures != null)
             _idStructures = structures;
         if(generators != null)
@@ -100,7 +100,7 @@ public class Circuit
     }
     public bool Contains(Tile tile)
     {
-        return _path.ContainsValue(tile);
+        return _tiles.ContainsValue(tile);
     }
     public bool ContainsEngine(Vector3Int position)
     {
@@ -112,7 +112,7 @@ public class Circuit
     }
     public void Merge(Circuit circuit)
     {
-        _path.AddRange(circuit._path);
+        _tiles.AddRange(circuit._tiles);
         if (circuit._idStructures != null)
             _idStructures.AddRange(circuit._idStructures);
         if (circuit._generators != null)
@@ -126,41 +126,19 @@ public class Circuit
         RecomputeStates();
     }
 
-    public void RecomputeStates()
+    
+
+    #region ADD
+    public void AddCable(Vector3Int position, Tile tile)
     {
-        Consumption = 0;
-        //Connaitre la quantité d'energie demandé
-        if (_engines != null && _generators.Count != 0)
-        {
-            foreach (Engine engine in _engines.Values)
-            {
-                Consumption += engine.ElectricityConsumption;
-            }
-        }
-
-        Production = 0;
-        //Récupéré la production des générateur
-        if (_generators != null && _generators.Count != 0)
-        {
-            foreach (Generator generator in _generators.Values)
-            {
-                Production += generator.Output();
-            }
-        }
+        _connMask[position] = NewConnection(position);
+        _tiles.Add(position, tile);
+        RecomputeStates();
     }
-
     public void AddEngine(Vector3Int position, Engine engine)
     {      
         _engines.Add(position, engine);
         _connMask[position] = NewConnection(position);
-        RecomputeStates();
-    }
-
-    public void RemoveEngine(Vector3Int position)
-    {
-        _engines.Remove(position);
-        // Retirer la tuile
-        _connMask.Remove(position);
         RecomputeStates();
     }
 
@@ -171,51 +149,22 @@ public class Circuit
         RecomputeStates();
     }
 
-    public void RemoveGenerator(Vector3Int position)
+    #endregion
+
+    #region REMOVE
+    public void RemoveEngine(Vector3Int position)
     {
-        _generators.Remove(position);
+        _engines.Remove(position);
         // Retirer la tuile
         _connMask.Remove(position);
         RecomputeStates();
     }
 
-    bool AreNeighborsConnected(Vector3Int a, int d, Vector3Int b)
+    public void RemoveGenerator(Vector3Int position)
     {
-        if (!_connMask.TryGetValue(a, out var aMask)) return false;
-        if (!_connMask.TryGetValue(b, out var bMask)) return false;
-
-        Conn aNeed = (Conn)(1 << d);
-        Conn bNeed = (Conn)(1 << ((d + 2) % 4));
-        return (aMask & aNeed) != 0 && (bMask & bNeed) != 0;
-    }
-
-    Conn NewConnection(Vector3Int position)
-    {
-        Conn mask = Conn.None;
-
-        for (int d = 0; d < 4; d++)
-        {
-            Vector3Int n = position + DIRS[d];
-            if (_path.ContainsKey(n))
-            {
-                // Si le voisin existe, on connecte dans les deux sens
-                mask |= (Conn)(1 << d);
-
-                Conn oppDir = (Conn)(1 << ((d + 2) % 4));
-                if (_connMask.ContainsKey(n))
-                    _connMask[n] |= oppDir;
-                else
-                    _connMask[n] = oppDir;
-            }
-        }
-        return mask;
-    }
-
-
-    public void AddCable(Vector3Int position, Tile tile)
-    {
-        _connMask[position] = NewConnection(position);
-        _path.Add(position, tile);
+        _generators.Remove(position);
+        // Retirer la tuile
+        _connMask.Remove(position);
         RecomputeStates();
     }
 
@@ -240,9 +189,65 @@ public class Circuit
 
         // Puis effectuer le split éventuel
         //SplitCircuitAfterChange(position);
-        _path.Remove(position);
+        _tiles.Remove(position);
         _connMask.Remove(position);
         RecomputeStates();
+    }
+    #endregion
+
+    public void RecomputeStates()
+    {
+        Consumption = 0;
+        //Connaitre la quantité d'energie demandé
+        if (_engines != null && _generators.Count != 0)
+        {
+            foreach (Engine engine in _engines.Values)
+            {
+                Consumption += engine.ElectricityConsumption;
+            }
+        }
+
+        Production = 0;
+        //Récupéré la production des générateur
+        if (_generators != null && _generators.Count != 0)
+        {
+            foreach (Generator generator in _generators.Values)
+            {
+                Production += generator.Output();
+            }
+        }
+    }
+
+    bool AreNeighborsConnected(Vector3Int a, int d, Vector3Int b)
+    {
+        if (!_connMask.TryGetValue(a, out var aMask)) return false;
+        if (!_connMask.TryGetValue(b, out var bMask)) return false;
+
+        Conn aNeed = (Conn)(1 << d);
+        Conn bNeed = (Conn)(1 << ((d + 2) % 4));
+        return (aMask & aNeed) != 0 && (bMask & bNeed) != 0;
+    }
+
+    Conn NewConnection(Vector3Int position)
+    {
+        Conn mask = Conn.None;
+
+        for (int d = 0; d < 4; d++)
+        {
+            Vector3Int n = position + DIRS[d];
+            if (_tiles.ContainsKey(n))
+            {
+                // Si le voisin existe, on connecte dans les deux sens
+                mask |= (Conn)(1 << d);
+
+                Conn oppDir = (Conn)(1 << ((d + 2) % 4));
+                if (_connMask.ContainsKey(n))
+                    _connMask[n] |= oppDir;
+                else
+                    _connMask[n] = oppDir;
+            }
+        }
+        return mask;
     }
     #endregion
 
@@ -254,7 +259,7 @@ public class Circuit
         for (int d = 0; d < 4; d++)
         {
             var n = center + DIRS[d];
-            if (_path.ContainsKey(n)) result.Add(n);
+            if (_tiles.ContainsKey(n)) result.Add(n);
         }
         return result;
     }

@@ -1,10 +1,5 @@
-using System;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 using UnityEngine.Tilemaps;
 
 public class PlayerController : MonoBehaviour
@@ -67,7 +62,7 @@ public class PlayerController : MonoBehaviour
                     move += Vector3.down;
                 }
 
-                TileBase structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureType.Basic);
+                TileBase structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureMap.Basic);
                 if(structure == null) {
                    
                     _targetPos += new Vector3((int)move.x, (int)move.y);

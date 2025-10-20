@@ -15,6 +15,8 @@ public class Storage : Structure
     #region Nested Method
     public Storage(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
+        this._type = StructureType.Storage;
+
         if (tilemap != null)
         {
             _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));

@@ -1,20 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StructureType
+public enum StructureMap
 {
     None,
     Basic,
     Utility,
     Decoration
 }
+
+public enum StructureType
+{
+    None,
+    Coil,
+    Generator,
+    Engine,
+    Storage
+}
+
 public class Structure
 {
     #region Private Method
     protected bool _isEnabled = false;
 
     protected StructureType _type = StructureType.None;
+    protected StructureMap _map = StructureMap.None;
     private string _name = "";
+    
     private List<Element> _elements = null;
     #endregion
 
@@ -27,17 +39,18 @@ public class Structure
 
     #region Public Method
     public string Name { get => _name; }
-    public StructureType Type { get => _type; set => _type = value; }
+    public StructureMap GetMap { get => _map; set => _map = value; }
+    public StructureType Type { get => _type; }
 
     public virtual bool ToPlace(Vector3Int pos)
     {
-        switch (_type)
+        switch (_map)
         {
-            case StructureType.Basic:
+            case StructureMap.Basic:
                 break;
-            case StructureType.Utility: 
+            case StructureMap.Utility: 
                 break;
-            case StructureType.Decoration:
+            case StructureMap.Decoration:
                 break;
         }
         return false;
@@ -45,13 +58,13 @@ public class Structure
 
     public virtual bool ToRemove(Vector3Int pos)
     {
-        switch (_type)
+        switch (_map)
         {
-            case StructureType.Basic:
+            case StructureMap.Basic:
                 break;
-            case StructureType.Utility:
+            case StructureMap.Utility:
                 break;
-            case StructureType.Decoration:
+            case StructureMap.Decoration:
                 break;
         }
         return false;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
 public class Map : MonoBehaviour
 {
     #region Private Data
@@ -12,7 +13,6 @@ public class Map : MonoBehaviour
     [SerializeField] private BasicMap _basicMap;
     [SerializeField] private UtilityMap _utilityMap;
     [SerializeField] private DecorationMap _decorationMap;
-
     #endregion
 
     #region Public Data
@@ -37,18 +37,18 @@ public class Map : MonoBehaviour
     #endregion
 
     #region Public Method
-    public TileBase GetStructure(Vector3Int position, StructureType type)
+    public TileBase GetStructure(Vector3Int position, StructureMap map)
     {
         TileBase tileBase = null;
-        switch (type)
+        switch (map)
         {
-            case StructureType.Basic:
+            case StructureMap.Basic:
                 _basicMap?.GetStructure(position);
                 break;  
-            case StructureType.Utility:
+            case StructureMap.Utility:
                 _utilityMap?.GetStructure(position);
                 break;
-            case StructureType.Decoration:
+            case StructureMap.Decoration:
                 _decorationMap?.GetStructure(position);
                 break;
         }

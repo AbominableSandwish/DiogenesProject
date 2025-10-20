@@ -8,7 +8,7 @@ public class Generator : Structure
 
     public Generator()
     {
-
+        this._type = StructureType.Generator;
     }
 
     public virtual float Output()
