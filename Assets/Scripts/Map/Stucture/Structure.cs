@@ -26,6 +26,8 @@ public class Structure
     protected StructureType _type = StructureType.None;
     protected StructureMap _map = StructureMap.None;
     private string _name = "";
+    protected Vector3Int _position;
+
     
     private List<Element> _elements = null;
     #endregion
@@ -41,6 +43,7 @@ public class Structure
     public string Name { get => _name; }
     public StructureMap GetMap { get => _map; set => _map = value; }
     public StructureType Type { get => _type; }
+    public Vector3Int Position { get => _position; set => _position = value; }
 
     public virtual bool ToPlace(Vector3Int pos)
     {

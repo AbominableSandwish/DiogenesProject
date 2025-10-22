@@ -9,6 +9,12 @@ public class Coil : Structure
     {
         this._type = StructureType.Coil;
     }
+
+    public Coil(Vector3Int position)
+    {
+        this._type = StructureType.Coil;
+        this._position = position;
+    }
     public bool isConnect()
     {
         return StructureConnect != null;

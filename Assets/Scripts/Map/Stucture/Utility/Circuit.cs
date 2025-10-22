@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 [Flags]
 public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
-
-
 
 [Serializable]
 public class Circuit
@@ -18,7 +16,7 @@ public class Circuit
     public float Capacity;
 
     #region Public Data
-    public Dictionary<Vector3Int,  Tile> _tiles;
+    public Dictionary<Vector3Int,  Coil> _coils;
     public HashSet<int> _idStructures;
     public Dictionary<Vector3Int, Generator> _generators;
     public Dictionary<Vector3Int, Engine> _engines;
@@ -38,7 +36,7 @@ public class Circuit
     #region Nested Method
     public Circuit()
     {
-        _tiles = new Dictionary<Vector3Int, Tile>();
+        _coils = new Dictionary<Vector3Int, Coil>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
@@ -46,17 +44,16 @@ public class Circuit
 
         _connMask = new Dictionary<Vector3Int, Conn>();
     }
-    public Circuit(Dictionary<Vector3Int, Tile> tiles, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
+    public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
     {
-        _tiles = new Dictionary<Vector3Int, Tile>();
+        _coils = new Dictionary<Vector3Int, Coil>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
-
         _connMask = new Dictionary<Vector3Int, Conn>();
 
-        _tiles = tiles;
+        _coils = coils;
         if(structures != null)
             _idStructures = structures;
         if(generators != null)
@@ -98,21 +95,31 @@ public class Circuit
             }
         }
     }
-    public bool Contains(Tile tile)
+    public bool ContainsValue(Structure structure)
     {
-        return _tiles.ContainsValue(tile);
-    }
-    public bool ContainsEngine(Vector3Int position)
-    {
-        return _engines.ContainsKey(position);
-    }
-    public bool ContainsGenerator(Vector3Int position)
-    {
-        return _generators.ContainsKey(position);
+        bool isContain = false;
+
+        switch (structure.Type)
+        {
+            case StructureType.Coil:
+                
+                isContain = _coils.ContainsValue((Coil)structure);
+                break;
+            case StructureType.Engine:
+                isContain = _engines.ContainsValue((Engine)structure);
+                break;
+            case StructureType.Generator:
+                isContain = _generators.ContainsValue((Generator)structure);
+                break;
+            case StructureType.Storage:
+                isContain = _storages.ContainsValue((Storage)structure);
+                break;
+        }
+        return isContain;
     }
     public void Merge(Circuit circuit)
     {
-        _tiles.AddRange(circuit._tiles);
+        _coils.AddRange(circuit._coils);
         if (circuit._idStructures != null)
             _idStructures.AddRange(circuit._idStructures);
         if (circuit._generators != null)
@@ -129,10 +136,10 @@ public class Circuit
     
 
     #region ADD
-    public void AddCable(Vector3Int position, Tile tile)
+    public void AddCable(Vector3Int position, Coil coil)
     {
         _connMask[position] = NewConnection(position);
-        _tiles.Add(position, tile);
+        _coils.Add(position, coil);
         RecomputeStates();
     }
     public void AddEngine(Vector3Int position, Engine engine)
@@ -145,6 +152,35 @@ public class Circuit
     public void AddGenerator(Vector3Int position, Generator generator)
     {
         _generators.Add(position, generator);
+        _connMask[position] = NewConnection(position);
+        RecomputeStates();
+    }
+
+    public void AddStructure(Vector3Int position, Structure structure)
+    {
+        switch (structure)
+        {
+            case Coil c:
+                _coils.Add(position, c);
+                break;
+
+            case Generator g:
+                _generators.Add(position, g);
+                break;
+
+            case Engine e:
+                _engines.Add(position, e);
+                break;
+
+            case Storage st:
+                _storages.Add(position, st);
+                break;
+
+            default:
+                Debug.LogWarning($"Structure de type {structure.GetType().Name} non reconnue.");
+                break;
+        }
+
         _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
@@ -189,7 +225,7 @@ public class Circuit
 
         // Puis effectuer le split éventuel
         //SplitCircuitAfterChange(position);
-        _tiles.Remove(position);
+        _coils.Remove(position);
         _connMask.Remove(position);
         RecomputeStates();
     }
@@ -235,7 +271,7 @@ public class Circuit
         for (int d = 0; d < 4; d++)
         {
             Vector3Int n = position + DIRS[d];
-            if (_tiles.ContainsKey(n))
+            if (_coils.ContainsKey(n))
             {
                 // Si le voisin existe, on connecte dans les deux sens
                 mask |= (Conn)(1 << d);
@@ -259,7 +295,7 @@ public class Circuit
         for (int d = 0; d < 4; d++)
         {
             var n = center + DIRS[d];
-            if (_tiles.ContainsKey(n)) result.Add(n);
+            if (_coils.ContainsKey(n)) result.Add(n);
         }
         return result;
     }

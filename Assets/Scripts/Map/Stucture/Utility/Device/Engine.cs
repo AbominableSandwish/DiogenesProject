@@ -15,13 +15,14 @@ public class Engine : Structure
     #endregion
 
     #region Constructor
-    public Engine(Tilemap tilemap = null, int pos_x = 0 , int pos_y = 0)
+    public Engine(Tilemap tilemap = null, Vector3Int position = new Vector3Int())
     {
         this._type = StructureType.Engine;
+        this._position = position;
 
         if(tilemap != null)
         {
-            _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));
+            _object = tilemap.GetInstantiatedObject(position);
         }
     }
     #endregion

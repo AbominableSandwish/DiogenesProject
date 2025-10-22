@@ -6,6 +6,13 @@ public class SolarPanel : Generator
     [SerializeField] protected new float _electricPower;
 
     #region Public Method
+
+    public SolarPanel(int x = 0, int y = 0)
+    {
+        this._type = StructureType.Generator;
+        this._position =new Vector3Int(x, y);
+    }
+
     public override float Output()
     {
         return _electricProduction;
