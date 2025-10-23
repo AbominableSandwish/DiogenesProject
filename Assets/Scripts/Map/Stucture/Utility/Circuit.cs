@@ -69,6 +69,17 @@ public class Circuit
     #endregion
 
     #region Public Method
+
+    public int Count()
+    {
+        int count = 0;
+        count += _coils.Count;
+        count += _engines.Count;
+        count += _generators.Count;
+        count += _storages.Count;
+        return count;
+    }
+
     public void Update()
     {
         float Power = Production;
