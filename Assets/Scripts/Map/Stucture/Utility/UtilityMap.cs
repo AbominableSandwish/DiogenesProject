@@ -3,10 +3,19 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static Circuit;
+
+
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
-    
+    static readonly Vector3Int[] DIRS = {
+    new(0, 1, 0),  // Up
+    new(1, 0, 0),  // Right
+    new(0,-1, 0),  // Down
+    new(-1,0, 0),  // Left
+    };
+
     public enum UtilityType
     {
         Electricity,
@@ -491,7 +500,9 @@ public class UtilityMap : StructureMap<UtilityMap>
                 _electric.SetTile(new Vector3Int(position.x, position.y), null);
                 RefreshTile(position);
                 structures.Remove(position);
-                
+
+                //neighboor
+                neighboors = GetConnectedNeighborsIgnoring(position);
 
                 if (target != null)
                 {
@@ -503,7 +514,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                         if (neighboors.Count > 1)
                         {
                             List<Circuit> circuits = Split(position);
-
                         }                        
                     }
                     else
@@ -511,8 +521,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                         _circuits.Remove(target);
                     }
 
-                    //neighboor
-                    neighboors = GetConnectedNeighborsIgnoring(position);
                     foreach (var neighboor in neighboors)
                     {
                         if (structures[neighboor.Key].Type == StructureType.Coil)
@@ -555,6 +563,9 @@ public class UtilityMap : StructureMap<UtilityMap>
             _tilemap.RefreshTile(position);
             structures.Remove(position);
 
+            //neighboor
+            neighboors = GetConnectedNeighborsIgnoring(position);
+
             if (target != null)
             {
                 //Self
@@ -573,8 +584,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                     _circuits.Remove(target);
                 }
 
-                //neighboor
-                neighboors = GetConnectedNeighborsIgnoring(position);
+                
                 foreach (var neighboor in neighboors)
                 {
                     if (structures[neighboor.Key].Type == StructureType.Coil)
@@ -620,7 +630,10 @@ public class UtilityMap : StructureMap<UtilityMap>
                 _tilemap.SetTile(new Vector3Int(position.x, position.y), null);
                 _tilemap.RefreshTile(position);
                 structures.Remove(position);
-
+                
+                //neighboor
+                neighboors = GetConnectedNeighborsIgnoring(position);
+                
                 if (target != null)
                 {
                     //Self
@@ -639,8 +652,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                         _circuits.Remove(target);
                     }
 
-                    //neighboor
-                    neighboors = GetConnectedNeighborsIgnoring(position);
+                   
                     foreach (var neighboor in neighboors)
                     {
                         if (structures[neighboor.Key].Type == StructureType.Coil)
@@ -671,51 +683,62 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     List<Circuit> Split(Vector3Int position)
     {
-        //neighboor
-        Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
-        foreach (var neighboor in neighboors)
+        // 🔹 1. Rafraîchit les tiles voisines pour s’assurer que les masques sont à jour
+        Dictionary<Vector3Int, Structure> neighbors = GetTileNeighbor(position);
+        foreach (var neighbor in neighbors)
+            RefreshTile(neighbor.Key);
+
+        // 🔹 2. Récupère TOUS les circuits voisins impactés
+        Queue<Circuit> neighborCircuitsQ = GetCircuitNeighbors(neighbors);
+        if (neighborCircuitsQ.Count == 0) return null;
+
+        // Important : certains circuits voisins peuvent être identiques (hashset pour éviter les doublons)
+        var neighborCircuits = new HashSet<Circuit>(neighborCircuitsQ);
+
+        // 🔹 3. Pour chaque circuit impacté → le recalculer individuellement
+        List<Circuit> newCircuits = new List<Circuit>();
+
+        foreach (var old in neighborCircuits)
         {
-            RefreshTile(neighboor.Key);
-        }
+            if (old == null) continue;
 
-        Queue<Circuit> neighborCircuitsQ = GetCircuitNeighbors(neighboors);
+            // Calcul des composantes restantes après cassure
+            var components = old.ComputeComponentsAfterChangeData(position)
+                                .OrderByDescending(c => c.Tiles.Count)
+                                .ToList();
 
-        Circuit old = null;
-        while (neighborCircuitsQ.Count > 0 && old == null)
-            old = neighborCircuitsQ.Dequeue();
+            // Si aucune séparation réelle, on passe
+            if (components == null || components.Count <= 1)
+            {
+                ReindexCircuit(old);
+                old.RecomputeStates();
+                continue;
+            }
 
-        if (old == null) return null; // rien à splitter
+           
 
-        // 2) Demander au circuit ses composant
-        var components = old.ComputeComponentsAfterChangeData(position)
-                       .OrderByDescending(c => c.Tiles.Count) // garder la plus grande
-                       .ToList();
+            // 🔹 5. Les autres deviennent de nouveaux circuits
+            for (int i = 1; i < components.Count; i++)
+            {
+                var comp = components[i];
+                var neo = new Circuit();
 
-        if (components == null || components.Count <= 1)
-        {
-            ReindexCircuit(old);
+                _circuits.Add(neo);
+                newCircuits.Add(neo);
+
+                MoveSubset(old, neo, comp);
+                neo.RecomputeStates();
+                ReindexCircuit(neo);
+            }
+
+            // 🔹 4. La 1ʳᵉ composante garde l’ancien circuit
+            var keep = components[0];
+            RetainSubset(old, keep);
             old.RecomputeStates();
-            return null;
+            ReindexCircuit(old);
         }
 
-        for (int i = 1; i < components.Count; i++)
-        {
-            var neo = new Circuit();
-            _circuits.Add(neo);
-            MoveSubset(old, neo, components[i].Tiles); // déplace tuiles +, et tes entités suivent
-            neo.RecomputeStates();
-            // (Tu peux aussi exploiter comps[i].Generators/Engines/Storages si tu veux optimiser)
-        }
-
-        var keep = components[0];
-        RetainSubset(old, new HashSet<Vector3Int>(keep.Tiles)); // conserve la composante principale
-        old.RecomputeStates();
-
-        // 4) Ne garder dans 'old' que la composante principale
-        ReindexCircuit(old);
-        old.RecomputeStates();
-
-        return _circuits;
+        return newCircuits;
     }
 
     void ReindexCircuit(Circuit c)
@@ -724,12 +747,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             OwnerAt[p] = c;
     }
 
-    static readonly Vector3Int[] DIRS = {
-    new(0, 1, 0),  // Up
-    new(1, 0, 0),  // Right
-    new(0,-1, 0),  // Down
-    new(-1,0, 0),  // Left
-    };
+
 
     Dictionary<Vector3Int , Structure> GetConnectedNeighborsIgnoring(Vector3Int center)
     {
@@ -778,6 +796,69 @@ public class UtilityMap : StructureMap<UtilityMap>
             if (from._engines.TryGetValue(p, out var e)) { to._engines[p] = e; from._engines.Remove(p); }
             if (from._storages.TryGetValue(p, out var s)) { to._storages[p] = s; from._storages.Remove(p); }
         }
+    }
+
+    void MoveSubset(Circuit from, Circuit to, ComponentData comp)
+    {
+        foreach (var p in comp.Tiles)
+        {
+            if (from._coils.TryGetValue(p, out var t))
+            {
+                to._coils[p] = t;
+                from._coils.Remove(p);
+            }
+
+            if (from._connMask.TryGetValue(p, out var m))
+            {
+                to._connMask[p] = m;
+                from._connMask.Remove(p);
+            }
+        }
+
+
+        foreach (var kv in comp.Generators)
+        {
+            to._generators[kv.Key] = kv.Value;
+            from._generators.Remove(kv.Key);
+        }
+
+        foreach (var kv in comp.Engines)
+        {
+            to._engines[kv.Key] = kv.Value;
+            from._engines.Remove(kv.Key);
+        }
+
+        foreach (var kv in comp.Storages)
+        {
+            to._storages[kv.Key] = kv.Value;
+            from._storages.Remove(kv.Key);
+        }
+    }
+
+    void RetainSubset(Circuit circuit, ComponentData keep)
+    {
+        var keepSet = new HashSet<Vector3Int>(keep.Tiles);
+
+        circuit._coils = circuit._coils
+            .Where(kvp => keepSet.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        circuit._connMask = circuit._connMask
+            .Where(kvp => keepSet.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        circuit._generators = keep.Generators
+            .Where(kvp => keepSet.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        circuit._engines = keep.Engines
+            .Where(kvp => keepSet.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        
+        circuit._storages = keep.Storages
+            .Where(kvp => keepSet.Contains(kvp.Key))
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
     }
 
     void RetainSubset(Circuit circuit, HashSet<Vector3Int> keep)
