@@ -755,7 +755,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         for (int d = 0; d < 4; d++)
         {
             var n = center + DIRS[d];
-            if (_electric.GetTile(n) != null)
+            if (_electric.GetTile(n) != null || _tilemap.GetTile(n) != null)
                 result.Add(n, structures[n]);
         }
         return result;
