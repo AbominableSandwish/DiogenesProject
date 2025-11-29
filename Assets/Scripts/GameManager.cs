@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     #region Private Data
     protected static GameManager _instance = null;
-    private Map _map;
+    private GridManager _map;
     #endregion
 
     #region Mono
@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     #region Public Method
     public static GameManager Instance { get => _instance; protected set => _instance = value; }
-    public static Map GetMap()
+    public static GridManager GetMap()
     {
         return Instance._map;
 

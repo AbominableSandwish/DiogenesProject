@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static Circuit;
-
-
+using static Structure;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
@@ -45,10 +45,10 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     #region Mono
 
-    private void Start()
+    private void Awake()
     {
         _game = GameManager.Instance;
-        _map = Map.Instance;
+        _map = GridManager.Instance;
 
         structures = new Dictionary<Vector3Int, Structure>();
         _circuits = new List<Circuit>();
@@ -56,6 +56,27 @@ public class UtilityMap : StructureMap<UtilityMap>
         _spriteSystem.LoadSprite();
     }
     #endregion
+
+    public bool IsWalkable(Vector3Int gridPos)
+    {
+        // Vérifie que le sol du dessous est solide
+        Vector3Int below = new Vector3Int(gridPos.x, gridPos.y, gridPos.z - 1);
+
+        // Si on est au niveau du sol (z == 0), c’est automatiquement praticable
+        if (gridPos.z == 0)
+            return true;
+
+        // Structure sur la cellule du dessous
+        Structure belowStruct = GetStructure(below);
+
+        if (belowStruct == null)
+            return false;
+
+        // On peut marcher uniquement sur certains types de structure
+        return belowStruct.Type == StructureType.Ground ||
+               belowStruct.Type == StructureType.Stair  ||
+               belowStruct.Type == StructureType.Ladder;
+    }
 
     #region Private Method
 
@@ -246,7 +267,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == StructureType.Coil)
+            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
@@ -325,7 +346,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == StructureType.Coil)
+            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
@@ -399,7 +420,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == StructureType.Coil)
+            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
         
@@ -474,7 +495,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != StructureType.Coil) 
+        if (structures[position].Type != Structure.StructureType.Coil) 
             return false;
 
         Structure self = null;
@@ -523,7 +544,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
                     foreach (var neighboor in neighboors)
                     {
-                        if (structures[neighboor.Key].Type == StructureType.Coil)
+                        if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                             RefreshTile(neighboor.Key);
                     }
 
@@ -539,7 +560,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != StructureType.Generator)
+        if (structures[position].Type != Structure.StructureType.Generator)
             return false;
 
         Generator self = (Generator)structures[position];
@@ -587,7 +608,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 
                 foreach (var neighboor in neighboors)
                 {
-                    if (structures[neighboor.Key].Type == StructureType.Coil)
+                    if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                         RefreshTile(neighboor.Key);
                 }
 
@@ -603,7 +624,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != StructureType.Engine)
+        if (structures[position].Type != Structure.StructureType.Engine)
             return false;
 
         Engine self = null;
@@ -655,7 +676,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                    
                     foreach (var neighboor in neighboors)
                     {
-                        if (structures[neighboor.Key].Type == StructureType.Coil)
+                        if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
                             RefreshTile(neighboor.Key);
                     }
 
@@ -858,35 +879,121 @@ public class UtilityMap : StructureMap<UtilityMap>
         circuit._storages = keep.Storages
             .Where(kvp => keepSet.Contains(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
     }
 
-    void RetainSubset(Circuit circuit, HashSet<Vector3Int> keep)
+    public CircuitData ExportCircuits()
     {
-        // --- PATH (tuiles câble) ---
-        foreach (var pos in circuit._coils.Keys.Where(p => !keep.Contains(p)).ToList())
-            circuit._coils.Remove(pos);
+        CircuitData saveData = new CircuitData();
 
-        // --- CONNEXIONS ---
-        foreach (var pos in circuit._connMask.Keys.Where(p => !keep.Contains(p)).ToList())
-            circuit._connMask.Remove(pos);
+        foreach (var circuit in _circuits)
+        {
+            var cdata = new CircuitData();
 
-        // --- GÉNÉRATEURS ---
-        foreach (var pos in circuit._generators.Keys.Where(p => !keep.Contains(p)).ToList())
-            circuit._generators.Remove(pos);
+            // --- Tuiles du circuit
+            foreach (var tile in circuit._coils)
+                cdata.coils.Add(tile.Key);
 
-        // --- MOTEURS ---
-        foreach (var pos in circuit._engines.Keys.Where(p => !keep.Contains(p)).ToList())
-            circuit._engines.Remove(pos);
+            // --- Masques de connexion
+            foreach (var conn in circuit._connMask)
+            {
+                cdata.connections.Add(new ConnMaskData
+                {
+                    position = conn.Key,
+                    mask = (byte)conn.Value
+                });
+            }
 
-        // --- STOCKAGES ---
-        foreach (var pos in circuit._storages.Keys.Where(p => !keep.Contains(p)).ToList())
-            circuit._storages.Remove(pos);
+            // --- Générateurs
+            foreach (var g in circuit._generators)
+            {
+                cdata.generators.Add(new EntityData
+                {
+                    position = g.Key,
+                    id = g.Value.GetType().Name // ou un identifiant unique si tu en as un
+                });
+            }
 
-        // --- (Optionnel) Structures globales ---
-        // Si tu as _idStructures non spatialisé, tu peux soit les garder,
-        // soit recalcule leur appartenance à partir des positions restantes.
-        // Exemple (si tu peux les mapper à des positions connues) :
-        // circuit._idStructures.RemoveWhere(id => !keep.Contains(structurePos[id]));
+            // --- Moteurs
+            foreach (var e in circuit._engines)
+            {
+                cdata.engines.Add(new EntityData
+                {
+                    position = e.Key,
+                    id = e.Value.GetType().Name
+                });
+            }
+
+            // --- Stockages
+            foreach (var s in circuit._storages)
+            {
+                cdata.storages.Add(new EntityData
+                {
+                    position = s.Key,
+                    id = s.Value.GetType().Name
+                });
+            }
+        }
+
+        return saveData;
     }
+
+    public void SaveCircuits(string path)
+    {
+        CircuitData data = ExportCircuits();
+
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(path, json);
+
+        Debug.Log("✅ Circuits sauvegardés dans : " + path);
+    }
+
+    public void ImportCircuits(string path, Tilemap tilemap)
+    {
+        if (!File.Exists(path))
+        {
+            Debug.LogWarning("⚠️ Aucun fichier trouvé à " + path);
+            return;
+        }
+
+        string json = File.ReadAllText(path);
+        CircuitData cdata = JsonUtility.FromJson<CircuitData>(json);
+
+        _circuits.Clear();
+
+
+            Circuit circuit = new Circuit();
+
+            // --- Recrée les tuiles
+            foreach (var pos in cdata.coils)
+            {
+            circuit._coils[pos] = new Coil(pos);/* ta Tile par défaut ou selon ton système */
+            }
+
+            // --- Recrée les connexions
+            foreach (var conn in cdata.connections)
+            {
+                circuit._connMask[conn.position] = (Circuit.Conn)conn.mask;
+            }
+
+            // --- Recrée les entités (générateurs, moteurs, stockages)
+            foreach (var g in cdata.generators)
+            {
+                circuit._generators[g.position] = new Generator(g.position); // ou selon ton système d’instanciation
+            }
+
+            foreach (var e in cdata.engines)
+            {
+                circuit._engines[e.position] = new Engine(tilemap, e.position);
+            }
+
+            foreach (var s in cdata.storages)
+            {
+                circuit._storages[s.position] = new Storage(tilemap, s.position.x, s.position.y);
+            }
+
+            _circuits.Add(circuit);
+
+        Debug.Log($"✅ {cdata} circuits chargés !");
+    }
+
 }

@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="Resources" src="project://database/Assets/UI%20Toolkit/Resources.uxml?fileID=9197481963319205126&amp;guid=a878b21cb5b1772408a4c2a71e941efa&amp;type=3#Resources" />
+    <ui:Template name="Structures" src="project://database/Assets/UI%20Toolkit/Structures.uxml?fileID=9197481963319205126&amp;guid=d3eb21389249c46469c0a2dce3f58cc8&amp;type=3#Structures" />
+    <ui:VisualElement style="flex-grow: 0; flex-direction: row; bottom: 0; flex-shrink: 1; position: absolute; width: 100%;">
+        <ui:Instance template="Resources" name="resources" style="width: 25%;" />
+        <ui:Instance template="Structures" name="structures" />
+    </ui:VisualElement>
+</ui:UXML>

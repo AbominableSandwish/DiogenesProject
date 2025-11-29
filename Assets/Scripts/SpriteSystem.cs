@@ -12,6 +12,8 @@ public class SpriteSystem : MonoBehaviour
     public List<Sprite> ThreeConnect;
     public Sprite FourConnect;
 
+    string path = "Sprite/Utility/";
+
     //Solar Panel
     public Sprite SolarPanel;
 
@@ -23,28 +25,28 @@ public class SpriteSystem : MonoBehaviour
 
     public void LoadSprite()
     {
-        ZeroConnect = Resources.LoadAll<Sprite>("Sprite/Coils/0_connect")[0];
+        ZeroConnect = Resources.LoadAll<Sprite>(path + "Coils/0_connect")[0];
 
         OneConnect = new List<Sprite>();
-        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/1_connect"))
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>(path + "Coils/1_connect"))
         {
             OneConnect.Add(sprite);
         }
 
         TwoConnect = new List<Sprite>();
-        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/2_connect"))
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>(path + "Coils/2_connect"))
         {
             TwoConnect.Add(sprite);
         }
 
         ThreeConnect = new List<Sprite>();
-        foreach (Sprite sprite in Resources.LoadAll<Sprite>("Sprite/Coils/3_connect"))
+        foreach (Sprite sprite in Resources.LoadAll<Sprite>(path + "Coils/3_connect"))
         {
             ThreeConnect.Add(sprite);
         }
 
-        FourConnect = Resources.LoadAll<Sprite>("Sprite/Coils/4_connect")[0];
-        SolarPanel = Resources.LoadAll<Sprite>("Sprite/Generator/SolarPanel")[0];
-        Lamp = Resources.LoadAll<TileBase>("Sprite/Engine/Lamp")[0];
+        FourConnect = Resources.LoadAll<Sprite>(path + "Coils/4_connect")[0];
+        SolarPanel = Resources.LoadAll<Sprite>(path + "Generator/SolarPanel")[0];
+        Lamp = Resources.LoadAll<TileBase>(path + "Engine/Lamp")[0];
     }
 }

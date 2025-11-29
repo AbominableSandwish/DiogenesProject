@@ -4,12 +4,24 @@ using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[Flags]
-public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
+
+
 
 [Serializable]
 public class Circuit
 {
+
+    [Flags]
+    public enum Conn : byte { None = 0, Up = 1, Right = 2, Down = 4, Left = 8 }
+
+    static readonly Vector3Int[] DIRS = {
+    new(0, 1, 0),  // Up
+    new(1, 0, 0),  // Right
+    new(0,-1, 0),  // Down
+    new(-1,0, 0),  // Left
+    };
+
+
     public float Production;
     public float Consumption;
     public float TotalCapacity;
@@ -21,13 +33,6 @@ public class Circuit
     public Dictionary<Vector3Int, Generator> _generators;
     public Dictionary<Vector3Int, Engine> _engines;
     public Dictionary<Vector3Int, Storage> _storages;
-
-    static readonly Vector3Int[] DIRS = {
-    new(0, 1, 0),  // Up
-    new(1, 0, 0),  // Right
-    new(0,-1, 0),  // Down
-    new(-1,0, 0),  // Left
-    };
 
     public Dictionary<int, Vector3Int> _position; // circuitId -> position  
     public Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
@@ -112,17 +117,17 @@ public class Circuit
 
         switch (structure.Type)
         {
-            case StructureType.Coil:
+            case Structure.StructureType.Coil:
                 
                 isContain = _coils.ContainsValue((Coil)structure);
                 break;
-            case StructureType.Engine:
+            case Structure.StructureType.Engine:
                 isContain = _engines.ContainsValue((Engine)structure);
                 break;
-            case StructureType.Generator:
+            case Structure.StructureType.Generator:
                 isContain = _generators.ContainsValue((Generator)structure);
                 break;
-            case StructureType.Storage:
+            case Structure.StructureType.Storage:
                 isContain = _storages.ContainsValue((Storage)structure);
                 break;
         }

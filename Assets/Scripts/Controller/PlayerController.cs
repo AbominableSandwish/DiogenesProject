@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     #region Private Data
     [SerializeField] private float _timeToMove = 2.0f;
 
-    private Map _map;
+    private GridManager _map;
     private Character _character;   
     private float _timer = 0.0f;
     private Vector2 _input = Vector2.zero;
@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     #region Mono
     private void Start()
     {
-        _map = Map.Instance;
+        _map = GridManager.Instance;
 
         _targetPos = transform.position;
         _lastPos = transform.position;
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
                     move += Vector3.down;
                 }
 
-                TileBase structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), StructureMap.Basic);
+                Structure structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), Structure.StructureMap.Basic);
                 if(structure == null) {
                    
                     _targetPos += new Vector3((int)move.x, (int)move.y);

@@ -21,11 +21,11 @@ public class Coil : Structure
     }
     public override bool ToPlace(Vector3Int pos)
     {
-        return Map.AddStructure<Coil>(pos);
+        return GridManager.AddStructure<Coil>(pos);
     }
     public override bool ToRemove(Vector3Int pos)
     {
-        return Map.RemoveStructure<Coil>(pos);
+        return GridManager.RemoveStructure<Coil>(pos);
     }
     #endregion
 }

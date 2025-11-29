@@ -8,7 +8,7 @@ public class StructureMap<T> : MonoBehaviour
 
     protected static T _instance;
     protected GameManager _game;
-    protected Map _map;
+    protected GridManager _map;
     #endregion
 
     #region Public Method
@@ -32,5 +32,8 @@ public class StructureMap<T> : MonoBehaviour
         return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
     }
     #endregion
+
+    public virtual void SaveMap() { }
+    public virtual void LoadMap() { }
 }
 

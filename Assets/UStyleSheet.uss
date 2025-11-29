@@ -1,0 +1,28 @@
+:root {
+}
+
+.resource-label {
+    flex-direction: row;
+    width: 75%;
+    margin-top: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+}
+
+.resource-Img {
+    flex-grow: 1;
+    width: 25px;
+    background-image: resource('Sprite/Square');
+    -unity-background-image-tint-color: rgb(255, 176, 0);
+    margin-top: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+}
+
+.resource_panel {
+    flex-grow: 1;
+    flex-direction: row;
+    width: 75%;
+}

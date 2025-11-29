@@ -1,16 +1,17 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputSystem : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private CameraSystem _camera = null;
+
+    private void Start()
     {
-        
+        _camera = FindAnyObjectByType<CameraSystem>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move(InputAction.CallbackContext contex)
     {
-        
+        _camera.Move(contex.ReadValue<Vector2>());
     }
 }

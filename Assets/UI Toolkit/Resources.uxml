@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UStyleSheet.uss?fileID=7433441132597879392&amp;guid=8af2d7dddd2e0da49ae8493d3760d832&amp;type=3#UStyleSheet" />
+    <ui:VisualElement name="food" class="resource_panel">
+        <ui:VisualElement name="food_img" class="resource-Img" style="background-image: resource(&apos;Sprite/Square&apos;); -unity-background-image-tint-color: rgb(255, 0, 0);" />
+        <ui:Label text="Label" name="food_label" class="resource-label" />
+    </ui:VisualElement>
+    <ui:VisualElement name="wood" class="resource_panel">
+        <ui:VisualElement name="wood_img" class="resource-Img" style="background-image: resource(&apos;Sprite/Square&apos;); -unity-background-image-tint-color: rgb(176, 119, 0);" />
+        <ui:Label text="Label" name="wood_label" class="resource-label" />
+    </ui:VisualElement>
+    <ui:VisualElement name="stone" class="resource_panel">
+        <ui:VisualElement name="stone_img" class="resource-Img" style="flex-grow: 1; background-image: resource(&apos;Sprite/Square&apos;); -unity-background-image-tint-color: rgb(152, 152, 152);" />
+        <ui:Label text="Label" name="stone_label" class="resource-label" />
+    </ui:VisualElement>
+    <ui:VisualElement name="copper" class="resource_panel">
+        <ui:VisualElement name="copper_img" class="resource-Img" />
+        <ui:Label text="Label" name="copper_label" class="resource-label" />
+    </ui:VisualElement>
+</ui:UXML>

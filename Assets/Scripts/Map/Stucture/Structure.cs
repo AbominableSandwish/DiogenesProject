@@ -1,25 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StructureMap
-{
-    None,
-    Basic,
-    Utility,
-    Decoration
-}
 
-public enum StructureType
-{
-    None,
-    Coil,
-    Generator,
-    Engine,
-    Storage
-}
 
 public class Structure
 {
+    public enum StructureMap
+    {
+        None,
+        Basic,
+        Utility,
+        Decoration
+    }
+
+    public enum StructureType
+    {
+        None,
+        Stair,
+        Ladder,
+        Ground,
+        Coil,
+        Generator,
+        Engine,
+        Storage
+    }
+
     #region Private Method
     protected bool _isEnabled = false;
 
@@ -73,4 +78,6 @@ public class Structure
         return false;
     }
     #endregion
+
+
 }
