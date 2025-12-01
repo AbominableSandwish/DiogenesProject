@@ -8,26 +8,26 @@ public class StructureMap<T> : MonoBehaviour
 
     protected static T _instance;
     protected GameManager _game;
-    protected GridManager _map;
+    protected MapManager _map;
     #endregion
 
     #region Public Method
-    virtual public bool AddStructure<T>(Vector3Int pos)
+    public virtual bool AddStructure<T>(Vector3Int pos)
     {
         return false;
     }
 
-    virtual public bool RemoveStructure<T>(Vector3Int pos)
+    public virtual bool RemoveStructure<T>(Vector3Int pos)
     {
         return false;
     }
 
-    virtual public Structure GetStructure(Vector3Int pos)
+    public virtual Structure GetStructure(Vector3Int pos)
     {
         return null;
     }
 
-    virtual public TileBase GetTile(Vector3Int position)
+    public virtual TileBase GetTile(Vector3Int position)
     {
         return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
     }

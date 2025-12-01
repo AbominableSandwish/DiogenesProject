@@ -19,7 +19,7 @@ class ResourceUIManager : MonoBehaviour
 
     private Label _foodLabel, _woodLabel, _stoneLabel, _copperLabel;
 
-    ResourceManager _resources;
+    ResourceSystem _resources;
 
     void Start()
     {
@@ -37,7 +37,7 @@ class ResourceUIManager : MonoBehaviour
         Validation.CheckQuery(_copperLabel, _copperLabelName);
 
         //Manager
-        _resources = FindAnyObjectByType<ResourceManager>();
+        _resources = FindAnyObjectByType<ResourceSystem>();
     }
 
     private void Update()

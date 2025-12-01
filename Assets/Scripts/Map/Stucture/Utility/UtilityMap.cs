@@ -28,7 +28,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     #region Private Data
 
-    [SerializeField] private SpriteSystem _spriteSystem;
+    private SpriteSystem _spriteSystem;
     Dictionary<Vector3Int, Structure> structures;
 
     [SerializeField] private Tilemap _electric;
@@ -39,8 +39,6 @@ public class UtilityMap : StructureMap<UtilityMap>
     private int _counterGenerator = 0;
     private int _counterStorage = 0;
     private int _counterEngine = 0;
-
-
     #endregion
 
     #region Mono
@@ -48,11 +46,12 @@ public class UtilityMap : StructureMap<UtilityMap>
     private void Awake()
     {
         _game = GameManager.Instance;
-        _map = GridManager.Instance;
+        _map = MapManager.Instance;
 
         structures = new Dictionary<Vector3Int, Structure>();
         _circuits = new List<Circuit>();
 
+        _spriteSystem = FindAnyObjectByType<SpriteSystem>();
         _spriteSystem.LoadSprite();
     }
     #endregion
@@ -995,5 +994,56 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         Debug.Log($"✅ {cdata} circuits chargés !");
     }
+    private List<MapCellData> CollectCells()
+    {
+        var list = new List<MapCellData>();
+        // Parcours ta tilemap/structures et remplis list
+        for (int x = -1; x <= _map.Width; x++)
+        {
+            for (int y = -1; y <= _map.Height; y++)
+            {
+                if (x == -1 || y == -1 || x == _map.Width)
+                {
+                    Structure structure = GetStructure(new Vector3Int(x, y));
+                    if(structure != null)
+                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                }
+                else
+                {
+                    Structure structure = GetStructure(new Vector3Int(x, y));
+                    if (structure != null)
+                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                }
+            }
+        }
 
+        return list;
+    }
+
+    public override Structure GetStructure(Vector3Int pos)
+    {
+        Structure structure = null;
+        if(!structures.TryGetValue(pos, out structure))
+        {
+            structure = null;
+        }
+        return structure;
+    }
+
+    public override void SaveMap()
+    {
+        MapData data = new MapData
+        {
+            width = _map.Width,
+            height = _map.Height,
+            cells = CollectCells() // -> fabrique la liste MapCellData depuis ta grille/structures
+        };
+
+        string json = JsonUtility.ToJson(data, true);
+
+        string path = Path.Combine(Application.persistentDataPath, "Utility.json");
+        File.WriteAllText(path, json);
+
+        Debug.Log($"✅ UtilityMap Saved: {path}");
+    }
 }

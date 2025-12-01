@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     #region Private Data
     [SerializeField] private float _timeToMove = 2.0f;
 
-    private GridManager _map;
+    private MapManager _map;
     private Character _character;   
     private float _timer = 0.0f;
     private Vector2 _input = Vector2.zero;
@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     #region Mono
     private void Start()
     {
-        _map = GridManager.Instance;
+        _map = MapManager.Instance;
 
         _targetPos = transform.position;
         _lastPos = transform.position;

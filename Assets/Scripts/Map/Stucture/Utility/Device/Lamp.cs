@@ -41,11 +41,11 @@ public class Lamp : Engine
 
     public override bool ToPlace(Vector3Int pos)
     {
-        return GridManager.AddStructure<Lamp>(pos);
+        return MapManager.AddStructure<Lamp>(pos);
     }
     public override bool ToRemove(Vector3Int pos)
     {
-        return GridManager.RemoveStructure<Lamp>(pos);
+        return MapManager.RemoveStructure<Lamp>(pos);
     }
     #endregion
 }

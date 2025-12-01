@@ -24,7 +24,7 @@ class BasicMap : StructureMap<BasicMap>
     private void Start()
     {
         _game = GameManager.Instance;
-        _map = GridManager.Instance;
+        _map = MapManager.Instance;
 
         _limit = Resources.Load<TileBase>("Tile/Basic/Limit");
         _ground = Resources.Load<TileBase>("Tile/Basic/Ground");

@@ -2,11 +2,11 @@
 using System.IO;
 using UnityEngine;
 
-public class GridManager : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     #region Private Data
     //Self
-    private static GridManager _instance = null;
+    private static MapManager _instance = null;
     private int _height = 40;
     private int _width = 40;
     public float CellSize = 1f;
@@ -18,7 +18,7 @@ public class GridManager : MonoBehaviour
     #endregion
 
     #region Public Data
-    public static GridManager Instance { get => _instance; protected set => _instance = value; }
+    public static MapManager Instance { get => _instance; protected set => _instance = value; }
     public int Height { get => _height; set => _height = value; }
     public int Width { get => _width; set => _width = value; }
 
@@ -75,7 +75,7 @@ public class GridManager : MonoBehaviour
 
     public static bool AddStructure<T>(Vector3Int position)
     {
-        GridManager grid = Instance;
+        MapManager grid = Instance;
         if (grid == null)
         {
             Debug.LogWarning("Map is null");
@@ -118,7 +118,7 @@ public class GridManager : MonoBehaviour
 
     public static bool RemoveStructure<T>(Vector3Int position)
     {
-        GridManager grid = Instance;
+        MapManager grid = Instance;
         if (grid == null)
         {
             Debug.LogWarning("Map is null");
@@ -173,9 +173,9 @@ public class GridManager : MonoBehaviour
     public void SaveAllMaps()
     {
         // 1) Sauver chaque map via leur propre méthode (qui sauve dans persistentDataPath)
-        _basicMap.SaveMap();       // produit "BasicMap.json"
+        //_basicMap.SaveMap();       // produit "BasicMap.json"
         _utilityMap.SaveMap();     // produit "UtilityMap.json"
-        _decorationMap.SaveMap();  // produit "DecorationMap.json"
+       // _decorationMap.SaveMap();  // produit "DecorationMap.json"
 
         // 2) Composer le sommaire World.json
         var world = new WorldSave
@@ -198,7 +198,7 @@ public class GridManager : MonoBehaviour
         string path = Path.Combine(folder, "World.json");
         File.WriteAllText(path, json);
 
-        Debug.Log($"🌍 World.json sauvé: {path}");
+        Debug.Log($"🌍 World.json loaded: {path}");
     }
 
     public void LoadMapFromPersistent(string fileName)
@@ -207,7 +207,7 @@ public class GridManager : MonoBehaviour
 
     if (!File.Exists(fullPath))
     {
-        Debug.LogError($"❌ Map introuvable : {fullPath}");
+        Debug.LogError($"❌ Map not found : {fullPath}");
         return;
     }
 
@@ -225,16 +225,16 @@ public class GridManager : MonoBehaviour
         switch (cell.type)
         {
             case "Ground":
-                GridManager.AddStructure<Ground>(pos);
+                MapManager.AddStructure<Ground>(pos);
                 break;
             case "Ladder":
-                GridManager.AddStructure<Ladder>(pos);
+                MapManager.AddStructure<Ladder>(pos);
                 break;
             // case "Stair": GridManager.AddStructure<Stair>(pos); break;
         }
     }
 
-    Debug.Log($"✅ Map {fileName} chargée ({mapData.cells.Count} cellules) depuis persistentDataPath !");
+    Debug.Log($"✅ Map {fileName} Loaded ({mapData.cells.Count} cells) from persistentDataPath !");
 }
     #endregion
 }

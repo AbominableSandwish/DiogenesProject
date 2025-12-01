@@ -4,7 +4,7 @@ public class CameraSystem : MonoBehaviour
 {
     [SerializeField] private Vector3 _center;
 
-    private GridManager _grid;
+    private MapManager _grid;
     private Vector2 _maxArea;
     [SerializeField] private float velocity = 5.0f;
 
@@ -13,7 +13,7 @@ public class CameraSystem : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _grid = FindAnyObjectByType<GridManager>();
+        _grid = FindAnyObjectByType<MapManager>();
 
         _center = transform.position;
         transform.position = new Vector3(_center.x, _center.y, transform.position.z);

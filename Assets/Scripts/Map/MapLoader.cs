@@ -1,8 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using Unity.VisualScripting;
-using UnityEditor.U2D.Aseprite;
-using UnityEngine;
 
 [System.Serializable]
 public class MapCellData

@@ -5,11 +5,11 @@ using static Structure;
 
 public class Pathfinder : MonoBehaviour
 {
-    private GridManager grid;
+    private MapManager grid;
 
     private void Awake()
     {
-        grid = FindAnyObjectByType<GridManager>();
+        grid = FindAnyObjectByType<MapManager>();
     }
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)

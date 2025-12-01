@@ -14,11 +14,11 @@ public class Villager : MonoBehaviour
     private Pathfinder pathfinder;
     private Queue<Vector3Int> pathQueue = new();
 
-    private GridManager map;
+    private MapManager map;
 
     private void Start()
     {
-        map = FindAnyObjectByType<GridManager>();
+        map = FindAnyObjectByType<MapManager>();
         pathfinder = FindAnyObjectByType<Pathfinder>();
     }
 

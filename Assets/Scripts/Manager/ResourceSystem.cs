@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class ResourceManager : MonoBehaviour
+class ResourceSystem : MonoBehaviour
 {
     [SerializeField] private int _food, _wood, _stone, _copper;
     public int Food { get => _food; set => _food = value; }
