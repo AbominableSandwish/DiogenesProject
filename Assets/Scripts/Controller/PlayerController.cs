@@ -1,8 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEditor.PlayerSettings;
 
 public class PlayerController : MonoBehaviour
 {
@@ -93,7 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             this.type = type;
             isSelect = true;
-        }
+         }
         else
         {
             this.type = Structure.StructureType.NONE;

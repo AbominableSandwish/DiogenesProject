@@ -23,20 +23,17 @@ class StructuresInterface : MonoBehaviour
         VisualElement visual = _root.Q<VisualElement>(name_visual);
         Validation.CheckQuery(visual, name_visual);
 
-        for(Structure.StructureType i = Structure.StructureType.Coil; i < Structure.StructureType.LENGHT; i++)
+        for(Structure.StructureType type = Structure.StructureType.Coil; type < Structure.StructureType.LENGHT; type++)
         {
-            Structure.StructureType value = i;
+            var capturedType = type;
 
-            int val = 0;
-            var button = new Button();
-            button.clicked += () => NewStructure(i);
-
-            button.name = value.ToString() + "_btn";
+            Button button = new Button();
+            button.name = type.ToString() + "_btn";
             button.style.width = 50;
-            button.text = value.ToString();
+            button.text = type.ToString();
 
             // TODO Register action
-            button.clicked += () => NewStructure(i) ;
+            button.clicked += () => NewStructure(capturedType) ;
 
             visual.Add(button);
 

@@ -812,9 +812,10 @@ GameObject:
   m_Component:
   - component: {fileID: 524145112}
   - component: {fileID: 524145111}
+  - component: {fileID: 524145114}
+  - component: {fileID: 524145115}
   - component: {fileID: 524145110}
   - component: {fileID: 524145113}
-  - component: {fileID: 524145114}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -957,11 +958,35 @@ MonoBehaviour:
     m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
     m_ActionName: 'Player/Sprint[/Keyboard/leftShift]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 524145115}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: AddElement
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 0a0acecb-983e-4fb6-bf38-6625dafe6227
     m_ActionName: 'Player/AddElement[/Keyboard/q]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 524145115}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: RemoveElement
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: afcaafe2-3f2b-4050-902d-a66d00bcdff2
     m_ActionName: 'Player/RemoveElement[/Keyboard/e]'
   - m_PersistentCalls:
@@ -1021,6 +1046,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0a6498379e838e408d59e90893cda9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputSystem
+--- !u!114 &524145115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524145109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6e434b3fa304f4aa51cfdae825d53a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  type: 0
 --- !u!1 &551392787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1859,7 +1897,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1284303725}
-  - component: {fileID: 1284303724}
   - component: {fileID: 1284303726}
   - component: {fileID: 1284303728}
   - component: {fileID: 1284303727}
@@ -1871,18 +1908,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1284303724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1284303723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2db695fb8ae7e8e429ea70d1ac3b8afa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1284303725
 Transform:
   m_ObjectHideFlags: 0
