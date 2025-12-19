@@ -8,13 +8,17 @@ using static Structure;
 class BasicMap : StructureMap<BasicMap>
 {
 
-    enum BasicType
+    public enum BasicType
     {
+       
+        Ground,   
+        Door,     
+        Ladder,
         Limit,
-        Ground,
+        Stair,
         Wall,
         Window,
-        Door
+        LENGTH
     }
 
     private TileBase _ground;
@@ -92,7 +96,7 @@ class BasicMap : StructureMap<BasicMap>
     }
     #endregion
 
-    public override void SaveMap()  // si tu as virtual dans la base
+    public override MapData Capture()  // si tu as virtual dans la base
     {
         MapData data = new MapData
         {
@@ -101,28 +105,12 @@ class BasicMap : StructureMap<BasicMap>
             cells = CollectCells() // -> fabrique la liste MapCellData depuis ta grille/structures
         };
 
-        string json = JsonUtility.ToJson(data, true);
-
-        string path = Path.Combine(Application.persistentDataPath, "BasicMap.json");
-        File.WriteAllText(path, json);
-
-        Debug.Log($"✅ BasicMap sauvegardée: {path}");
+        return data;
     }
 
-    public override void LoadMap()
+    public override void Restore(MapData data)
     {
-        // si tu veux la version persistent
-        string path = Path.Combine(Application.persistentDataPath, "BasicMap.json");
-        if (!File.Exists(path))
-        {
-            Debug.LogWarning("BasicMap.json introuvable dans persistentDataPath.");
-            return;
-        }
-
-        string json = File.ReadAllText(path);
-        MapData data = JsonUtility.FromJson<MapData>(json);
-
-        // Clear + reconstruction depuis data.cells...
+       
     }
 
     private List<MapCellData> CollectCells()
@@ -136,12 +124,14 @@ class BasicMap : StructureMap<BasicMap>
                 if (x == -1 || y == -1 || x == _map.Width)
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
-                    list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                    if (structure != null)
+                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
                 }
                 else
                 {
                    Structure structure = GetStructure(new Vector3Int(x, y));
-                    list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                    if (structure != null)
+                        list.Add(new MapCellData(x, y, 0, structure?.GetType().ToString()));
                 }
             }
         }

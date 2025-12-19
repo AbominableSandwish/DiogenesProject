@@ -1468,6 +1468,7 @@ GameObject:
   - component: {fileID: 938404734}
   - component: {fileID: 938404736}
   - component: {fileID: 938404737}
+  - component: {fileID: 938404738}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -1552,6 +1553,19 @@ MonoBehaviour:
   SolarPanel: {fileID: 0}
   StorageBattery: {fileID: 0}
   Lamp: {fileID: 0}
+--- !u!114 &938404738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938404731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea6e434b3fa304f4aa51cfdae825d53a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  type: 0
 --- !u!1 &977781316
 GameObject:
   m_ObjectHideFlags: 0
@@ -1869,7 +1883,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2db695fb8ae7e8e429ea70d1ac3b8afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _map: {fileID: 0}
 --- !u!4 &1284303725
 Transform:
   m_ObjectHideFlags: 0
@@ -2087,8 +2100,9 @@ GameObject:
   - component: {fileID: 1460109390}
   - component: {fileID: 1460109389}
   - component: {fileID: 1460109391}
+  - component: {fileID: 1460109392}
   m_Layer: 5
-  m_Name: UIDocument
+  m_Name: UID_PlayerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2148,6 +2162,20 @@ MonoBehaviour:
   _woodLabelName: wood_label
   _stoneLabelName: stone_label
   _copperLabelName: copper_label
+--- !u!114 &1460109392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460109388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a900537db63e2294d8a0c09e2bbe75bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StructuresInterface
+  _button_css: {fileID: 0}
+  name_visual: structures
 --- !u!1 &1471324980
 GameObject:
   m_ObjectHideFlags: 0
@@ -2359,14 +2387,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 938404734}
         m_TargetAssemblyTypeName: MapManager, Assembly-CSharp
-        m_MethodName: SaveAllMaps
-        m_Mode: 1
+        m_MethodName: SaveWorld
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: World
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1595237261
@@ -2671,6 +2699,77 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1795276762}
   m_CullTransparentMesh: 1
+--- !u!1 &2098756579
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2098756581}
+  - component: {fileID: 2098756580}
+  - component: {fileID: 2098756582}
+  m_Layer: 5
+  m_Name: UID_LoaderWorld
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2098756580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098756579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: a041447a8cf82224cb876475430a51f5, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 1967f1756a218404d9583168dcbae4fb, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &2098756581
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098756579}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2098756582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098756579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30cd78f09c289cd46b31ade7ea994baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldLoaderUI
+  _ui: {fileID: 2098756580}
+  name_ListView: world_list
+  name_BtnLoad: load_btn
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2684,3 +2783,4 @@ SceneRoots:
   - {fileID: 977781318}
   - {fileID: 1460109390}
   - {fileID: 1041378880}
+  - {fileID: 2098756581}

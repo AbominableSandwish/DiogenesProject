@@ -1,19 +1,21 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerController : MonoBehaviour
 {
     #region Private Data
-    [SerializeField] private float _timeToMove = 2.0f;
 
     private MapManager _map;
-    private Character _character;   
     private float _timer = 0.0f;
     private Vector2 _input = Vector2.zero;
     private Vector3 _targetPos = Vector3.zero;
     private Vector3 _lastPos = Vector3.zero;
     #endregion
+
+    public Structure.StructureType type;
 
     #region Mono
     private void Start()
@@ -22,55 +24,6 @@ public class PlayerController : MonoBehaviour
 
         _targetPos = transform.position;
         _lastPos = transform.position;
-        this._character  = new Character("Francis");
-
-        this._character.Structures.Add(new Coil()); 
-        this._character.Structures.Add(new SolarPanel());
-        this._character.Structures.Add(new Lamp());
-        this._character.Structures.Add(new SmallBattery());
-    }
-
-    void Update()
-    {
-        _timer += Time.deltaTime;
-        transform.position = Vector3.Lerp(_lastPos, _targetPos, _timer * (1.0f / _timeToMove));
-        Vector3 move = Vector3.zero;
-        
-        if (_timer >= _timeToMove)
-        {
-            
-            if (_input.magnitude != 0)
-            {
-                _lastPos = _targetPos;
-                if (_input.x > 0)
-                {
-                    move += Vector3.right;
-                }
-
-                if (_input.x < 0)
-                {
-                    move += Vector3.left;
-                }
-
-                if (_input.y > 0)
-                {
-                    move += Vector3.up;
-                }
-
-                if (_input.y < 0)
-                {
-                    move += Vector3.down;
-                }
-
-                Structure structure = _map?.GetStructure(new Vector3Int((int)_targetPos.x + (int)move.x, (int)_targetPos.y + (int)move.y), Structure.StructureMap.Basic);
-                if(structure == null) {
-                   
-                    _targetPos += new Vector3((int)move.x, (int)move.y);
-                }
-
-                _timer = 0.0f;
-            }
-        }
     }
     #endregion
 
@@ -86,9 +39,39 @@ public class PlayerController : MonoBehaviour
         {
             float action = contex.ReadValue<float>();
 
-            if (_character.Select != null)
+            Vector3Int pos = new Vector3Int((int)_targetPos.x, (int)_targetPos.y);
+            if (this.type != Structure.StructureType.NONE)
             {
-               _character.Select.ToPlace(new Vector3Int((int)transform.position.x, (int)transform.position.y));
+                switch (this.type)
+                {
+                    case Structure.StructureType.Coil:
+                        MapManager.AddStructure<Coil>(pos);
+                        break;
+                    case Structure.StructureType.Generator:
+                        MapManager.AddStructure<Generator>(pos);
+                        break;
+                    case Structure.StructureType.Engine:
+                        MapManager.AddStructure<Engine>(pos);
+                        break;
+                    case Structure.StructureType.Storage:
+                        MapManager.AddStructure<Storage>(pos);
+                        break;
+                    case Structure.StructureType.Lamp:
+                        MapManager.AddStructure<Lamp>(pos);
+                        break;
+                    case Structure.StructureType.SolarPanel:
+                        MapManager.AddStructure<SolarPanel>(pos);
+                        break;
+                    case Structure.StructureType.Ground:
+                        MapManager.AddStructure<Ground>(pos);
+                        break;
+                    case Structure.StructureType.Ladder:
+                        MapManager.AddStructure<Ladder>(pos);
+                        break;
+                    case Structure.StructureType.Door:
+                        MapManager.AddStructure<Door>(pos);
+                        break;
+                }
             }
         }
     }
@@ -98,25 +81,22 @@ public class PlayerController : MonoBehaviour
         if (contex.performed)
         {
             float action = contex.ReadValue<float>();
-
-            if (_character.Select != null)
-            {
-               _character.Select.ToRemove(new Vector3Int((int)transform.position.x, (int)transform.position.y));
-            }
+            this.type = Structure.StructureType.NONE;
         }
     }
 
-    public bool SelectStructure(int id)
+
+    public bool SelectStructure(Structure.StructureType type)
     {
         bool isSelect = false;
-        if (this._character.Select != this._character.Structures[id])
+        if (this.type != type)
         {
-            this._character.Select = this._character.Structures[id];
+            this.type = type;
             isSelect = true;
         }
         else
         {
-            this._character.Select = null;
+            this.type = Structure.StructureType.NONE;
         }
         return isSelect;
     }

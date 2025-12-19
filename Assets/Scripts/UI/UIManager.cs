@@ -32,22 +32,22 @@ public class UIManager : MonoBehaviour
         Instance._elementText.text = nameElement;
     }
     
-    public void SelectStructure(int id)
-    {
-        foreach(Image image in _images)
-        {
-            image.color = Color.grey;
-        }
+    //public void SelectStructure(int id)
+    //{
+    //    foreach(Image image in _images)
+    //    {
+    //        image.color = Color.grey;
+    //    }
 
-        bool isSelect = this._player.SelectStructure(id);
-        if (isSelect)
-        {
-            _images[id].color = Color.green;
-        }
-        else
-        {
-            _images[id].color = Color.grey;
-        }     
-    }
+    //    bool isSelect = this._player.SelectStructure(id);
+    //    if (isSelect)
+    //    {
+    //        _images[id].color = Color.green;
+    //    }
+    //    else
+    //    {
+    //        _images[id].color = Color.grey;
+    //    }     
+    //}
     #endregion
 }

@@ -89,9 +89,6 @@ public class MapManager : MonoBehaviour
             case "Door":
                 grid._basicMap.AddStructure<Door>(position);
                 break;
-            case "Wall":
-                grid._basicMap.AddStructure<Wall>(position);
-                break;
             case "Glass":
                 grid._basicMap.AddStructure<Glass>(position);
                 break;
@@ -133,9 +130,6 @@ public class MapManager : MonoBehaviour
             case "Door":
                 grid._basicMap.RemoveStructure<Door>(position);
                 break;
-            case "Wall":
-                grid._basicMap.RemoveStructure<Wall>(position);
-                break;
             case "Glass":
                 grid._basicMap.RemoveStructure<Glass>(position);
                 break;
@@ -169,72 +163,92 @@ public class MapManager : MonoBehaviour
         public List<string> savedFiles = new();
     }
 
-    [ContextMenu("Save All Maps")]
-    public void SaveAllMaps()
+    [ContextMenu("Save World (Single File)")]
+    public void SaveWorld(string fileName = "World")
     {
-        // 1) Sauver chaque map via leur propre méthode (qui sauve dans persistentDataPath)
-        //_basicMap.SaveMap();       // produit "BasicMap.json"
-        _utilityMap.SaveMap();     // produit "UtilityMap.json"
-       // _decorationMap.SaveMap();  // produit "DecorationMap.json"
-
-        // 2) Composer le sommaire World.json
-        var world = new WorldSave
+        var world = new WorldData
         {
             timestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-            savedFiles = new System.Collections.Generic.List<string>
-            {
-                "BasicMap.json",
-                "UtilityMap.json",
-                "DecorationMap.json"
-            }
+            width = this.Width,
+            height = this.Height,
+            maps = new List<NamedMapData>()
         };
 
+        // Capture de chaque couche
+        if (_basicMap != null)
+            world.maps.Add(new NamedMapData { name = "Basic", data = _basicMap.Capture() });
+        if (_utilityMap != null)
+            world.maps.Add(new NamedMapData { name = "Utility", data = _utilityMap.Capture() });
+        if (_decorationMap != null)
+            world.maps.Add(new NamedMapData { name = "Decoration", data = _decorationMap.Capture() });
+
+        // Serialize & write
         string json = JsonUtility.ToJson(world, true);
-
         string folder = Application.persistentDataPath;
-        if (!Directory.Exists(folder))
-            Directory.CreateDirectory(folder);
+        if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-        string path = Path.Combine(folder, "World.json");
+        string path = Path.Combine(folder, fileName + ".json");
         File.WriteAllText(path, json);
 
         Debug.Log($"🌍 World.json loaded: {path}");
     }
 
-    public void LoadMapFromPersistent(string fileName)
-{
-    string fullPath = Path.Combine(Application.persistentDataPath, fileName);
-
-    if (!File.Exists(fullPath))
+    [ContextMenu("Load World (Single File)")]
+    public void LoadWorld(string fileName = "World.json")
     {
-        Debug.LogError($"❌ Map not found : {fullPath}");
-        return;
-    }
-
-    string json = File.ReadAllText(fullPath);
-    MapData mapData = JsonUtility.FromJson<MapData>(json);
-
-    // Applique les dimensions
-    this.Width = mapData.width;
-    this.Height = mapData.height;
-
-    // Recharge les cellules
-    foreach (MapCellData cell in mapData.cells)
-    {
-        Vector3Int pos = new Vector3Int(cell.x, cell.y, cell.z);
-        switch (cell.type)
+        string path = Path.Combine(Application.persistentDataPath, fileName);
+        if (!File.Exists(path))
         {
-            case "Ground":
-                MapManager.AddStructure<Ground>(pos);
-                break;
-            case "Ladder":
-                MapManager.AddStructure<Ladder>(pos);
-                break;
-            // case "Stair": GridManager.AddStructure<Stair>(pos); break;
+            Debug.LogError($"❌ Map not found : {path}");
+            return;
         }
-    }
 
-    Debug.Log($"✅ Map {fileName} Loaded ({mapData.cells.Count} cells) from persistentDataPath !");
-}
+        string json = File.ReadAllText(path);
+        WorldData world = JsonUtility.FromJson<WorldData>(json);
+
+        // Dimensions globales
+        this.Width = world.width;
+        this.Height = world.height;
+
+        // Dispatch par nom
+        foreach (var nm in world.maps)
+        {
+            switch (nm.name)
+            {
+                case "Basic":
+                    if (_basicMap != null) _basicMap.Restore(nm.data);
+                    break;
+                case "Utility":
+                    if (_utilityMap != null) _utilityMap.Restore(nm.data);
+                    break;
+                case "Decoration":
+                    if (_decorationMap != null) _decorationMap.Restore(nm.data);
+                    break;
+                default:
+                    Debug.LogWarning($"⚠️ Map inconnue dans World: {nm.name}");
+                    break;
+            }
+        }
+
+        Debug.Log($"✅ World Loaded: {fileName}");
+    }
     #endregion
+}
+
+public static class WorldStorage
+{
+    public static List<string> ListWorldFiles(string pattern = "*.json")
+    {
+        var list = new List<string>();
+        var root = Application.persistentDataPath;
+        if (!Directory.Exists(root)) return list;
+
+        foreach (var path in Directory.GetFiles(root, pattern, SearchOption.TopDirectoryOnly))
+            list.Add(Path.GetFileName(path));
+
+        // Option : ne retourner que les fichiers qui contiennent un WorldData valide
+        // (lecture rapide + try/catch)
+
+        return list;
+    }
 }

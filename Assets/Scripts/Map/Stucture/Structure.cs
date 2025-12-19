@@ -15,20 +15,28 @@ public class Structure
 
     public enum StructureType
     {
-        None,
-        Stair,
-        Ladder,
-        Ground,
+        NONE,
+        //Utility
         Coil,
         Generator,
         Engine,
-        Storage
+        Storage,
+        SolarPanel,
+        Lamp,
+        //Basic
+        Ground,
+        Door,
+        Ladder,
+        Limit,
+        Stair,
+        Window,
+        LENGHT
     }
 
     #region Private Method
     protected bool _isEnabled = false;
 
-    protected StructureType _type = StructureType.None;
+    protected StructureType _type = StructureType.NONE;
     protected StructureMap _map = StructureMap.None;
     private string _name = "";
     protected Vector3Int _position;

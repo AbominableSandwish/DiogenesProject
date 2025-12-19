@@ -23,7 +23,8 @@ public class UtilityMap : StructureMap<UtilityMap>
         Liquid,
         Generator,
         Accumulator,
-        Device
+        Device,
+        LENGHT
     }
 
     #region Private Data
@@ -935,65 +936,6 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         return saveData;
     }
-
-    public void SaveCircuits(string path)
-    {
-        CircuitData data = ExportCircuits();
-
-        string json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(path, json);
-
-        Debug.Log("✅ Circuits sauvegardés dans : " + path);
-    }
-
-    public void ImportCircuits(string path, Tilemap tilemap)
-    {
-        if (!File.Exists(path))
-        {
-            Debug.LogWarning("⚠️ Aucun fichier trouvé à " + path);
-            return;
-        }
-
-        string json = File.ReadAllText(path);
-        CircuitData cdata = JsonUtility.FromJson<CircuitData>(json);
-
-        _circuits.Clear();
-
-
-            Circuit circuit = new Circuit();
-
-            // --- Recrée les tuiles
-            foreach (var pos in cdata.coils)
-            {
-            circuit._coils[pos] = new Coil(pos);/* ta Tile par défaut ou selon ton système */
-            }
-
-            // --- Recrée les connexions
-            foreach (var conn in cdata.connections)
-            {
-                circuit._connMask[conn.position] = (Circuit.Conn)conn.mask;
-            }
-
-            // --- Recrée les entités (générateurs, moteurs, stockages)
-            foreach (var g in cdata.generators)
-            {
-                circuit._generators[g.position] = new Generator(g.position); // ou selon ton système d’instanciation
-            }
-
-            foreach (var e in cdata.engines)
-            {
-                circuit._engines[e.position] = new Engine(tilemap, e.position);
-            }
-
-            foreach (var s in cdata.storages)
-            {
-                circuit._storages[s.position] = new Storage(tilemap, s.position.x, s.position.y);
-            }
-
-            _circuits.Add(circuit);
-
-        Debug.Log($"✅ {cdata} circuits chargés !");
-    }
     private List<MapCellData> CollectCells()
     {
         var list = new List<MapCellData>();
@@ -1030,7 +972,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         return structure;
     }
 
-    public override void SaveMap()
+    public override MapData Capture()
     {
         MapData data = new MapData
         {
@@ -1039,11 +981,21 @@ public class UtilityMap : StructureMap<UtilityMap>
             cells = CollectCells() // -> fabrique la liste MapCellData depuis ta grille/structures
         };
 
-        string json = JsonUtility.ToJson(data, true);
+        return data;
+    }
 
-        string path = Path.Combine(Application.persistentDataPath, "Utility.json");
-        File.WriteAllText(path, json);
+    public override void Restore(MapData data)
+    {
+        Tilemap tilemap = GetComponent<Tilemap>();
+        _electric.ClearAllTiles();
+        _tilemap.ClearAllTiles();
+        Circuit circuit = new Circuit();
 
-        Debug.Log($"✅ UtilityMap Saved: {path}");
+        foreach (MapCellData cdata in data.cells)
+        {
+            switch (cdata.type) {
+            
+            }
+        }
     }
 }

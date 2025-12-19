@@ -3,6 +3,6 @@
     <ui:Template name="Structures" src="project://database/Assets/UI%20Toolkit/Structures.uxml?fileID=9197481963319205126&amp;guid=d3eb21389249c46469c0a2dce3f58cc8&amp;type=3#Structures" />
     <ui:VisualElement style="flex-grow: 0; flex-direction: row; bottom: 0; flex-shrink: 1; position: absolute; width: 100%;">
         <ui:Instance template="Resources" name="resources" style="width: 25%;" />
-        <ui:Instance template="Structures" name="structures" />
+        <ui:Instance template="Structures" name="structures" style="width: 50%; flex-direction: column;" />
     </ui:VisualElement>
 </ui:UXML>
