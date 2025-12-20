@@ -10,6 +10,7 @@ public class Generator : Structure
     public Generator(Vector3Int position = new Vector3Int())
     {
         this._type = StructureType.Generator;
+        
         this._position = position;
     }
 

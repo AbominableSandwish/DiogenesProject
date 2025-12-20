@@ -15,7 +15,7 @@ public class Structure
 
     public enum StructureType
     {
-        NONE,
+        NONE = -1,
         //Utility
         Coil,
         Generator,

@@ -6,9 +6,9 @@ using System.IO;
 public class MapCellData
 {
     public int x, y, z;
-    public string type; // "Ground", "Wall", "Ladder", etc.
+    public int type; // "Ground", "Wall", "Ladder", etc.
 
-    public MapCellData(int x = 0, int y = 0, int z = 0, string type = "")
+    public MapCellData(int x = 0, int y = 0, int z = 0, int type = -1)
     {
         this.x = x;
         this.y = y;

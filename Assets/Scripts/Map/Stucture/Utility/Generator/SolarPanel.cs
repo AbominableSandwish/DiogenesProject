@@ -9,7 +9,7 @@ public class SolarPanel : Generator
 
     public SolarPanel(int x = 0, int y = 0)
     {
-        this._type = StructureType.Generator;
+        this._type = StructureType.SolarPanel;
         this._position =new Vector3Int(x, y);
     }
 

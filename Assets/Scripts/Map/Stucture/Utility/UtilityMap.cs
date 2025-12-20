@@ -948,13 +948,13 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if(structure != null)
-                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
                 }
                 else
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
                 }
             }
         }
@@ -993,8 +993,16 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         foreach (MapCellData cdata in data.cells)
         {
-            switch (cdata.type) {
-            
+            switch ((StructureType)cdata.type) {
+                case StructureType.SolarPanel:
+                    AddStructure<SolarPanel>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Coil:
+                    AddStructure<Coil>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Lamp:
+                    AddStructure<Lamp>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
             }
         }
     }

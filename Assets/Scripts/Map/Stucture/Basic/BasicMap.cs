@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static Structure;
@@ -7,20 +6,6 @@ using static Structure;
 
 class BasicMap : StructureMap<BasicMap>
 {
-
-    public enum BasicType
-    {
-       
-        Ground,   
-        Door,     
-        Ladder,
-        Limit,
-        Stair,
-        Wall,
-        Window,
-        LENGTH
-    }
-
     private TileBase _ground;
     private TileBase _limit;
 
@@ -125,13 +110,13 @@ class BasicMap : StructureMap<BasicMap>
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, structure.GetType().ToString()));
+                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
                 }
                 else
                 {
                    Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, structure?.GetType().ToString()));
+                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
                 }
             }
         }

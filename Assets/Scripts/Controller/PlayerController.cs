@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,6 +31,43 @@ public class PlayerController : MonoBehaviour
         _input = contex.ReadValue<Vector2>();
     }
 
+    public void AddStructure(Vector3Int position)
+    {
+        if (this.type != Structure.StructureType.NONE)
+        {
+            switch (this.type)
+            {
+                case Structure.StructureType.Coil:
+                    MapManager.AddStructure<Coil>(position);
+                    break;
+                case Structure.StructureType.Generator:
+                    MapManager.AddStructure<Generator>(position);
+                    break;
+                case Structure.StructureType.Engine:
+                    MapManager.AddStructure<Engine>(position);
+                    break;
+                case Structure.StructureType.Storage:
+                    MapManager.AddStructure<Storage>(position);
+                    break;
+                case Structure.StructureType.Lamp:
+                    MapManager.AddStructure<Lamp>(position);
+                    break;
+                case Structure.StructureType.SolarPanel:
+                    MapManager.AddStructure<SolarPanel>(position);
+                    break;
+                case Structure.StructureType.Ground:
+                    MapManager.AddStructure<Ground>(position);
+                    break;
+                case Structure.StructureType.Ladder:
+                    MapManager.AddStructure<Ladder>(position);
+                    break;
+                case Structure.StructureType.Door:
+                    MapManager.AddStructure<Door>(position);
+                    break;
+            }
+        }
+    }
+
     public void AddElement(InputAction.CallbackContext contex)
     {
         if (contex.performed)
@@ -37,39 +75,7 @@ public class PlayerController : MonoBehaviour
             float action = contex.ReadValue<float>();
 
             Vector3Int pos = new Vector3Int((int)_targetPos.x, (int)_targetPos.y);
-            if (this.type != Structure.StructureType.NONE)
-            {
-                switch (this.type)
-                {
-                    case Structure.StructureType.Coil:
-                        MapManager.AddStructure<Coil>(pos);
-                        break;
-                    case Structure.StructureType.Generator:
-                        MapManager.AddStructure<Generator>(pos);
-                        break;
-                    case Structure.StructureType.Engine:
-                        MapManager.AddStructure<Engine>(pos);
-                        break;
-                    case Structure.StructureType.Storage:
-                        MapManager.AddStructure<Storage>(pos);
-                        break;
-                    case Structure.StructureType.Lamp:
-                        MapManager.AddStructure<Lamp>(pos);
-                        break;
-                    case Structure.StructureType.SolarPanel:
-                        MapManager.AddStructure<SolarPanel>(pos);
-                        break;
-                    case Structure.StructureType.Ground:
-                        MapManager.AddStructure<Ground>(pos);
-                        break;
-                    case Structure.StructureType.Ladder:
-                        MapManager.AddStructure<Ladder>(pos);
-                        break;
-                    case Structure.StructureType.Door:
-                        MapManager.AddStructure<Door>(pos);
-                        break;
-                }
-            }
+            AddStructure(pos);
         }
     }
 

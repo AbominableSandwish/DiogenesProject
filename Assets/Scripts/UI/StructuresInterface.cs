@@ -11,6 +11,8 @@ class StructuresInterface : MonoBehaviour
     [SerializeField] private StyleSheet _button_css;
     [SerializeField] private string name_visual = "structures";
 
+    private TilemapPlacer _placer;
+
     VisualElement _root;
 
     private PlayerController _player;
@@ -19,6 +21,8 @@ class StructuresInterface : MonoBehaviour
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
         if (_root == null) { Debug.LogError("Missing references."); return; }
+
+        _placer = FindAnyObjectByType<TilemapPlacer>();
 
         VisualElement visual = _root.Q<VisualElement>(name_visual);
         Validation.CheckQuery(visual, name_visual);
@@ -34,6 +38,7 @@ class StructuresInterface : MonoBehaviour
 
             // TODO Register action
             button.clicked += () => NewStructure(capturedType) ;
+            button.clicked += () => _placer.SetSelectedType(capturedType);
 
             visual.Add(button);
 
