@@ -184,26 +184,13 @@ public class MapManager : MonoBehaviour
 
         // Serialize & write
         string json = JsonUtility.ToJson(world, true);
-        string folder = Application.persistentDataPath;
-        if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-        string path = Path.Combine(folder, fileName + ".json");
-        File.WriteAllText(path, json);
-
-        Debug.Log($"🌍 World.json loaded: {path}");
+        FileSystem.WriteFile(Application.persistentDataPath, fileName, json);
     }
 
     [ContextMenu("Load World (Single File)")]
     public void LoadWorld(string fileName = "World.json")
     {
-        string path = Path.Combine(Application.persistentDataPath, fileName);
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"❌ Map not found : {path}");
-            return;
-        }
-
-        string json = File.ReadAllText(path);
+        string json = FileSystem.ReadFile(Path.Combine(Application.persistentDataPath, fileName));
         WorldData world = JsonUtility.FromJson<WorldData>(json);
 
         // Dimensions globales
@@ -239,16 +226,6 @@ public static class WorldStorage
 {
     public static List<string> ListWorldFiles(string pattern = "*.json")
     {
-        var list = new List<string>();
-        var root = Application.persistentDataPath;
-        if (!Directory.Exists(root)) return list;
-
-        foreach (var path in Directory.GetFiles(root, pattern, SearchOption.TopDirectoryOnly))
-            list.Add(Path.GetFileName(path));
-
-        // Option : ne retourner que les fichiers qui contiennent un WorldData valide
-        // (lecture rapide + try/catch)
-
-        return list;
+        return FileSystem.GetFiles(Application.persistentDataPath, pattern);
     }
 }
