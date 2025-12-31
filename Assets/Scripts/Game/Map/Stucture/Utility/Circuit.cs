@@ -28,7 +28,7 @@ public class Circuit
     public float Capacity;
 
     #region Public Data
-    public Dictionary<Vector3Int,  Coil> _coils;
+    public Dictionary<Vector3Int, Coil> _coils;
     public HashSet<int> _idStructures;
     public Dictionary<Vector3Int, Generator> _generators;
     public Dictionary<Vector3Int, Engine> _engines;
@@ -36,6 +36,8 @@ public class Circuit
 
     public Dictionary<int, Vector3Int> _position; // circuitId -> position  
     public Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
+
+
     #endregion
 
     #region Nested Method

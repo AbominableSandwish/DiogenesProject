@@ -9,6 +9,12 @@ using static Structure;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
+    private string ZeroConnect = "Tile/Coils/0_connect/CableCoil_0";
+    private string[] OneConnect = { "Tile/Coils/1_connect/CableCoil_1", "Tile/Coils/1_connect/CableCoil_2", "Tile/Coils/1_connect/CableCoil_3", "Tile/Coils/1_connect/CableCoil_4" };
+    private string[] TwoConnect = { "Tile/Coils/2_connect/CableCoil_5", "Tile/Coils/2_connect/CableCoil_6", "Tile/Coils/2_connect/CableCoil_7", "Tile/Coils/2_connect/CableCoil_8", "Tile/Coils/2_connect/CableCoil_9", "Tile/Coils/2_connect/CableCoil_10" };
+    private string[] ThreeConnect = { "Tile/Coils/3_connect/CableCoil_11", "Tile/Coils/3_connect/CableCoil_12", "Tile/Coils/3_connect/CableCoil_13", "Tile/Coils/3_connect/CableCoil_14" };
+    private string FourConnect = "Tile/Coils/4_connect/CableCoil_15";
+
     static readonly Vector3Int[] DIRS = {
     new(0, 1, 0),  // Up
     new(1, 0, 0),  // Right
@@ -29,7 +35,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     #region Private Data
 
-    private SpriteSystem _spriteSystem;
+    private TileRegistry _tileRegistry;
     Dictionary<Vector3Int, Structure> structures;
 
     [SerializeField] private Tilemap _electric;
@@ -51,10 +57,13 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         structures = new Dictionary<Vector3Int, Structure>();
         _circuits = new List<Circuit>();
-
-        _spriteSystem = FindAnyObjectByType<SpriteSystem>();
-        _spriteSystem.LoadSprite();
     }
+
+    private void Start()
+    {
+        _tileRegistry = TileRegistry.Instance;
+    }
+
     #endregion
 
     public bool IsWalkable(Vector3Int gridPos)
@@ -73,7 +82,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             return false;
 
         // On peut marcher uniquement sur certains types de structure
-        return belowStruct.Type == StructureType.Ground ||
+        return belowStruct.Type == StructureType.Plateform ||
                belowStruct.Type == StructureType.Stair  ||
                belowStruct.Type == StructureType.Ladder;
     }
@@ -103,7 +112,8 @@ public class UtilityMap : StructureMap<UtilityMap>
                 if (_electric.GetTile(pos) == null)
                     return;
 
-                Sprite sprite = _spriteSystem.ZeroConnect;
+                
+                Sprite sprite = TileRegistry.Instance.Get(ZeroConnect).sprite;
 
                 if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || _tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
@@ -133,22 +143,22 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect)
                     {
-                        sprite = _spriteSystem.OneConnect[0];
+                        sprite = _tileRegistry.Get(OneConnect[0]).sprite;
                     }
 
                     if (upConnect)
                     {
-                        sprite = _spriteSystem.OneConnect[1];
+                        sprite = _tileRegistry.Get(OneConnect[1]).sprite;
                     }
 
                     if (rightConnect)
                     {
-                        sprite = _spriteSystem.OneConnect[2];
+                        sprite = _tileRegistry.Get(OneConnect[2]).sprite;
                     }
 
                     if (downConnect)
                     {
-                        sprite = _spriteSystem.OneConnect[3];
+                        sprite = _tileRegistry.Get(OneConnect[3]).sprite;
                     }
                 }
 
@@ -156,61 +166,61 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect && upConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[0];
+                        sprite = _tileRegistry.Get(TwoConnect[0]).sprite;
                     }
 
                     if (leftConnect && rightConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[1];
+                        sprite = _tileRegistry.Get(TwoConnect[1]).sprite;
                     }
 
                     if (leftConnect && downConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[2];
+                        sprite = _tileRegistry.Get(TwoConnect[2]).sprite;
                     }
 
                     if (upConnect && downConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[3];
+                        sprite = _tileRegistry.Get(TwoConnect[3]).sprite;
                     }
 
                     if (upConnect && rightConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[4];
+                        sprite = _tileRegistry.Get(TwoConnect[4]).sprite;
                     }
 
                     if (rightConnect && downConnect)
                     {
-                        sprite = _spriteSystem.TwoConnect[5];
-                    }
+                        sprite = _tileRegistry.Get(TwoConnect[5]).sprite;
+                    }   
                 }
 
                 if (connectCounter == 3)
                 {
                     if (leftConnect && upConnect && rightConnect)
                     {
-                        sprite = _spriteSystem.ThreeConnect[0];
+                        sprite = _tileRegistry.Get(ThreeConnect[0]).sprite;
                     }
 
                     if (upConnect && rightConnect && downConnect)
                     {
-                        sprite = _spriteSystem.ThreeConnect[1];
+                        sprite = _tileRegistry.Get(ThreeConnect[1]).sprite;
                     }
 
                     if (leftConnect && downConnect && rightConnect)
                     {
-                        sprite = _spriteSystem.ThreeConnect[2];
+                        sprite = _tileRegistry.Get(ThreeConnect[2]).sprite;
                     }
 
                     if (downConnect && leftConnect && upConnect)
                     {
-                        sprite = _spriteSystem.ThreeConnect[3];
+                        sprite = _tileRegistry.Get(ThreeConnect[3]).sprite;
                     }
                 }
 
                 if (connectCounter == 4)
                 {
-                    sprite = _spriteSystem.FourConnect;
+                    sprite = _tileRegistry.Get(FourConnect).sprite;
                 }
 
                 Tile tile = (Tile)_electric.GetTile(pos);
@@ -253,7 +263,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = null;
         tile = new Tile();
         tile.name = "Coil_" + _counterCoil.ToString();
-        tile.sprite = _spriteSystem.ZeroConnect;
+        tile.sprite = _tileRegistry.Get(ZeroConnect).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _electric.SetTile(new Vector3Int(position.x, position.y), tile);    
 
@@ -325,7 +335,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         switch (typeof(T))
         {
             case var cls when cls == typeof(Lamp):
-                tileBase = _spriteSystem.Lamp;
+                tileBase = _tileRegistry.Get(Lamp.TileAssetReference); ;
                 break;
         }
 
@@ -407,7 +417,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = null;
         tile = new Tile();
         tile.name = typeof(T) + _counterGenerator.ToString();
-        tile.sprite = _spriteSystem.SolarPanel;
+        tile.sprite = _tileRegistry.Get(SolarPanel.TileAssetReference).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
 

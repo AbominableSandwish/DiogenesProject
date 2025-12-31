@@ -5,6 +5,9 @@ public class SolarPanel : Generator
     [SerializeField] protected new float _electricProduction = 100.0f;
     [SerializeField] protected new float _electricPower;
 
+    new protected string _name = "SolarPanel";
+    new public static string TileAssetReference = "SolarPanel";
+
     #region Public Method
 
     public SolarPanel(int x = 0, int y = 0)

@@ -6,6 +6,8 @@ using static Structure;
 
 class BasicMap : StructureMap<BasicMap>
 {
+
+    private TileRegistry _tileRegistry;
     private TileBase _ground;
     private TileBase _limit;
 
@@ -14,9 +16,10 @@ class BasicMap : StructureMap<BasicMap>
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;
+        _tileRegistry = TileRegistry.Instance;
 
-        _limit = Resources.Load<TileBase>("Tile/Basic/Limit");
-        _ground = Resources.Load<TileBase>("Tile/Basic/Ground");
+        _limit = _tileRegistry.Get(Limit.TileAssetReference);
+        _ground = _tileRegistry.Get(Ground.TileAssetReference);
 
         for (int i = -1 ; i <= _map.Width;  i++)
         {
@@ -75,7 +78,7 @@ class BasicMap : StructureMap<BasicMap>
             return false;
 
         // On peut marcher uniquement sur certains types de structure
-        return belowStruct.Type == StructureType.Ground ||
+        return belowStruct.Type == StructureType.Plateform ||
                belowStruct.Type == StructureType.Stair ||
                belowStruct.Type == StructureType.Ladder;
     }

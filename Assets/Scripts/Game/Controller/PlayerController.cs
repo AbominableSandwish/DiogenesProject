@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.PlayerSettings;
 
 public class PlayerController : MonoBehaviour
 {
     #region Private Data
 
     private MapManager _map;
-    private float _timer = 0.0f;
     private Vector2 _input = Vector2.zero;
     private Vector3 _targetPos = Vector3.zero;
     private Vector3 _lastPos = Vector3.zero;
@@ -55,8 +53,8 @@ public class PlayerController : MonoBehaviour
                 case Structure.StructureType.SolarPanel:
                     MapManager.AddStructure<SolarPanel>(position);
                     break;
-                case Structure.StructureType.Ground:
-                    MapManager.AddStructure<Ground>(position);
+                case Structure.StructureType.Plateform:
+                    MapManager.AddStructure<Plateform>(position);
                     break;
                 case Structure.StructureType.Ladder:
                     MapManager.AddStructure<Ladder>(position);

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 
 
@@ -24,7 +25,7 @@ public class Structure
         SolarPanel,
         Lamp,
         //Basic
-        Ground,
+        Plateform,
         Door,
         Ladder,
         Limit,
@@ -38,7 +39,8 @@ public class Structure
 
     protected StructureType _type = StructureType.NONE;
     protected StructureMap _map = StructureMap.None;
-    private string _name = "";
+    protected string _name = "";
+    public static string TileAssetReference = "";
     protected Vector3Int _position;
 
     

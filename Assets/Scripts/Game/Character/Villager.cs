@@ -16,7 +16,7 @@ public class Villager : MonoBehaviour
 
     private MapManager map;
 
-    private void Start()
+    private void Awake()
     {
         map = FindAnyObjectByType<MapManager>();
         pathfinder = FindAnyObjectByType<Pathfinder>();

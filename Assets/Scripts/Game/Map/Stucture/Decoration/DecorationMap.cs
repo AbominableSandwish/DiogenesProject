@@ -46,7 +46,7 @@ class DecorationMap : StructureMap<DecorationMap>
             return false;
 
         // On peut marcher uniquement sur certains types de structure
-        return belowStruct.Type == StructureType.Ground ||
+        return belowStruct.Type == StructureType.Plateform ||
                belowStruct.Type == StructureType.Stair ||
                belowStruct.Type == StructureType.Ladder;
     }

@@ -1,12 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Coil : Structure
 {
     Structure StructureConnect;
+    new protected  string _name = "Coil";
+    new public static string TileAssetReference = "Coil";
 
     #region Public Method
     public Coil()
     {
+       
         this._type = StructureType.Coil;
     }
 

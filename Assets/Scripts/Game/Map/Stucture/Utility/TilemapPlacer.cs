@@ -46,6 +46,7 @@ public class TilemapPlacer : MonoBehaviour
     // Appelé par tes boutons UI Toolkit
     public void SetSelectedType(Structure.StructureType type)
     {
+        previewTile = TileRegistry.Instance.Get(type.ToString());
         selectedType = type;
     }
 

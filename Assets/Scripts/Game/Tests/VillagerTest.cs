@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class VillagerTest : MonoBehaviour
 {
+    [SerializeField] private Villager villager;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         MapManager grid = FindAnyObjectByType<MapManager>();
-        Villager villager = FindAnyObjectByType<Villager>();
-
+       
         // Construction d’une échelle entre 2 niveaux
         MapManager.AddStructure<Ladder>(new Vector3Int(3, 4, 1));
 

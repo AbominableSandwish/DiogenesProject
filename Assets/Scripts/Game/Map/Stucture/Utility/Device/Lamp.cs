@@ -4,6 +4,9 @@ using UnityEngine.Tilemaps;
 
 public class Lamp : Engine
 {
+    new protected string _name = "Lamp";
+    new public static string TileAssetReference = "Tile/Utility/Lamp";
+
     #region Private data
     private Light2D _light;
     private float _outerRadius;

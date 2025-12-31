@@ -2,8 +2,10 @@
 using System.IO;
 using UnityEngine;
 
+
 public class MapManager : MonoBehaviour
 {
+
     #region Private Data
     //Self
     private static MapManager _instance = null;
@@ -84,7 +86,7 @@ public class MapManager : MonoBehaviour
 
         switch (typeof(T).ToString()) {
             case "Ground":
-                grid._basicMap.AddStructure<Ground>(position);
+                grid._basicMap.AddStructure<Plateform>(position);
                 break;
             case "Door":
                 grid._basicMap.AddStructure<Door>(position);
@@ -125,7 +127,7 @@ public class MapManager : MonoBehaviour
         switch (typeof(T).ToString())
         {
             case "Ground":
-                grid._basicMap.RemoveStructure<Ground>(position);
+                grid._basicMap.RemoveStructure<Plateform>(position);
                 break;
             case "Door":
                 grid._basicMap.RemoveStructure<Door>(position);
@@ -220,6 +222,8 @@ public class MapManager : MonoBehaviour
         Debug.Log($"✅ World Loaded: {fileName}");
     }
     #endregion
+
+   
 }
 
 public static class WorldStorage
