@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Coil_6
+  m_Name: CableCoil_6
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 21300000, guid: ce764dd796e999845a1d9ad89077f2ad, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

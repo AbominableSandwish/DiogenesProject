@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class Lamp : Engine
 {
     new protected string _name = "Lamp";
-    new public static string TileAssetReference = "Tile/Utility/Lamp";
+    new public static string TileAssetReference = "Lamp";
 
     #region Private data
     private Light2D _light;

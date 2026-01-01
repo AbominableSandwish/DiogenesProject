@@ -9,11 +9,11 @@ using static Structure;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
-    private string ZeroConnect = "Tile/Coils/0_connect/CableCoil_0";
-    private string[] OneConnect = { "Tile/Coils/1_connect/CableCoil_1", "Tile/Coils/1_connect/CableCoil_2", "Tile/Coils/1_connect/CableCoil_3", "Tile/Coils/1_connect/CableCoil_4" };
-    private string[] TwoConnect = { "Tile/Coils/2_connect/CableCoil_5", "Tile/Coils/2_connect/CableCoil_6", "Tile/Coils/2_connect/CableCoil_7", "Tile/Coils/2_connect/CableCoil_8", "Tile/Coils/2_connect/CableCoil_9", "Tile/Coils/2_connect/CableCoil_10" };
-    private string[] ThreeConnect = { "Tile/Coils/3_connect/CableCoil_11", "Tile/Coils/3_connect/CableCoil_12", "Tile/Coils/3_connect/CableCoil_13", "Tile/Coils/3_connect/CableCoil_14" };
-    private string FourConnect = "Tile/Coils/4_connect/CableCoil_15";
+    private string ZeroConnect = "Coil";
+    private string[] OneConnect = { "CableCoil_1", "CableCoil_2", "CableCoil_3", "CableCoil_4" };
+    private string[] TwoConnect = { "CableCoil_5", "CableCoil_6", "CableCoil_7", "CableCoil_8", "CableCoil_9", "CableCoil__10" };
+    private string[] ThreeConnect = { "CableCoil_11", "CableCoil_12", "CableCoil_13", "CableCoil_14" };
+    private string FourConnect = "CableCoil_15";
 
     static readonly Vector3Int[] DIRS = {
     new(0, 1, 0),  // Up
@@ -113,7 +113,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                     return;
 
                 
-                Sprite sprite = TileRegistry.Instance.Get(ZeroConnect).sprite;
+                Sprite sprite = TileRegistry.Instance.Get(Coil.TileAssetReference).sprite;
 
                 if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || _tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
@@ -263,7 +263,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = null;
         tile = new Tile();
         tile.name = "Coil_" + _counterCoil.ToString();
-        tile.sprite = _tileRegistry.Get(ZeroConnect).sprite;
+        tile.sprite = _tileRegistry.Get(Coil.TileAssetReference).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _electric.SetTile(new Vector3Int(position.x, position.y), tile);    
 
