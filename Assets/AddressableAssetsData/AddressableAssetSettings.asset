@@ -101,6 +101,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Tile
+    - SceneTest
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 500bd29183091984f927c8b607f67c6f, type: 2}

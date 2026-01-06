@@ -25,12 +25,13 @@ public class Structure
         SolarPanel,
         Lamp,
         //Basic
-        Plateform,
+        Ground,
+        WoodPlateform,
         Door,
         Ladder,
         Limit,
         Stair,
-        Window,
+        Glass,
         LENGHT
     }
 

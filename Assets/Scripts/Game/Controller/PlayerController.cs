@@ -53,14 +53,17 @@ public class PlayerController : MonoBehaviour
                 case Structure.StructureType.SolarPanel:
                     MapManager.AddStructure<SolarPanel>(position);
                     break;
-                case Structure.StructureType.Plateform:
-                    MapManager.AddStructure<Plateform>(position);
+                case Structure.StructureType.WoodPlateform:
+                    MapManager.AddStructure<WoodPlateform>(position);
                     break;
                 case Structure.StructureType.Ladder:
                     MapManager.AddStructure<Ladder>(position);
                     break;
                 case Structure.StructureType.Door:
                     MapManager.AddStructure<Door>(position);
+                    break;
+                case Structure.StructureType.Limit:
+                    MapManager.AddStructure<Limit>(position);
                     break;
             }
         }

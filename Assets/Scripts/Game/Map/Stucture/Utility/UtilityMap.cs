@@ -82,7 +82,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             return false;
 
         // On peut marcher uniquement sur certains types de structure
-        return belowStruct.Type == StructureType.Plateform ||
+        return belowStruct.Type == StructureType.WoodPlateform ||
                belowStruct.Type == StructureType.Stair  ||
                belowStruct.Type == StructureType.Ladder;
     }

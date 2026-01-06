@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
-class FileSystem
+class FileSystem : MonoBehaviour
 {
     public static void WriteFile(string folder, string fileName, string data)
     {
@@ -11,7 +12,7 @@ class FileSystem
         string path = Path.Combine(folder, fileName + ".json");
         File.WriteAllText(path, data);
 
-        Debug.Log($"🌍 World.json loaded: {path}");
+        Debug.Log($"🌍 World.json saved: {path}");
     }
 
     public static string ReadFile(string path)
@@ -34,6 +35,11 @@ class FileSystem
             list.Add(Path.GetFileName(path));
 
         return list;
+    }
+
+    public void OpenPersistentDataPath()
+    {
+        Application.OpenURL(Application.persistentDataPath);
     }
 }
 

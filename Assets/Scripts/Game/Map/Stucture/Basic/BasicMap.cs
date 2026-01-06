@@ -11,6 +11,8 @@ class BasicMap : StructureMap<BasicMap>
     private TileBase _ground;
     private TileBase _limit;
 
+
+
     #region Mono
     private void Start()
     {
@@ -20,8 +22,11 @@ class BasicMap : StructureMap<BasicMap>
 
         _limit = _tileRegistry.Get(Limit.TileAssetReference);
         _ground = _tileRegistry.Get(Ground.TileAssetReference);
+    }
 
-        for (int i = -1 ; i <= _map.Width;  i++)
+    public void NewMap()
+    {
+        for (int i = -1; i <= _map.Width; i++)
         {
             for (int j = -1; j <= _map.Height; j++)
             {
@@ -38,12 +43,37 @@ class BasicMap : StructureMap<BasicMap>
             }
         }
     }
+
+
     #endregion
 
     #region Public Method
     public static BasicMap Instance { get => _instance; protected set => _instance = value; }
-    public override bool AddStructure<T>(Vector3Int pos     )
+    public override bool AddStructure<T>(Vector3Int pos)
     {
+        TileBase tileBase = null;
+        switch (typeof(T))
+        {
+            case var cls when cls == typeof(Ground):
+                tileBase = _tileRegistry.Get(Ground.TileAssetReference);
+                break;
+            case var cls when cls == typeof(Limit):
+                tileBase = _tileRegistry.Get(Limit.TileAssetReference);
+                break;
+            case var cls when cls == typeof(WoodPlateform):
+                tileBase = _tileRegistry.Get(WoodPlateform.TileAssetReference);
+                break;
+            case var cls when cls == typeof(Ladder):
+                tileBase = _tileRegistry.Get(Ladder.TileAssetReference);
+                break;
+            case var cls when cls == typeof(Door):
+                tileBase = _tileRegistry.Get(Door.TileAssetReference);
+                break;
+            case var cls when cls == typeof(Glass):
+                tileBase = _tileRegistry.Get(Glass.TileAssetReference);
+                break;
+        }
+        _tilemap.SetTile(pos, tileBase);
         return false;
     }
 
@@ -78,7 +108,7 @@ class BasicMap : StructureMap<BasicMap>
             return false;
 
         // On peut marcher uniquement sur certains types de structure
-        return belowStruct.Type == StructureType.Plateform ||
+        return belowStruct.Type == StructureType.WoodPlateform ||
                belowStruct.Type == StructureType.Stair ||
                belowStruct.Type == StructureType.Ladder;
     }
@@ -98,7 +128,35 @@ class BasicMap : StructureMap<BasicMap>
 
     public override void Restore(MapData data)
     {
-       
+        Tilemap tilemap = GetComponent<Tilemap>();
+        _tilemap.ClearAllTiles();
+        Circuit circuit = new Circuit();
+        NewMap();
+
+        foreach (MapCellData cdata in data.cells)
+        {
+            switch ((StructureType)cdata.type)
+            {
+                case StructureType.WoodPlateform:
+                    AddStructure<WoodPlateform>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Ladder:
+                    AddStructure<Ladder>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Door:
+                    AddStructure<Door>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Glass:
+                    AddStructure<Glass>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Limit:
+                    AddStructure<Limit>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.Ground:
+                    AddStructure<Ground>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+            }
+        }
     }
 
     private List<MapCellData> CollectCells()

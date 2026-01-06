@@ -24,16 +24,22 @@ public class Villager : MonoBehaviour
 
     private void Update()
     {
-        if (currentState == State.Moving)
-        {
-            Vector3 targetPos = map.GetWorldPosition(targetGridPos);
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
-            if (Vector3.Distance(transform.position, targetPos) < 0.01f)
-            {
-                currentGridPos = targetGridPos;
-                currentState = State.Idle;
-            }
-        }
+        //if (currentState == State.Moving)
+        //{
+        //    Vector3 targetPos = map.GetWorldPosition(targetGridPos);
+        //    transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+        //    if (Vector3.Distance(transform.position, targetPos) < 0.01f)
+        //    {
+        //        currentGridPos = targetGridPos;
+        //        currentState = State.Idle;
+        //    }
+        //}
+    }
+
+    public void SetPosition(Vector3Int position)
+    {
+        transform.position = position;
+        currentGridPos = position;
     }
 
     public bool CanMoveTo(Vector3Int destination)
@@ -62,6 +68,8 @@ public class Villager : MonoBehaviour
 
     public void MoveTo(Vector3Int destination)
     {
+        StopAllCoroutines();
+        currentState = State.Moving;
         List<Vector3Int> path = pathfinder.FindPath(currentGridPos, destination);
 
         if (path == null)
@@ -71,7 +79,7 @@ public class Villager : MonoBehaviour
         }
 
         pathQueue = new Queue<Vector3Int>(path);
-        StopAllCoroutines();
+        
         StartCoroutine(FollowPath());
     }
 
@@ -88,8 +96,9 @@ public class Villager : MonoBehaviour
                 yield return null;
             }
 
-            currentGridPos = next;
+            currentGridPos = next;            
         }
+        currentState = State.Idle;
     }
 
 }

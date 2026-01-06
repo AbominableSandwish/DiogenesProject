@@ -35,7 +35,7 @@ public class TileRegistry : MonoBehaviour
         foreach (Tile t in tiles)
         {
             Tilemap tilemap = GetComponent<Tilemap>();
-            tilemap.SetTile(Vector3Int.right * i, t);
+            tilemap.SetTile(Vector3Int.right * i + Vector3Int.down * 2, t);
             Register(t);
             i++;
         }

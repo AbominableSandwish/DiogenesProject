@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
-
 public class MapManager : MonoBehaviour
 {
 
@@ -84,15 +82,25 @@ public class MapManager : MonoBehaviour
             return false;
         }
 
-        switch (typeof(T).ToString()) {
+        string type = typeof(T).ToString();
+        switch (type) {
             case "Ground":
-                grid._basicMap.AddStructure<Plateform>(position);
+                grid._basicMap.AddStructure<Ground>(position);
+                break;
+            case "WoodPlateform":
+                grid._basicMap.AddStructure<WoodPlateform>(position);
+                break;
+            case "Limit":
+                grid._basicMap.AddStructure<Limit>(position);
                 break;
             case "Door":
                 grid._basicMap.AddStructure<Door>(position);
                 break;
             case "Glass":
                 grid._basicMap.AddStructure<Glass>(position);
+                break;
+            case "Ladder":
+                grid._basicMap.AddStructure<Ladder>(position);
                 break;
 
             case "Coil":
@@ -127,7 +135,7 @@ public class MapManager : MonoBehaviour
         switch (typeof(T).ToString())
         {
             case "Ground":
-                grid._basicMap.RemoveStructure<Plateform>(position);
+                grid._basicMap.RemoveStructure<WoodPlateform>(position);
                 break;
             case "Door":
                 grid._basicMap.RemoveStructure<Door>(position);
@@ -221,9 +229,42 @@ public class MapManager : MonoBehaviour
 
         Debug.Log($"✅ World Loaded: {fileName}");
     }
+
+    [ContextMenu("Load World (Single File)")]
+    public void LoadWorld(TextAsset asset)
+    {
+        string json = asset.text;
+        WorldData world = JsonUtility.FromJson<WorldData>(json);
+
+        // Dimensions globales
+        this.Width = world.width;
+        this.Height = world.height;
+
+        // Dispatch par nom
+        foreach (var nm in world.maps)
+        {
+            switch (nm.name)
+            {
+                case "Basic":
+                    if (_basicMap != null) _basicMap.Restore(nm.data);
+                    break;
+                case "Utility":
+                    if (_utilityMap != null) _utilityMap.Restore(nm.data);
+                    break;
+                case "Decoration":
+                    if (_decorationMap != null) _decorationMap.Restore(nm.data);
+                    break;
+                default:
+                    Debug.LogWarning($"⚠️ Map inconnue dans World: {nm.name}");
+                    break;
+            }
+        }
+
+        Debug.Log($"✅ World Loaded: {asset.name}");
+    }
     #endregion
 
-   
+
 }
 
 public static class WorldStorage

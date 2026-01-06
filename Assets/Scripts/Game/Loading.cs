@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
 {
+    [SerializeField] private string _sceneName; 
+
     private TileBootstrap_Addressables _tileBootstrap;
 
     [SerializeField]
@@ -33,7 +35,7 @@ public class Loading : MonoBehaviour
 
         m_LoadingSlider.value = _tileBootstrap.LoadHandle.PercentComplete;
         m_PlayButton.SetActive(true);
-        SceneManager.LoadScene("Generation", LoadSceneMode.Single);
+        SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
         Debug.Log($"Loaded Level ");
     }
 }

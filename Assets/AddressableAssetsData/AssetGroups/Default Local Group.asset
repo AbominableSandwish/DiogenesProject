@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2953dcb348cdd1a44b7e56c726100890
+    m_Address: Assets/Resources_moved/SceneTest/World.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b24e786ea3a4a746ab116d4d9853bd3
     m_Address: Tile/Coils/2_connect/CableCoil_8
     m_ReadOnly: 0
@@ -68,6 +74,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 575ee807d33d07e42ab34b4240f8d2c6
+    m_Address: Assets/Resources_moved/SceneTest/World 1.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a75c200d31995a46894ce00007187fb
     m_Address: Tile/Coils/2_connect/CableCoil_6
@@ -117,6 +129,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1897e8460407f64da06f4246463cd07
+    m_Address: Assets/Resources_moved/SceneTest/TestSave.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d064c2619723a554c9dd17a8c3b58217
     m_Address: Tile/Basic/Wood_Stair
     m_ReadOnly: 0
@@ -136,7 +154,7 @@ MonoBehaviour:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0e443feefa75bb459123d26b52ee344
-    m_Address: Tile/Basic/Wood_Plateform
+    m_Address: Tile/Basic/WoodPlateform
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
