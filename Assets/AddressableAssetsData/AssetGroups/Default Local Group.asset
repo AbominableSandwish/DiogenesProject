@@ -27,6 +27,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0dd0b67792346b24a9a48dc591d0347b
+    m_Address: Assets/Resources_moved/SceneTest/World.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2953dcb348cdd1a44b7e56c726100890
     m_Address: Assets/Resources_moved/SceneTest/World.json
     m_ReadOnly: 0
@@ -75,12 +81,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 575ee807d33d07e42ab34b4240f8d2c6
-    m_Address: Assets/Resources_moved/SceneTest/World 1.json
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - SceneTest
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a75c200d31995a46894ce00007187fb
     m_Address: Tile/Coils/2_connect/CableCoil_6
     m_ReadOnly: 0
@@ -92,12 +92,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6532f5640dc44404296df977c0da12fa
-    m_Address: Assets/Resources_moved/SceneTest/World 2.json
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - SceneTest
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6957773dd69a1f846a744d84eb2c0f54
     m_Address: Tile/Utility/Lamp

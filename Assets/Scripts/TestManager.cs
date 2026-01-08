@@ -21,19 +21,22 @@ public class TestManager : MonoBehaviour
 
     public void NextTest()
     {
-        if (registry.sceneNames.Count != 0)
+        if (registry != null)
         {
-            _title.text = registry.sceneNames[0].name + " Test:";
+            if (registry.sceneNames.Count != 0)
+            {
+                _title.text = registry.sceneNames[0].name + " Test:";
 
-            map.LoadWorld(registry.sceneNames[0]);
-            registry.sceneNames.Remove(registry.sceneNames[0]);
+                map.LoadWorld(registry.sceneNames[0]);
+                registry.sceneNames.Remove(registry.sceneNames[0]);
 
-            test.Respawn();
-            test.LaunchTest();
-        }
-        else
-        {
-            Debug.Log("All tests passed");
+                test.Respawn();
+                test.LaunchTest();
+            }
+            else
+            {
+                Debug.Log("All tests passed");
+            }
         }
     }
 

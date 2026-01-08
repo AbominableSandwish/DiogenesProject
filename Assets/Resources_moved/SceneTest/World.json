@@ -1,6 +1,6 @@
 {
     "version": "1.0",
-    "timestamp": "2026-01-04 16:58:17",
+    "timestamp": "2026-01-08 22:27:14",
     "width": 40,
     "height": 40,
     "maps": [
@@ -9,7 +9,14 @@
             "data": {
                 "width": 40,
                 "height": 40,
-                "cells": []
+                "cells": [
+                    {
+                        "x": 20,
+                        "y": 0,
+                        "z": 0,
+                        "type": 7
+                    }
+                ]
             }
         },
         {

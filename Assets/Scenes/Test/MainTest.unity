@@ -180,6 +180,7 @@ MonoBehaviour:
   _basicMap: {fileID: 26081180}
   _utilityMap: {fileID: 466623689}
   _decorationMap: {fileID: 0}
+  GenerationMap: 0
 --- !u!156049354 &18999160
 Grid:
   m_ObjectHideFlags: 0
@@ -2057,7 +2058,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c098d90a313c4664c98f3628cdb92b38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  villager: {fileID: 0}
+  villager: {fileID: 767495061}
   IsFinish: 0
   IsSuccess: 0
   _result: {fileID: 1477313389}

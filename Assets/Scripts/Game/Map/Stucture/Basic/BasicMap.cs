@@ -55,10 +55,9 @@ class BasicMap : StructureMap<BasicMap>
 
     #region Public Method
     public static BasicMap Instance { get => _instance; protected set => _instance = value; }
-    public override bool AddStructure<T>(Vector3Int pos)
+    public override bool AddStructure<T>(Vector3Int position)
     {
         TileBase tileBase = null;
-        Structure structure = null;
         switch (typeof(T))
         {
             case var cls when cls == typeof(Ground):
@@ -82,10 +81,11 @@ class BasicMap : StructureMap<BasicMap>
                 break;
         }
 
-        Structure instance = (Structure)typeof(T).Instantiate();
-        structures.Add(pos, instance);
+        object[] args = { _tilemap, position.x, position.y };
+        Structure instance = (Structure)typeof(T).Instantiate(true, args);
+        structures.Add(position, instance);
+        _tilemap.SetTile(position, tileBase);
 
-        _tilemap.SetTile(pos, tileBase);
         return false;
     }
 
@@ -101,6 +101,9 @@ class BasicMap : StructureMap<BasicMap>
 
     override public Structure GetStructure(Vector3Int pos)
     {
+        if (structures == null)
+            return null;
+
         Structure structure = null;
         if (!structures.TryGetValue(pos, out structure))
         {

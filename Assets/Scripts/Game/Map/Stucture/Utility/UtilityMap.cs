@@ -481,7 +481,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     #region Remove
     public override bool RemoveStructure<T>(Vector3Int pos)
     {
-        bool canAdd = false;
+        bool canRemove = false;
         switch (typeof(T))
         {
             case var cls when cls == typeof(Coil):
@@ -494,7 +494,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RemoveEngine(pos);
                 break;
         }
-        return canAdd;
+        return canRemove;
     }
 
     // Remove Coil
@@ -971,6 +971,9 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     public override Structure GetStructure(Vector3Int pos)
     {
+        if (structures == null)
+            return null;
+
         Structure structure = null;
         if(!structures.TryGetValue(pos, out structure))
         {
