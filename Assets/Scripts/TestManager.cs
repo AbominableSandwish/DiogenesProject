@@ -19,6 +19,17 @@ public class TestManager : MonoBehaviour
         NextTest();
     }
 
+    private void Update()
+    {
+        
+    }
+
+    public void Action()
+    {
+        test.Respawn();
+        test.LaunchTest();
+    }
+
     public void NextTest()
     {
         if (registry != null)
@@ -29,9 +40,6 @@ public class TestManager : MonoBehaviour
 
                 map.LoadWorld(registry.sceneNames[0]);
                 registry.sceneNames.Remove(registry.sceneNames[0]);
-
-                test.Respawn();
-                test.LaunchTest();
             }
             else
             {

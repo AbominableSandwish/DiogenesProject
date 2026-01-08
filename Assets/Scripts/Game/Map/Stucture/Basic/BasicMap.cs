@@ -40,7 +40,7 @@ class BasicMap : StructureMap<BasicMap>
                 if (i == -1 || j == -1 || i == _map.Width)
                 {
                     TileBase tile = _limit;
-                    _tilemap.SetTile(new Vector3Int(i, j), _limit);
+                    MapManager.AddStructure<Limit>(new Vector3Int(i,j));
                 }
                 else
                 {
@@ -120,11 +120,7 @@ class BasicMap : StructureMap<BasicMap>
     public bool IsWalkable(Vector3Int gridPos)
     {
         // Vérifie que le sol du dessous est solide
-        Vector3Int below = new Vector3Int(gridPos.x, gridPos.y, gridPos.z - 1);
-
-        // Si on est au niveau du sol (z == 0), c’est automatiquement praticable
-        if (gridPos.z == 0)
-            return true;
+        Vector3Int below = new Vector3Int(gridPos.x, gridPos.y - 1, gridPos.z);
 
         // Structure sur la cellule du dessous
         Structure belowStruct = GetStructure(below);
@@ -135,7 +131,8 @@ class BasicMap : StructureMap<BasicMap>
         // On peut marcher uniquement sur certains types de structure
         return belowStruct.Type == StructureType.WoodPlateform ||
                belowStruct.Type == StructureType.Stair ||
-               belowStruct.Type == StructureType.Ladder;
+               belowStruct.Type == StructureType.Ladder ||
+               belowStruct.Type == StructureType.Limit;
     }
     #endregion
 
@@ -155,8 +152,8 @@ class BasicMap : StructureMap<BasicMap>
     {
         Tilemap tilemap = GetComponent<Tilemap>();
         _tilemap.ClearAllTiles();
+        structures.Clear();
         Circuit circuit = new Circuit();
-        NewMap();
 
         foreach (MapCellData cdata in data.cells)
         {

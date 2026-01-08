@@ -999,6 +999,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tilemap tilemap = GetComponent<Tilemap>();
         _electric.ClearAllTiles();
         _tilemap.ClearAllTiles();
+        structures.Clear();
         Circuit circuit = new Circuit();
 
         foreach (MapCellData cdata in data.cells)

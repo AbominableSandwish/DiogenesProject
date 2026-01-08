@@ -20,8 +20,6 @@ public class VillagerTest : MonoBehaviour
     {
         villager = FindAnyObjectByType<Villager>();
         spawnPosition = new Vector3Int((int)villager.transform.position.x, (int)villager.transform.position.y);
-
-        LaunchTest();
     }
 
     public void LaunchTest()

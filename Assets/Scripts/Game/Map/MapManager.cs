@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 public class MapManager : MonoBehaviour
@@ -10,6 +11,14 @@ public class MapManager : MonoBehaviour
     private int _height = 40;
     private int _width = 40;
     public float CellSize = 1f;
+
+    public bool isReady = false;
+    public Action onExecute;
+
+    public void Execute()
+    {
+        onExecute?.Invoke();
+    }
 
     //Others
     [SerializeField] private BasicMap _basicMap;
@@ -36,10 +45,18 @@ public class MapManager : MonoBehaviour
         Instance = this;
     }
 
+    public void RecordAction()
+    {
+        
+    }
+
     private void Start()
     {
         _basicMap?.Init(GenerationMap);
         _utilityMap?.Init(GenerationMap);
+
+        if (FindAnyObjectByType<TestManager>() != null)
+            onExecute += FindAnyObjectByType<TestManager>().Action;
     }
 
     #endregion
@@ -208,6 +225,7 @@ public class MapManager : MonoBehaviour
     [ContextMenu("Load World (Single File)")]
     public void LoadWorld(string fileName = "World.json")
     {
+        isReady = false;
         string json = FileSystem.ReadFile(Path.Combine(Application.persistentDataPath, fileName));
         WorldData world = JsonUtility.FromJson<WorldData>(json);
 
@@ -236,11 +254,14 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.Log($"✅ World Loaded: {fileName}");
+        onExecute?.Invoke();
+        isReady = true;
     }
 
     [ContextMenu("Load World (Single File)")]
     public void LoadWorld(TextAsset asset)
     {
+        isReady = false;
         string json = asset.text;
         WorldData world = JsonUtility.FromJson<WorldData>(json);
 
@@ -269,6 +290,8 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.Log($"✅ World Loaded: {asset.name}");
+        isReady = true;
+        onExecute?.Invoke();
     }
     #endregion
 

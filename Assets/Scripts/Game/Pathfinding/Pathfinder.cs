@@ -14,28 +14,41 @@ public class Pathfinder : MonoBehaviour
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)
     {
-        // 1. Listes pour A*
         List<Node> openList = new();
         HashSet<Node> closedList = new();
-
-        // 2. Dictionnaire de noeuds (pour éviter recréation6)
         Dictionary<Vector3Int, Node> allNodes = new();
 
         Node GetNode(Vector3Int pos)
         {
-            if (!allNodes.ContainsKey(pos))
-                allNodes[pos] = new Node(pos, true);//map.IsCellFree(pos) || map.GetStructure(pos, Structure.StructureMap.Basic) != null
-            return allNodes[pos];
+            if (!allNodes.TryGetValue(pos, out var node))
+            {
+                // Walkable = dans les limites + walkable sur la map
+                bool walkable = IsInsideLimits(pos) && grid.IsWalkable(pos, StructureMap.Basic);
+
+                node = new Node(pos, walkable);
+
+                // Important si ton Node.gCost démarre à 0 par défaut :
+                // ça évite des comparaisons bizarres (tentativeG < neighbor.gCost).
+                node.gCost = float.PositiveInfinity;
+
+                allNodes[pos] = node;
+            }
+            return node;
         }
 
         Node startNode = GetNode(start);
-        Node endNode = GetNode(end);
+        Node endNode   = GetNode(end);
+
+        if (!startNode.walkable || !endNode.walkable)
+            return null;
+
+        startNode.gCost = 0f;
+        startNode.hCost = Heuristic(start, end);
 
         openList.Add(startNode);
 
         while (openList.Count > 0)
         {
-            // 3. Trouver le noeud le moins cher
             Node current = openList.OrderBy(n => n.fCost).First();
 
             if (current.position == end)
@@ -51,12 +64,12 @@ public class Pathfinder : MonoBehaviour
                 if (!neighbor.walkable || closedList.Contains(neighbor))
                     continue;
 
-                float tentativeG = current.gCost + Vector3Int.Distance(current.position, neighbor.position);
+                float tentativeG = current.gCost + MoveCost(current.position, neighbor.position);
 
                 if (tentativeG < neighbor.gCost || !openList.Contains(neighbor))
                 {
                     neighbor.gCost = tentativeG;
-                    neighbor.hCost = Vector3Int.Distance(neighbor.position, end);
+                    neighbor.hCost = Heuristic(neighbor.position, end);
                     neighbor.parent = current;
 
                     if (!openList.Contains(neighbor))
@@ -65,7 +78,6 @@ public class Pathfinder : MonoBehaviour
             }
         }
 
-        // Aucun chemin trouvé
         return null;
     }
 
@@ -78,46 +90,177 @@ public class Pathfinder : MonoBehaviour
         {
             path.Add(current.position);
             current = current.parent;
+            if (current == null) return null; // sécurité
         }
 
         path.Reverse();
         return path;
     }
 
-    // 🔹 Génère les voisins autorisés, avec gestion des échelles
-    private IEnumerable<Vector3Int> GetNeighbors(Vector3Int pos)
+    // ------------------------------------------------------------
+    // RÈGLES DE DÉPLACEMENT
+    // ------------------------------------------------------------
+
+    /// <summary>
+    /// Déplacement libre uniquement en X (même hauteur = même Y).
+    /// Changement de Y uniquement via Ladder/Stair.
+    /// </summary>
+   private IEnumerable<Vector3Int> GetNeighbors(Vector3Int pos)
     {
-        // Directions horizontales
-        Vector3Int[] directions = {
-        new Vector3Int(1,0,0),
-        new Vector3Int(-1,0,0),
-        new Vector3Int(0,1,0),
-        new Vector3Int(0,-1,0)
-    };
+        // Déplacement horizontal (X)
+        TryAddHorizontalWithStep(pos, -1, out var leftSame, out var leftUp, out var leftDown);
+        if (leftSame.HasValue) yield return leftSame.Value;
+        if (leftUp.HasValue) yield return leftUp.Value;
+        if (leftDown.HasValue) yield return leftDown.Value;
 
-        foreach (var dir in directions)
-        {
-            Vector3Int neighbor = pos + dir;
+        TryAddHorizontalWithStep(pos, +1, out var rightSame, out var rightUp, out var rightDown);
+        if (rightSame.HasValue) yield return rightSame.Value;
+        if (rightUp.HasValue) yield return rightUp.Value;
+        if (rightDown.HasValue) yield return rightDown.Value;
 
-            // Vérifie si le sol en dessous est praticable
-            if (grid.IsWalkable(neighbor, StructureMap.Basic))
-                yield return neighbor;
-        }
-
-        // 🔸 Mouvement vertical si échelle ou escalier
+        // Vertical (Y) uniquement via Ladder/Stair (comme avant)
         Structure s = grid.GetStructure(pos, StructureMap.Basic);
-        if (s != null && (s.Type == StructureType.Ladder || s.Type == StructureType.Stair))
+        bool canChangeHeight = s != null && (s.Type == StructureType.Ladder || s.Type == StructureType.Stair);
+
+        if (canChangeHeight)
         {
-            Vector3Int up = new Vector3Int(pos.x, pos.y, pos.z + 1);
-            Vector3Int down = new Vector3Int(pos.x, pos.y, pos.z - 1);
+            var up = new Vector3Int(pos.x, pos.y + 1, pos.z);
+            var down = new Vector3Int(pos.x, pos.y - 1, pos.z);
 
-            // Monter si au-dessus praticable
-            if (grid.GetStructure(up, StructureMap.Basic) == null || grid.IsWalkable(up, StructureMap.Basic))
-                yield return up;
-
-            // Descendre si au-dessous praticable
-            if (grid.GetStructure(down, StructureMap.Basic) == null || grid.IsWalkable(down, StructureMap.Basic))
-                yield return down;
+            if (IsValidStep(pos, up)) yield return up;
+            if (IsValidStep(pos, down)) yield return down;
         }
+    }
+
+    private void TryAddHorizontalWithStep(
+    Vector3Int from,
+    int dx,
+    out Vector3Int? sameLevel,
+    out Vector3Int? stepUp,
+    out Vector3Int? stepDown
+)
+    {
+        sameLevel = null;
+        stepUp = null;
+        stepDown = null;
+
+        var toSame = new Vector3Int(from.x + dx, from.y, from.z);
+
+        // 1) Déplacement normal à même niveau
+        if (IsValidStep(from, toSame))
+        {
+            sameLevel = toSame;
+            return;
+        }
+
+        // 2) Si c'est bloqué par un bloc "1 de haut", tenter de grimper dessus (Y+1)
+        //    => il faut un bloc sur toSame, et que la case au-dessus soit libre/walkable
+        if (IsSolidBlockAt(toSame))
+        {
+            var toUp = new Vector3Int(toSame.x, toSame.y + 1, toSame.z);
+
+            // important: la case du dessus doit être accessible
+            if (IsValidStep(from, toUp) && IsEmptyForBody(toUp))
+            {
+                stepUp = toUp;
+                return;
+            }
+        }
+
+        // 3) Optionnel (souvent nécessaire): descendre d'1 en marchant (step down)
+        //    Si la case à même niveau n'est pas walkable mais celle en dessous l'est.
+        var toDown = new Vector3Int(toSame.x, toSame.y - 1, toSame.z);
+        if (IsValidStep(from, toDown))
+        {
+            stepDown = toDown;
+        }
+    }
+
+    // --- Helpers "bloc / espace libre" (à adapter à tes types réels) ---
+
+    private bool IsSolidBlockAt(Vector3Int cell)
+    {
+        var st = grid.GetStructure(cell, StructureMap.Basic);
+        if (st == null) return false;
+
+        // Mets ici le type exact qui “bloque” au même niveau
+        return st.Type == StructureType.WoodPlateform; // <- adapte (Wall, Rock, etc.)
+    }
+
+    /// <summary>
+    /// Si ton PNJ occupe 1 case, tu peux juste retourner true.
+    /// Si tu veux gérer une “tête” (2 cases de haut), vérifie la case au-dessus.
+    /// </summary>
+    private bool IsEmptyForBody(Vector3Int cell)
+    {
+        // 1 case de haut:
+        // return grid.GetStructure(cell, StructureMap.Basic) == null;
+
+        // 2 cases de haut (recommandé si ton perso fait 2 de haut):
+        // - la case cell doit être libre
+        // - la case au-dessus doit être libre
+        if (grid.GetStructure(cell, StructureMap.Basic) != null) return false;
+
+        var head = new Vector3Int(cell.x, cell.y + 1, cell.z);
+        if (!IsInsideLimits(head)) return false;
+        if (grid.GetStructure(head, StructureMap.Basic) != null) return false;
+
+        return true;
+    }
+
+    private bool IsValidStep(Vector3Int from, Vector3Int to)
+    {
+        // Limites (zone max)
+        if (!IsInsideLimits(to))
+            return false;
+
+        // Walkable (sol/obstacle/etc.)
+        if (!grid.IsWalkable(to, StructureMap.Basic))
+            return false;
+
+        // Si tu as la notion de "block qui bloque sur la même ligne",
+        // c’est souvent un obstacle sur la case cible => IsWalkable couvre déjà.
+        // Sinon, tu peux ajouter un test spécifique ici :
+        // if (grid.GetStructure(to, StructureMap.Basic)?.Type == StructureType.Block) return false;
+
+        return true;
+    }
+
+    // ------------------------------------------------------------
+    // LIMIT ZONE (à adapter selon ton MapManager)
+    // ------------------------------------------------------------
+
+    private bool IsInsideLimits(Vector3Int pos)
+    {
+        // OPTION A (recommandée) : tu ajoutes une fonction côté MapManager
+        // return grid.IsInsideLimits(pos);
+
+        // OPTION B : si ton "Limit" est une tuile/structure placée sur la map
+        // et que sortir de la zone revient à tomber sur un Limit ou "no cell":
+        // - soit tu as un IsInBounds(pos)
+        // - soit tu testes la présence de limites autour
+        //
+        // Exemple minimal si tu as une taille de grille:
+        // return grid.IsInBounds(pos);
+
+        // Par défaut, on ne bloque rien tant que tu n'as pas branché.
+        return true;
+    }
+
+    // ------------------------------------------------------------
+    // COSTS
+    // ------------------------------------------------------------
+
+    private float Heuristic(Vector3Int a, Vector3Int b)
+    {
+        // Manhattan (souvent mieux que Distance float sur une grille)
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
+    }
+
+    private float MoveCost(Vector3Int from, Vector3Int to)
+    {
+        // Tu peux pénaliser le changement de hauteur si tu veux :
+        // return (from.y != to.y) ? 2f : 1f;
+        return 1f;
     }
 }
