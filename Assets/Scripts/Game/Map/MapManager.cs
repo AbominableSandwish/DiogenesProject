@@ -15,6 +15,8 @@ public class MapManager : MonoBehaviour
     [SerializeField] private BasicMap _basicMap;
     [SerializeField] private UtilityMap _utilityMap;
     [SerializeField] private DecorationMap _decorationMap;
+
+    [SerializeField] private bool GenerationMap = false; 
     #endregion
 
     #region Public Data
@@ -32,6 +34,12 @@ public class MapManager : MonoBehaviour
     public void Awake()
     {
         Instance = this;
+    }
+
+    private void Start()
+    {
+        _basicMap?.Init(GenerationMap);
+        _utilityMap?.Init(GenerationMap);
     }
 
     #endregion

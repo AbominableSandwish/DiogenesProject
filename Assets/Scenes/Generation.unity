@@ -1416,6 +1416,7 @@ MonoBehaviour:
   _basicMap: {fileID: 829245440}
   _utilityMap: {fileID: 1625255337}
   _decorationMap: {fileID: 0}
+  GenerationMap: 1
 --- !u!114 &938404736
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,31 +1,38 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using static Structure;
+using static UnityEngine.Rendering.GPUSort;
 
 
 class BasicMap : StructureMap<BasicMap>
 {
-
     private TileRegistry _tileRegistry;
     private TileBase _ground;
     private TileBase _limit;
 
-
+    Dictionary<Vector3Int, Structure> structures;
 
     #region Mono
-    private void Start()
+    public void Init(bool Generation = false)
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;
         _tileRegistry = TileRegistry.Instance;
 
-        _limit = _tileRegistry.Get(Limit.TileAssetReference);
-        _ground = _tileRegistry.Get(Ground.TileAssetReference);
+        structures = new Dictionary<Vector3Int, Structure>();
+
+        if (Generation)
+            NewMap();
     }
 
     public void NewMap()
     {
+        _limit = _tileRegistry.Get(Limit.TileAssetReference);
+        _ground = _tileRegistry.Get(Ground.TileAssetReference);
+
         for (int i = -1; i <= _map.Width; i++)
         {
             for (int j = -1; j <= _map.Height; j++)
@@ -44,7 +51,6 @@ class BasicMap : StructureMap<BasicMap>
         }
     }
 
-
     #endregion
 
     #region Public Method
@@ -52,10 +58,12 @@ class BasicMap : StructureMap<BasicMap>
     public override bool AddStructure<T>(Vector3Int pos)
     {
         TileBase tileBase = null;
+        Structure structure = null;
         switch (typeof(T))
         {
             case var cls when cls == typeof(Ground):
                 tileBase = _tileRegistry.Get(Ground.TileAssetReference);
+              
                 break;
             case var cls when cls == typeof(Limit):
                 tileBase = _tileRegistry.Get(Limit.TileAssetReference);
@@ -73,18 +81,32 @@ class BasicMap : StructureMap<BasicMap>
                 tileBase = _tileRegistry.Get(Glass.TileAssetReference);
                 break;
         }
+
+        Structure instance = (Structure)typeof(T).Instantiate();
+        structures.Add(pos, instance);
+
         _tilemap.SetTile(pos, tileBase);
         return false;
     }
 
     public override bool RemoveStructure<T>(Vector3Int pos)
     {
-        return false;
+        bool canRemove = structures.ContainsKey(pos);
+        if (canRemove)
+        {
+            structures.Remove(pos);   
+        }  
+        return canRemove;
     }
 
     override public Structure GetStructure(Vector3Int pos)
     {
-        return null;
+        Structure structure = null;
+        if (!structures.TryGetValue(pos, out structure))
+        {
+            structure = null;
+        }
+        return structure;
     }
 
     override public TileBase GetTile(Vector3Int position)

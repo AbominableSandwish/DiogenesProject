@@ -50,17 +50,14 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     #region Mono
 
-    private void Awake()
+    public void Init(bool Generation = false)
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;
 
         structures = new Dictionary<Vector3Int, Structure>();
         _circuits = new List<Circuit>();
-    }
 
-    private void Start()
-    {
         _tileRegistry = TileRegistry.Instance;
     }
 

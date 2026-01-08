@@ -93,6 +93,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6532f5640dc44404296df977c0da12fa
+    m_Address: Assets/Resources_moved/SceneTest/World 2.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6957773dd69a1f846a744d84eb2c0f54
     m_Address: Tile/Utility/Lamp
     m_ReadOnly: 0
