@@ -133,47 +133,58 @@ public class Pathfinder : MonoBehaviour
     }
 
     private void TryAddHorizontalWithStep(
-    Vector3Int from,
-    int dx,
-    out Vector3Int? sameLevel,
-    out Vector3Int? stepUp,
-    out Vector3Int? stepDown
-)
+     Vector3Int from,
+     int dx,
+     out Vector3Int? sameLevel,
+     out Vector3Int? stepUp,
+     out Vector3Int? stepDown
+ )
     {
         sameLevel = null;
         stepUp = null;
         stepDown = null;
 
-        var toSame = new Vector3Int(from.x + dx, from.y, from.z);
+        var front = new Vector3Int(from.x + dx, from.y, from.z);
 
-        // 1) Déplacement normal à même niveau
-        if (IsValidStep(from, toSame))
+        // Si c'est un bloc grimpable devant, on NE veut PAS traverser "en ligne droite"
+        // => on tente directement de monter dessus.
+        if (IsClimbableBlockAt(front))
         {
-            sameLevel = toSame;
+            var ontoTop = new Vector3Int(front.x, front.y + 1, front.z);
+
+            // Monter sur le bloc = espace libre au-dessus + on reste dans les limites.
+            // IMPORTANT: ne pas utiliser grid.IsWalkable(ontoTop) si ton walkable nécessite un sol "tile"
+            // car ici le sol est justement le bloc front.
+            if (IsInsideLimits(ontoTop) && IsEmptyForBody(ontoTop))
+            {
+                stepUp = ontoTop;
+                return;
+            }
+
+            // Si on ne peut pas monter, alors c'est réellement bloqué.
             return;
         }
 
-        // 2) Si c'est bloqué par un bloc "1 de haut", tenter de grimper dessus (Y+1)
-        //    => il faut un bloc sur toSame, et que la case au-dessus soit libre/walkable
-        if (IsSolidBlockAt(toSame))
+        // 1) Déplacement normal à même niveau (pas de bloc grimpable devant)
+        if (IsValidStep(from, front))
         {
-            var toUp = new Vector3Int(toSame.x, toSame.y + 1, toSame.z);
-
-            // important: la case du dessus doit être accessible
-            if (IsValidStep(from, toUp) && IsEmptyForBody(toUp))
-            {
-                stepUp = toUp;
-                return;
-            }
+            sameLevel = front;
+            return;
         }
 
-        // 3) Optionnel (souvent nécessaire): descendre d'1 en marchant (step down)
-        //    Si la case à même niveau n'est pas walkable mais celle en dessous l'est.
-        var toDown = new Vector3Int(toSame.x, toSame.y - 1, toSame.z);
+        // 2) Optionnel: step down (descendre d'1 en avançant)
+        var toDown = new Vector3Int(front.x, front.y - 1, front.z);
         if (IsValidStep(from, toDown))
-        {
             stepDown = toDown;
-        }
+    }
+
+    private bool IsClimbableBlockAt(Vector3Int cell)
+    {
+        var st = grid.GetStructure(cell, StructureMap.Basic);
+        if (st == null) return false;
+
+        // Ici tu mets les blocs "1 de haut" qu'on peut escalader
+        return st.Type == StructureType.WoodPlateform;
     }
 
     // --- Helpers "bloc / espace libre" (à adapter à tes types réels) ---
