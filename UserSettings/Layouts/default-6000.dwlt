@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 153
+  controlID: 174
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -276,7 +276,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 103
+  controlID: 124
   draggingID: 0
 --- !u!114 &12
 MonoBehaviour:
@@ -501,7 +501,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: e8f5ffffc2f6fffff8faffff
+      m_ExpandedIDs: 02cbffff00ceffff7ad3ffff0ad8ffff56e5fffff8faffff3ed40000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1119,9 +1119,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 6.8271856, y: 4.004498, z: 0.37783903}
+    m_Target: {x: 25.399181, y: 2.817494, z: 0.42344904}
     speed: 2
-    m_Value: {x: 6.8271856, y: 4.004498, z: 0.37783903}
+    m_Value: {x: 25.399181, y: 2.817494, z: 0.42344904}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1171,9 +1171,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 12.716568
+    m_Target: 8.15558
     speed: 2
-    m_Value: 12.716568
+    m_Value: 8.15558
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1514,7 +1514,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources_moved/SceneTest
+    - Assets/Scenes/Devops
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1524,15 +1524,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 74
   m_LastFolders:
-  - Assets/Resources_moved/SceneTest
+  - Assets/Scenes/Devops
   m_LastFoldersGridSize: 74
   m_LastProjectPath: C:\Git\Personnal\CleanSim
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 104}
-    m_SelectedIDs: b0c30000
-    m_LastClickedID: 50096
+    m_SelectedIDs: b6c30000
+    m_LastClickedID: 50102
     m_ExpandedIDs: 000000003ec2000040c2000042c2000044c2000046c2000048c200004ac200004cc200004ec2000050c2000052c2000054c2000056c2000058c200005ac200005cc200005ec20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1684,8 +1684,8 @@ MonoBehaviour:
     m_IsLocked: 1
   m_FolderTreeState:
     scrollPos: {x: 0, y: 213}
-    m_SelectedIDs: 1ec40000
-    m_LastClickedID: 50206
+    m_SelectedIDs: 24c40000
+    m_LastClickedID: 50212
     m_ExpandedIDs: 000000003ec2000040c2000042c2000044c2000046c2000048c200004ac200004cc200004ec2000050c2000052c2000054c2000056c2000058c200005ac200005cc200005ec20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0

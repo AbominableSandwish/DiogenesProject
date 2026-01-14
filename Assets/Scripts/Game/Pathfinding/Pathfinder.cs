@@ -244,17 +244,30 @@ public class Pathfinder : MonoBehaviour
     /// </summary>
     private bool IsEmptyForBody(Vector3Int cell)
     {
-        // 1 case de haut:
-        // return grid.GetStructure(cell, StructureMap.Basic) == null;
+        if (!IsInsideLimits(cell))
+            return false;
 
-        // 2 cases de haut (recommandé si ton perso fait 2 de haut):
-        // - la case cell doit être libre
-        // - la case au-dessus doit être libre
-        if (grid.GetStructure(cell, StructureMap.Basic) != null) return false;
+        var body = grid.GetStructure(cell, StructureMap.Basic);
 
+        // Les échelles / escaliers n'obstruent PAS le corps
+        if (body != null)
+        {
+            if (body.Type == StructureType.Ladder)
+                return true;
+
+            // Tout autre type bloque
+            return false;
+        }
+
+        // Vérification de la tête (PNJ = 2 cases de haut)
         var head = new Vector3Int(cell.x, cell.y + 1, cell.z);
-        if (!IsInsideLimits(head)) return false;
-        if (grid.GetStructure(head, StructureMap.Basic) != null) return false;
+        if (!IsInsideLimits(head))
+            return false;
+
+        var headStruct = grid.GetStructure(head, StructureMap.Basic);
+        if (headStruct != null &&
+            headStruct.Type != StructureType.Ladder)
+            return false;
 
         return true;
     }
