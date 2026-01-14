@@ -9,7 +9,6 @@ using static Structure;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
-    private string ZeroConnect = "Coil";
     private string[] OneConnect = { "CableCoil_1", "CableCoil_2", "CableCoil_3", "CableCoil_4" };
     private string[] TwoConnect = { "CableCoil_5", "CableCoil_6", "CableCoil_7", "CableCoil_8", "CableCoil_9", "CableCoil__10" };
     private string[] ThreeConnect = { "CableCoil_11", "CableCoil_12", "CableCoil_13", "CableCoil_14" };
@@ -80,7 +79,6 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         // On peut marcher uniquement sur certains types de structure
         return belowStruct.Type == StructureType.WoodPlateform ||
-               belowStruct.Type == StructureType.Stair  ||
                belowStruct.Type == StructureType.Ladder;
     }
 
@@ -274,7 +272,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+            if (structures[neighboor.Key].Type == StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
@@ -353,7 +351,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+            if (structures[neighboor.Key].Type == StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
@@ -427,7 +425,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+            if (structures[neighboor.Key].Type == StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
         
@@ -476,6 +474,12 @@ public class UtilityMap : StructureMap<UtilityMap>
         return true; // END
     }
 
+    public bool AddStorage<T>(Vector3Int position)
+    {
+        _counterStorage++;
+        return false;
+    }
+
     #endregion
 
     #region Remove
@@ -502,7 +506,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != Structure.StructureType.Coil) 
+        if (structures[position].Type != StructureType.Coil) 
             return false;
 
         Structure self = null;
@@ -551,7 +555,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
                     foreach (var neighboor in neighboors)
                     {
-                        if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+                        if (structures[neighboor.Key].Type == StructureType.Coil)
                             RefreshTile(neighboor.Key);
                     }
 
@@ -567,7 +571,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != Structure.StructureType.Generator)
+        if (structures[position].Type != StructureType.Generator)
             return false;
 
         Generator self = (Generator)structures[position];
@@ -615,7 +619,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 
                 foreach (var neighboor in neighboors)
                 {
-                    if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+                    if (structures[neighboor.Key].Type == StructureType.Coil)
                         RefreshTile(neighboor.Key);
                 }
 
@@ -631,7 +635,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != Structure.StructureType.Engine)
+        if (structures[position].Type != StructureType.Engine)
             return false;
 
         Engine self = null;
@@ -683,7 +687,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                    
                     foreach (var neighboor in neighboors)
                     {
-                        if (structures[neighboor.Key].Type == Structure.StructureType.Coil)
+                        if (structures[neighboor.Key].Type == StructureType.Coil)
                             RefreshTile(neighboor.Key);
                     }
 

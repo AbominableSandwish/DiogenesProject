@@ -1,8 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-
-
 
 public class Structure
 {
@@ -14,38 +10,20 @@ public class Structure
         Decoration
     }
 
-    public enum StructureType
-    {
-        NONE = -1,
-        //Utility
-        Coil,
-        Generator,
-        Engine,
-        Storage,
-        SolarPanel,
-        Lamp,
-        //Basic
-        Ground,
-        WoodPlateform,
-        Door,
-        Ladder,
-        Limit,
-        Stair,
-        Glass,
-        LENGHT
-    }
-
-    #region Private Method
+    #region Private Data
     protected bool _isEnabled = false;
-
     protected StructureType _type = StructureType.NONE;
     protected StructureMap _map = StructureMap.None;
     protected string _name = "";
-    public static string TileAssetReference = "";
     protected Vector3Int _position;
 
-    
-    private List<Element> _elements = null;
+
+    #endregion
+
+    #region Public Data
+    public static string TileAssetReference = "";
+    public bool IsWalkable = false;
+    public bool IsClimbable = true;
     #endregion
 
     #region Nested Method
@@ -89,6 +67,4 @@ public class Structure
         return false;
     }
     #endregion
-
-
 }

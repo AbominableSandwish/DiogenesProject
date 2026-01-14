@@ -130,7 +130,6 @@ class BasicMap : StructureMap<BasicMap>
 
         // On peut marcher uniquement sur certains types de structure
         return belowStruct.Type == StructureType.WoodPlateform ||
-               belowStruct.Type == StructureType.Stair ||
                belowStruct.Type == StructureType.Ladder ||
                belowStruct.Type == StructureType.Limit;
     }

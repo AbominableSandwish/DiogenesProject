@@ -57,8 +57,8 @@ public class Villager : MonoBehaviour
             Structure s2 = map.GetStructure(destination, Structure.StructureMap.Basic);
 
             bool hasLadderOrStair =
-                (s != null && (s.Type == StructureType.Ladder || s.Type == StructureType.Stair)) ||
-                (s2 != null && (s2.Type == StructureType.Ladder || s2.Type == StructureType.Stair));
+                (s != null && (s.Type == StructureType.Ladder)) ||
+                (s2 != null && (s2.Type == StructureType.Ladder));
 
             return hasLadderOrStair;
         }

@@ -5,6 +5,8 @@ class Limit : Structure
 {
     new protected string _name = "Limit";
     new public static string TileAssetReference = "Limit";
+    new public bool IsWalkable = false;
+    new public bool IsClimbable = true; 
 
     #region Constructor
     public Limit(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)

@@ -119,17 +119,17 @@ public class Circuit
 
         switch (structure.Type)
         {
-            case Structure.StructureType.Coil:
+            case StructureType.Coil:
                 
                 isContain = _coils.ContainsValue((Coil)structure);
                 break;
-            case Structure.StructureType.Engine:
+            case StructureType.Engine:
                 isContain = _engines.ContainsValue((Engine)structure);
                 break;
-            case Structure.StructureType.Generator:
+            case StructureType.Generator:
                 isContain = _generators.ContainsValue((Generator)structure);
                 break;
-            case Structure.StructureType.Storage:
+            case StructureType.Storage:
                 isContain = _storages.ContainsValue((Storage)structure);
                 break;
         }

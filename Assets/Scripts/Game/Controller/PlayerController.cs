@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _lastPos = Vector3.zero;
     #endregion
 
-    public Structure.StructureType type;
+    public StructureType type;
 
     #region Mono
     private void Start()
@@ -31,38 +31,38 @@ public class PlayerController : MonoBehaviour
 
     public void AddStructure(Vector3Int position)
     {
-        if (this.type != Structure.StructureType.NONE)
+        if (this.type != StructureType.NONE)
         {
             switch (this.type)
             {
-                case Structure.StructureType.Coil:
+                case StructureType.Coil:
                     MapManager.AddStructure<Coil>(position);
                     break;
-                case Structure.StructureType.Generator:
+                case StructureType.Generator:
                     MapManager.AddStructure<Generator>(position);
                     break;
-                case Structure.StructureType.Engine:
+                case StructureType.Engine:
                     MapManager.AddStructure<Engine>(position);
                     break;
-                case Structure.StructureType.Storage:
+                case StructureType.Storage:
                     MapManager.AddStructure<Storage>(position);
                     break;
-                case Structure.StructureType.Lamp:
+                case StructureType.Lamp:
                     MapManager.AddStructure<Lamp>(position);
                     break;
-                case Structure.StructureType.SolarPanel:
+                case StructureType.SolarPanel:
                     MapManager.AddStructure<SolarPanel>(position);
                     break;
-                case Structure.StructureType.WoodPlateform:
+                case StructureType.WoodPlateform:
                     MapManager.AddStructure<WoodPlateform>(position);
                     break;
-                case Structure.StructureType.Ladder:
+                case StructureType.Ladder:
                     MapManager.AddStructure<Ladder>(position);
                     break;
-                case Structure.StructureType.Door:
+                case StructureType.Door:
                     MapManager.AddStructure<Door>(position);
                     break;
-                case Structure.StructureType.Limit:
+                case StructureType.Limit:
                     MapManager.AddStructure<Limit>(position);
                     break;
             }
@@ -85,12 +85,12 @@ public class PlayerController : MonoBehaviour
         if (contex.performed)
         {
             float action = contex.ReadValue<float>();
-            this.type = Structure.StructureType.NONE;
+            this.type = StructureType.NONE;
         }
     }
 
 
-    public bool SelectStructure(Structure.StructureType type)
+    public bool SelectStructure(StructureType type)
     {
         bool isSelect = false;
         if (this.type != type)
@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
          }
         else
         {
-            this.type = Structure.StructureType.NONE;
+            this.type = StructureType.NONE;
         }
         return isSelect;
     }

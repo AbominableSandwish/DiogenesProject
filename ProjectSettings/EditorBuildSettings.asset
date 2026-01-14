@@ -15,10 +15,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Generation.unity
     guid: dd9ad9ff187b4114ba2e24d95f7048c0
   - enabled: 1
-    path: Assets/Scenes/Test/LoadingScene.unity
+    path: Assets/Scenes/Devops/LoadingScene.unity
     guid: b805a9dc2bd490d4381a265e9f7d01dc
   - enabled: 1
-    path: Assets/Scenes/Test/MainTest.unity
+    path: Assets/Scenes/Devops/MainTest.unity
     guid: 79f38048830d1fc429157a1d3f141c24
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: ce04005762cc8384ebe0d2e0baf44add, type: 2}

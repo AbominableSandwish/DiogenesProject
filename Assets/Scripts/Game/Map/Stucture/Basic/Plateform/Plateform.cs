@@ -6,6 +6,7 @@ class WoodPlateform : Structure
 {
     new protected string _name = "WoodPlateform";
     new public static string TileAssetReference = "WoodPlateform";
+    new public bool IsWalkable = true;
 
     #region Constructor
     public WoodPlateform(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)

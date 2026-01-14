@@ -24,7 +24,7 @@ class StructuresInterface : MonoBehaviour
         VisualElement visual = _root.Q<VisualElement>(name_visual);
         Validation.CheckQuery(visual, name_visual);
 
-        for(Structure.StructureType type = Structure.StructureType.Coil; type < Structure.StructureType.LENGHT; type++)
+        for(StructureType type = StructureType.Coil; type < StructureType.LENGHT; type++)
         {
             var capturedType = type;
 
@@ -44,7 +44,7 @@ class StructuresInterface : MonoBehaviour
         _player = FindFirstObjectByType<PlayerController>();
     }
 
-    private void NewStructure(Structure.StructureType type) {
+    private void NewStructure(StructureType type) {
          this._player.SelectStructure(type);
     }
 

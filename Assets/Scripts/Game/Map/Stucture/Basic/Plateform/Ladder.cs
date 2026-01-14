@@ -2,8 +2,9 @@
 using UnityEngine.Tilemaps;
 class Ladder : Structure
 {
-    new protected string _name = "Limit";
-    new public static string TileAssetReference = "Limit";
+    new protected string _name = "Ladder";
+    new public static string TileAssetReference = "Ladder";
+    new public bool IsWalkable = false;
 
 
     #region Constructor

@@ -118,27 +118,46 @@ public class Pathfinder : MonoBehaviour
         if (rightUp.HasValue) yield return rightUp.Value;
         if (rightDown.HasValue) yield return rightDown.Value;
 
-        // Vertical (Y) uniquement via Ladder/Stair (comme avant)
-        Structure s = grid.GetStructure(pos, StructureMap.Basic);
-        bool canChangeHeight = s != null && (s.Type == StructureType.Ladder || s.Type == StructureType.Stair);
-
-        if (canChangeHeight)
+        // Vertical (Y) via Ladder/Stair en CHAÎNE
         {
             var up = new Vector3Int(pos.x, pos.y + 1, pos.z);
             var down = new Vector3Int(pos.x, pos.y - 1, pos.z);
 
-            if (IsValidStep(pos, up)) yield return up;
-            if (IsValidStep(pos, down)) yield return down;
+            if (CanClimbBetween(pos, up)) yield return up;
+            if (CanClimbBetween(pos, down)) yield return down;
         }
     }
 
+    private bool CanClimbBetween(Vector3Int from, Vector3Int to)
+    {
+        if (!IsInsideLimits(to)) return false;
+
+        // On ne grimpe verticalement que sur la même colonne X/Z
+        if (from.x != to.x || from.z != to.z) return false;
+
+        // Il faut que l'espace cible soit occupable (au moins vide pour le corps)
+        // (On ne met pas grid.IsWalkable ici, sinon tu risques de bloquer le climb)
+        if (!IsEmptyForBody(to)) return false;
+
+        // Il faut une échelle/escalier sur la case de départ OU sur la case d'arrivée
+        return IsClimbTile(from) || IsClimbTile(to);
+    }
+
+    private bool IsClimbTile(Vector3Int cell)
+    {
+        var s = grid.GetStructure(cell, StructureMap.Basic);
+        if (s == null) return false;
+
+        return s.Type == StructureType.Ladder;
+    }
+
     private void TryAddHorizontalWithStep(
-     Vector3Int from,
-     int dx,
-     out Vector3Int? sameLevel,
-     out Vector3Int? stepUp,
-     out Vector3Int? stepDown
- )
+    Vector3Int from,
+    int dx,
+    out Vector3Int? sameLevel,
+    out Vector3Int? stepUp,
+    out Vector3Int? stepDown
+)
     {
         sameLevel = null;
         stepUp = null;
@@ -146,36 +165,57 @@ public class Pathfinder : MonoBehaviour
 
         var front = new Vector3Int(from.x + dx, from.y, from.z);
 
-        // Si c'est un bloc grimpable devant, on NE veut PAS traverser "en ligne droite"
-        // => on tente directement de monter dessus.
-        if (IsClimbableBlockAt(front))
-        {
-            var ontoTop = new Vector3Int(front.x, front.y + 1, front.z);
+        // 0) Si un obstacle est présent AU MÊME NIVEAU, il prend la priorité sur IsWalkable
+        //    - grimpable -> on tente Y+1
+        //    - non grimpable -> on bloque
+        var obstacle = grid.GetStructure(front, StructureMap.Basic);
 
-            // Monter sur le bloc = espace libre au-dessus + on reste dans les limites.
-            // IMPORTANT: ne pas utiliser grid.IsWalkable(ontoTop) si ton walkable nécessite un sol "tile"
-            // car ici le sol est justement le bloc front.
-            if (IsInsideLimits(ontoTop) && IsEmptyForBody(ontoTop))
+        if (obstacle != null)
+        {
+            // Grimpable (ex: WoodPlateform) => step-up d'1
+            if (IsClimbableBlockType(obstacle.Type))
             {
-                stepUp = ontoTop;
+                var ontoTop = new Vector3Int(front.x, front.y + 1, front.z);
+
+                // Monter sur le bloc : espace libre pour le corps + dans les limites
+                if (IsInsideLimits(ontoTop) && IsEmptyForBody(ontoTop))
+                {
+                    stepUp = ontoTop;
+                }
+                // sinon : bloqué (pas de sameLevel)
                 return;
             }
 
-            // Si on ne peut pas monter, alors c'est réellement bloqué.
-            return;
+            // Si c'est une échelle/escalier, on ne bloque pas le mouvement horizontal à cause de ça.
+            // (Sinon une échelle posée sur une case empêcherait de marcher)
+            if (obstacle.Type == StructureType.Ladder)
+            {
+                // on continue sur le check normal plus bas
+            }
+            else
+            {
+                // Obstacle non grimpable => bloqué net
+                return;
+            }
         }
 
-        // 1) Déplacement normal à même niveau (pas de bloc grimpable devant)
+        // 1) Déplacement normal à même niveau
         if (IsValidStep(from, front))
         {
             sameLevel = front;
             return;
         }
 
-        // 2) Optionnel: step down (descendre d'1 en avançant)
-        var toDown = new Vector3Int(front.x, front.y - 1, front.z);
-        if (IsValidStep(from, toDown))
-            stepDown = toDown;
+        // 2) Optionnel: step down
+        var down = new Vector3Int(front.x, front.y - 1, front.z);
+        if (IsValidStep(from, down))
+            stepDown = down;
+    }
+
+    private bool IsClimbableBlockType(StructureType type)
+    {
+        // Mets ici tous les blocs "1 de haut" sur lesquels on peut monter
+        return type == StructureType.WoodPlateform;
     }
 
     private bool IsClimbableBlockAt(Vector3Int cell)

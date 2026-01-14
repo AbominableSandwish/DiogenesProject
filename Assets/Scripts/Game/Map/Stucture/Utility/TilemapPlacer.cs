@@ -18,7 +18,7 @@ public class TilemapPlacer : MonoBehaviour
     public bool blockIfOccupied = true;
 
     private Vector3Int lastCell = new Vector3Int(int.MinValue, int.MinValue, 0);
-    private Structure.StructureType? selectedType;
+    private StructureType? selectedType;
 
     private PlayerController _player;
 
@@ -44,7 +44,7 @@ public class TilemapPlacer : MonoBehaviour
     }
 
     // Appelé par tes boutons UI Toolkit
-    public void SetSelectedType(Structure.StructureType type)
+    public void SetSelectedType(StructureType type)
     {
         previewTile = TileRegistry.Instance.Get(type.ToString());
         selectedType = type;
@@ -104,7 +104,7 @@ public class TilemapPlacer : MonoBehaviour
     }
 
 
-    void PlaceStructure(Structure.StructureType type, Vector3Int cell)
+    void PlaceStructure(StructureType type, Vector3Int cell)
     {
         // Exemple A: placer une tile correspondant au type
         // mainTilemap.SetTile(cell, GetTileForType(type));
