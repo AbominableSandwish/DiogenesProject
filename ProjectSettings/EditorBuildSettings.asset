@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Devops/MainTest.unity
     guid: 79f38048830d1fc429157a1d3f141c24
+  - enabled: 1
+    path: Assets/Scenes/Loading/Menu.unity
+    guid: 84aa8be3033542b4e9772f50dbe8ecc0
+  - enabled: 1
+    path: Assets/Scenes/Loading/LoadingTest.unity
+    guid: ab2a7a7d97d664748b921a4e91460b26
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: ce04005762cc8384ebe0d2e0baf44add, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
