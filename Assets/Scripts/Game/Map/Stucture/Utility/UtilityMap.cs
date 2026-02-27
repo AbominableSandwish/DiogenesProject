@@ -326,6 +326,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             return false; // END
 
         Tile tile = null;
+        tile = new Tile();
         TileBase tileBase = null;
         switch (typeof(T))
         {
@@ -335,9 +336,9 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         //Self
+        tile.name = typeof(T) + _counterEngine.ToString();
         _tilemap.SetTile(new Vector3Int(position.x, position.y), tileBase);
         tile = (Tile)_tilemap.GetTile(new Vector3Int(position.x, position.y));
-        tile.name = typeof(T) + _counterEngine.ToString();
         tile.colliderType = Tile.ColliderType.Grid;
         _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
 
