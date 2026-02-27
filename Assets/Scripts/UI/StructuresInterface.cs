@@ -35,7 +35,7 @@ class StructuresInterface : MonoBehaviour
                 visualElement = new VisualElement();
                 visualElement.name = "Structure_" + i.ToString();          
                 visualElement.style.flexDirection = FlexDirection.Column;
-                visualElement.style.width = 60;
+                visualElement.style.width = 80;
                 visualElement.style.height = 100;
                 visual.Add(visualElement);
             }
