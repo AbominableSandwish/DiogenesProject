@@ -33,6 +33,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - SceneTest
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11ca0c9a11657194eb95af1bfe556723
+    m_Address: Assets/Resources_moved/Tile/Utility/Engine/Lamp.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b24e786ea3a4a746ab116d4d9853bd3
     m_Address: Tile/Coils/2_connect/CableCoil_8
     m_ReadOnly: 0
