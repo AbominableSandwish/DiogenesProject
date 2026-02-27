@@ -22,10 +22,24 @@ class StructuresInterface : MonoBehaviour
         _placer = FindAnyObjectByType<TilemapPlacer>();
 
         VisualElement visual = _root.Q<VisualElement>(name_visual);
+        visual.style.flexDirection = FlexDirection.Row;
         Validation.CheckQuery(visual, name_visual);
 
-        for(StructureType type = StructureType.Coil; type < StructureType.LENGHT; type++)
+        int i = 0;
+        VisualElement visualElement = null;
+        for (StructureType type = StructureType.Coil; type < StructureType.LENGHT; type++)
         {
+
+            if (i == 0 | i % 4 == 0)
+            {
+                visualElement = new VisualElement();
+                visualElement.name = "Structure_" + i.ToString();          
+                visualElement.style.flexDirection = FlexDirection.Column;
+                visualElement.style.width = 60;
+                visualElement.style.height = 100;
+                visual.Add(visualElement);
+            }
+
             var capturedType = type;
 
             Button button = new Button();
@@ -37,11 +51,12 @@ class StructuresInterface : MonoBehaviour
             button.clicked += () => NewStructure(capturedType) ;
             button.clicked += () => _placer.SetSelectedType(capturedType);
 
-            visual.Add(button);
-
+            visualElement.Add(button);
+            i++;
         }
 
         _player = FindFirstObjectByType<PlayerController>();
+       
     }
 
     private void NewStructure(StructureType type) {
