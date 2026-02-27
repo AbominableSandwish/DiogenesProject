@@ -1,14 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/LoadingScreen.uss?fileID=7433441132597879392&amp;guid=d3a38293366fecf48baa645a63bf209d&amp;type=3#LoadingScreen" />
     <ui:VisualElement class="root">
         <ui:VisualElement class="panel">
-            <ui:Label name="title" class="title" text="Chargement..." />
-            <ui:Label name="stepLabel" class="step" text="Préparation" />
-
-            <ui:ProgressBar name="progressBar" class="progress" title="0%" value="0" />
-
+            <ui:Label name="title" text="Chargement..." class="title" />
+            <ui:Label name="stepLabel" text="Préparation" class="step" />
+            <ui:ProgressBar name="progressBar" title="0%" value="0" class="progress" />
             <ui:VisualElement class="logsBox">
-                <ui:Label name="logsLabel" class="logs" text="" />
+                <ui:Label name="logsLabel" class="logs" style="overflow: hidden; height: 125px;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
