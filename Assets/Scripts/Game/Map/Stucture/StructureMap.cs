@@ -7,18 +7,19 @@ public class StructureMap<T> : MonoBehaviour
     #region Private Data
     [SerializeField] protected Tilemap _tilemap;
 
+    public int Width, Height;
     protected static T _instance;
     protected GameManager _game;
     protected MapManager _map;
     #endregion
 
     #region Public Method
-    public virtual bool AddStructure<T>(Vector3Int pos)
+    public virtual bool AddStructure<TStructure>(Vector3Int pos)
     {
         return false;
     }
 
-    public virtual bool RemoveStructure<T>(Vector3Int pos)
+    public virtual bool RemoveStructure<TStructure>(Vector3Int pos)
     {
         return false;
     }
@@ -53,6 +54,10 @@ public class StructureMap<T> : MonoBehaviour
         // TODO: Clear la tilemap & reconstruire depuis data.cells
         // _tilemap.ClearAllTiles();
         // foreach (var c in data.cells) { ... SetTile / AddStructure ... }
+    }
+
+    public virtual void Refresh() { 
+    
     }
 
 }

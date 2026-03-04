@@ -1022,4 +1022,19 @@ public class UtilityMap : StructureMap<UtilityMap>
             }
         }
     }
+
+    public override void Refresh()
+    {
+        TileBase tileBase = null;
+        for (int i = 0; i < Width; i++)
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                Vector3Int key = new Vector3Int(i, j, 0);
+                tileBase = _tileRegistry.Get(structures[key].TileAssetReference());
+                object[] args = { _tilemap, i, j };
+                _tilemap.SetTile(key, tileBase);
+            }
+        }
+    }
 }

@@ -33,8 +33,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - SceneTest
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f595bd9049668d4c9eeda930ed829e8
+    m_Address: Assets/Basic/Earth
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 11ca0c9a11657194eb95af1bfe556723
-    m_Address: Assets/Resources_moved/Tile/Utility/Engine/Lamp.asset
+    m_Address: Assets/Utility/Engine/Lamp
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
@@ -75,6 +81,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e3afd667d4f63c4ab130a06b8b1aced
+    m_Address: Assets/Basic/Roots
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4e72307532559c845837b6e831b0a04b
     m_Address: Tile/Coils/2_connect/CableCoil_5
     m_ReadOnly: 0
@@ -87,6 +99,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54e7d73f666aba849b5adb907f7ad073
+    m_Address: Assets/Basic/Stone
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5a75c200d31995a46894ce00007187fb
     m_Address: Tile/Coils/2_connect/CableCoil_6
     m_ReadOnly: 0
@@ -95,12 +113,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5e171f3e7d0d3eb4fbf171b965906ee7
     m_Address: Tile/Basic/Ground
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Tile
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6957773dd69a1f846a744d84eb2c0f54
-    m_Address: Tile/Utility/Lamp
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
@@ -143,6 +155,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d064c2619723a554c9dd17a8c3b58217
     m_Address: Tile/Basic/Wood_Stair
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0ed8584f0c0a4642a72f3763a620f76
+    m_Address: Assets/Basic/Water
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile

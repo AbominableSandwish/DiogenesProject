@@ -3,7 +3,7 @@
 class Ground : Structure
 {
     new protected string _name = "Ground";
-    new public static string TileAssetReference = "Ground";
+    new public static string TILE_ASSET_REFERENCE = "Ground";
     new public bool IsWalkable = false;
 
     public override bool ToPlace(Vector3Int pos)

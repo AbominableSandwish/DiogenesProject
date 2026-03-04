@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +21,12 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
 
         // Enregistre tes steps ici
         _steps.Add(new LoadTilesAddressablesStep("Tile"));
+       
+        if (FindAnyObjectByType<SceneRegistry>())
+        {
+            _steps.Add(new LoadScenesAddressablesStep("SceneTest"));
+        }
+      
         //_steps.Add(new LoadTilesStep());          // Resources.LoadAll ou Addressables (selon ton choix)
         //_steps.Add(new LoadScriptablesStep());    // exemple
 
@@ -46,6 +52,8 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
             SetStep(step.Name);
             UpdateGlobalProgress();
 
+            yield return null; // ✅ laisse l’UI Toolkit rafraîchir au moins 1 frame
+
             yield return step.Execute(this);
 
             _doneWeight += _currentWeight;
@@ -53,7 +61,7 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
             UpdateGlobalProgress();
         }
 
-        ui?.AddLine("Ouverture de la sc�ne...");
+        ui?.AddLine("Ouverture de la scène...");
         yield return LoadSceneAsync(nextSceneName);
     }
 
@@ -64,8 +72,8 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
 
         while (!op.isDone)
         {
-            // Optionnel: tu peux mixer la progression du load scene � la fin.
-            // Ici on affiche juste un "100%" quand la sc�ne arrive.
+            // Optionnel: tu peux mixer la progression du load scene à la fin.
+            // Ici on affiche juste un "100%" quand la scène arrive.
             yield return null;
         }
     }

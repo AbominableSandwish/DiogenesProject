@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static Structure;
 public class MapManager : MonoBehaviour
 {
 
     #region Private Data
     //Self
     private static MapManager _instance = null;
-    private int _height = 40;
-    private int _width = 40;
+    [SerializeField] private int _height = 40;
+    [SerializeField] private int _width = 40;
     public float CellSize = 1f;
 
     public bool isReady = false;
@@ -25,8 +26,11 @@ public class MapManager : MonoBehaviour
     [SerializeField] private UtilityMap _utilityMap;
     [SerializeField] private DecorationMap _decorationMap;
 
-    [SerializeField] private bool GenerationMap = false; 
+    [SerializeField] private bool GenerationMap = false;
+
+ 
     #endregion
+
 
     #region Public Data
     public static MapManager Instance { get => _instance; protected set => _instance = value; }
@@ -52,12 +56,13 @@ public class MapManager : MonoBehaviour
 
     private void Start()
     {
-        _basicMap?.Init(GenerationMap);
+        _basicMap?.Init(_width, _height, GenerationMap);
         _utilityMap?.Init(GenerationMap);
 
         if (FindAnyObjectByType<TestManager>() != null)
             onExecute += FindAnyObjectByType<TestManager>().Action;
     }
+
 
     #endregion
 

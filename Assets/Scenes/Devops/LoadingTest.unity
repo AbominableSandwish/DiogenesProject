@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784a0b0c78e49a1428277739d8238037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoadingManager
-  nextSceneName: Generation
+  nextSceneName: MainTest
   ui: {fileID: 1377157412}
 --- !u!4 &1082619093
 Transform:
@@ -312,6 +312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1316942113}
   - component: {fileID: 1316942114}
+  - component: {fileID: 1316942115}
   m_Layer: 0
   m_Name: Registry
   m_TagString: Untagged
@@ -346,6 +347,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a5bfdea5938dfe4c8acc9651b4b3fa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileRegistry
+--- !u!114 &1316942115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316942112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de3973506130b74699a8f353f61f6b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneRegistry
+  sceneNames: []
 --- !u!1 &1377157409
 GameObject:
   m_ObjectHideFlags: 0

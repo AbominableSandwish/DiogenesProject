@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Lamp_old
+  m_Name: Earth
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: e2b6f14edc384414aba2e9ea0bb304c2, type: 3}
-  m_Color: {r: 1, g: 0.79818785, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: e918c8ee948de774e9a641fec08eff65, type: 3}
+  m_Color: {r: 0.4433962, g: 0.23530494, b: 0.10666606, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -31,6 +31,6 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 1
-  m_InstancedGameObject: {fileID: 8799141818977497935, guid: 3d3ce56a7b6341e438b712aec79da0ad, type: 3}
+  m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
   m_ColliderType: 2

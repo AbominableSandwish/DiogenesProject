@@ -21,7 +21,7 @@ public class Structure
     #endregion
 
     #region Public Data
-    public static string TileAssetReference = "";
+    public static string TILE_ASSET_REFERENCE = "";
     public bool IsWalkable = false;
     public bool IsClimbable = true;
     #endregion
@@ -38,6 +38,11 @@ public class Structure
     public StructureMap GetMap { get => _map; set => _map = value; }
     public StructureType Type { get => _type; }
     public Vector3Int Position { get => _position; set => _position = value; }
+
+    public virtual string TileAssetReference()
+    {
+        return TILE_ASSET_REFERENCE;
+    }
 
     public virtual bool ToPlace(Vector3Int pos)
     {

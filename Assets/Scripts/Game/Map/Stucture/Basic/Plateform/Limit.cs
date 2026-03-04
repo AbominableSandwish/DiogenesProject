@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 class Limit : Structure
 {
     new protected string _name = "Limit";
-    new public static string TileAssetReference = "Limit";
+    new public static string TILE_ASSET_REFERENCE = "Limit";
     new public bool IsWalkable = false;
     new public bool IsClimbable = true; 
 

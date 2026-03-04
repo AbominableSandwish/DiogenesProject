@@ -7,17 +7,20 @@ using static Structure;
 using static UnityEngine.Rendering.GPUSort;
 
 
-class BasicMap : StructureMap<BasicMap>
+public class BasicMap : StructureMap<BasicMap>
 {
     private TileRegistry _tileRegistry;
     private TileBase _ground;
     private TileBase _limit;
 
-    Dictionary<Vector3Int, Structure> structures;
+    public Dictionary<Vector3Int, Structure> structures;
+
 
     #region Mono
-    public void Init(bool Generation = false)
+    public void Init(int width, int height, bool Generation = false)
     {
+         Width = width; 
+         Height = height;
         _game = GameManager.Instance;
         _map = MapManager.Instance;
         _tileRegistry = TileRegistry.Instance;
@@ -30,8 +33,8 @@ class BasicMap : StructureMap<BasicMap>
 
     public void NewMap()
     {
-        _limit = _tileRegistry.Get(Limit.TileAssetReference);
-        _ground = _tileRegistry.Get(Ground.TileAssetReference);
+        _limit = _tileRegistry.Get(Limit.TILE_ASSET_REFERENCE);
+        _ground = _tileRegistry.Get(Ground.TILE_ASSET_REFERENCE);
 
         for (int i = -1; i <= _map.Width; i++)
         {
@@ -55,29 +58,32 @@ class BasicMap : StructureMap<BasicMap>
 
     #region Public Method
     public static BasicMap Instance { get => _instance; protected set => _instance = value; }
+    public Dictionary<Vector3Int, Structure> Structures { get => structures; set => structures = value; }
+    public Dictionary<Vector3Int, Structure> Structures1 { get => structures; set => structures = value; }
+
     public override bool AddStructure<T>(Vector3Int position)
     {
         TileBase tileBase = null;
         switch (typeof(T))
         {
             case var cls when cls == typeof(Ground):
-                tileBase = _tileRegistry.Get(Ground.TileAssetReference);
+                tileBase = _tileRegistry.Get(Ground.TILE_ASSET_REFERENCE);
               
                 break;
             case var cls when cls == typeof(Limit):
-                tileBase = _tileRegistry.Get(Limit.TileAssetReference);
+                tileBase = _tileRegistry.Get(Limit.TILE_ASSET_REFERENCE);
                 break;
             case var cls when cls == typeof(WoodPlateform):
-                tileBase = _tileRegistry.Get(WoodPlateform.TileAssetReference);
+                tileBase = _tileRegistry.Get(WoodPlateform.TILE_ASSET_REFERENCE);
                 break;
             case var cls when cls == typeof(Ladder):
-                tileBase = _tileRegistry.Get(Ladder.TileAssetReference);
+                tileBase = _tileRegistry.Get(Ladder.TILE_ASSET_REFERENCE);
                 break;
             case var cls when cls == typeof(Door):
-                tileBase = _tileRegistry.Get(Door.TileAssetReference);
+                tileBase = _tileRegistry.Get(Door.TILE_ASSET_REFERENCE);
                 break;
             case var cls when cls == typeof(Glass):
-                tileBase = _tileRegistry.Get(Glass.TileAssetReference);
+                tileBase = _tileRegistry.Get(Glass.TILE_ASSET_REFERENCE);
                 break;
         }
 
@@ -97,6 +103,22 @@ class BasicMap : StructureMap<BasicMap>
             structures.Remove(pos);   
         }  
         return canRemove;
+    }
+
+    public override void Refresh()
+    {
+        TileBase tileBase = null;
+        for (int i = 0; i < Width; i++)
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                Vector3Int key = new Vector3Int(i, j, 0);
+                string name = structures[key].TileAssetReference();
+                tileBase = _tileRegistry.Get(name);
+                object[] args = { _tilemap, i, j };
+                _tilemap.SetTile(key, tileBase);
+            }
+        }
     }
 
     override public Structure GetStructure(Vector3Int pos)

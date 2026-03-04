@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 class WoodPlateform : Structure
 {
     new protected string _name = "WoodPlateform";
-    new public static string TileAssetReference = "WoodPlateform";
+    new public static string TILE_ASSET_REFERENCE = "WoodPlateform";
     new public bool IsWalkable = true;
 
     #region Constructor

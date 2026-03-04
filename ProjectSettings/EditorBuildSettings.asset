@@ -5,14 +5,14 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Map.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
     path: Assets/Scenes/old/LoadingScene 1.unity
     guid: a1e01d398699cc940a960600837600bd
   - enabled: 1
-    path: Assets/Scenes/EditorMap/Generation.unity
+    path: Assets/Scenes/EditorMap/EditorMap.unity
     guid: dd9ad9ff187b4114ba2e24d95f7048c0
   - enabled: 1
     path: Assets/Scenes/old/LoadingScene.unity
@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Loading/LoadingTest.unity
     guid: ab2a7a7d97d664748b921a4e91460b26
+  - enabled: 1
+    path: "Assets/Scenes/G\xE9n\xE9ration/Generation.unity"
+    guid: b54003a0b0b2f2c409f011ba0f115647
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: ce04005762cc8384ebe0d2e0baf44add, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

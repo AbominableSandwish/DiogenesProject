@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor.AddressableAssets.Build;
+using UnityEngine;
 using UnityEngine.Tilemaps;
 using static Structure;
 class DecorationMap : StructureMap<DecorationMap>
@@ -48,6 +49,10 @@ class DecorationMap : StructureMap<DecorationMap>
         // On peut marcher uniquement sur certains types de structure
         return belowStruct.Type == StructureType.WoodPlateform ||
                belowStruct.Type == StructureType.Ladder;
+    }
+
+    public override void Refresh()
+    {
     }
     #endregion
 }
