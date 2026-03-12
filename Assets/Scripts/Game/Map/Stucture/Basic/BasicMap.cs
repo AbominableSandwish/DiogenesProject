@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 using static Structure;
@@ -13,7 +14,7 @@ public class BasicMap : StructureMap<BasicMap>
     private TileBase _ground;
     private TileBase _limit;
 
-    public Dictionary<Vector3Int, Structure> structures;
+
 
 
     #region Mono
@@ -100,7 +101,8 @@ public class BasicMap : StructureMap<BasicMap>
         bool canRemove = structures.ContainsKey(pos);
         if (canRemove)
         {
-            structures.Remove(pos);   
+            structures[pos] = null;
+            _tilemap.SetTile(pos, null);
         }  
         return canRemove;
     }
@@ -113,10 +115,13 @@ public class BasicMap : StructureMap<BasicMap>
             for (int j = 0; j < Height; j++)
             {
                 Vector3Int key = new Vector3Int(i, j, 0);
-                string name = structures[key].TileAssetReference();
-                tileBase = _tileRegistry.Get(name);
-                object[] args = { _tilemap, i, j };
-                _tilemap.SetTile(key, tileBase);
+                if (structures[key] != null)
+                {
+                    string name = structures[key].TileAssetReference();
+                    tileBase = _tileRegistry.Get(name);
+                    object[] args = { _tilemap, i, j };
+                    _tilemap.SetTile(key, tileBase);
+                }
             }
         }
     }

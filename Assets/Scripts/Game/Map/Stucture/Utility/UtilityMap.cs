@@ -35,7 +35,6 @@ public class UtilityMap : StructureMap<UtilityMap>
     #region Private Data
 
     private TileRegistry _tileRegistry;
-    Dictionary<Vector3Int, Structure> structures;
 
     [SerializeField] private Tilemap _electric;
     [SerializeField] private List<Circuit> _circuits;

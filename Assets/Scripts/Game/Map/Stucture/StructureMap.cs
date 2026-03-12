@@ -6,6 +6,7 @@ public class StructureMap<T> : MonoBehaviour
 {
     #region Private Data
     [SerializeField] protected Tilemap _tilemap;
+    public Dictionary<Vector3Int, Structure> structures;
 
     public int Width, Height;
     protected static T _instance;
@@ -27,6 +28,25 @@ public class StructureMap<T> : MonoBehaviour
     public virtual Structure GetStructure(Vector3Int pos)
     {
         return null;
+    }
+
+    public void SetStructure(Vector3Int pos, Structure structure)
+    {
+        structures[pos] = structure;
+    }
+    public void RemoveStructure(Vector3Int pos)
+    {
+        bool canRemove = structures.ContainsKey(pos);
+        if (canRemove)
+        {
+            structures[pos] = null;
+            _tilemap.SetTile(pos, null);
+        }
+    }
+
+    public bool HasStructure(Vector3Int pos)
+    {
+        return structures.ContainsKey(pos);
     }
 
     public virtual TileBase GetTile(Vector3Int position)

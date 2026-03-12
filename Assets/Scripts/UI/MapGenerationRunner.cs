@@ -1,16 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static Structure;
 
-public class MapGenerationRunner : MonoBehaviour
+public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
 {
-    [Header("Generation")]
-    [SerializeField] private GenerationMap generator;
+    [Header("Pipeline")]
+    [SerializeField] private GenerationPipeline pipeline;
 
-    [Header("Map (source de width/height + dictionary)")]
+    [Header("Map")]
     [SerializeField] private BasicMap mapProvider;
-    // -> petit script chez toi qui expose ta StructureMap actuelle (Width/Height + Structures)
 
     [Header("UI Toolkit")]
     [SerializeField] private UIDocument uiDocument;
@@ -23,7 +21,8 @@ public class MapGenerationRunner : MonoBehaviour
 
     private void Awake()
     {
-        if (uiDocument == null) uiDocument = GetComponent<UIDocument>();
+        if (uiDocument == null)
+            uiDocument = GetComponent<UIDocument>();
 
         var root = uiDocument.rootVisualElement;
 
@@ -34,7 +33,7 @@ public class MapGenerationRunner : MonoBehaviour
         if (_button != null)
             _button.clicked += OnGenerateClicked;
 
-        SetUI(0f, "Prêt");
+        UpdateUI(0f, "Prêt");
     }
 
     private void OnDestroy()
@@ -45,12 +44,6 @@ public class MapGenerationRunner : MonoBehaviour
 
     private void OnGenerateClicked()
     {
-        if (generator == null || mapProvider == null)
-        {
-            Debug.LogError("Generator ou Map manquant.");
-            return;
-        }
-
         if (_running != null)
             StopCoroutine(_running);
 
@@ -59,31 +52,100 @@ public class MapGenerationRunner : MonoBehaviour
 
     private IEnumerator GenerateRoutine()
     {
-        _button?.SetEnabled(false);
+        if (pipeline == null)
+        {
+            Debug.LogError("GenerationPipeline manquante.");
+            yield break;
+        }
+
+        if (mapProvider == null)
+        {
+            Debug.LogError("BasicMap manquante.");
+            yield break;
+        }
 
         var map = mapProvider;
+        var steps = pipeline.Steps;
 
-        SetUI(0f, "Génération...");
+        if (steps == null || steps.Count == 0)
+        {
+            Debug.LogError("La pipeline ne contient aucune étape.");
+            yield break;
+        }
 
-        yield return generator.GenerateRoutine(
-            map,
-            map.Width,
-            map.Height,
-            p => SetUI(p, $"Génération: {Mathf.RoundToInt(p * 100f)}%"),
-            yieldEvery: 1       // yield chaque colonne (ou augmente pour plus rapide)
-        );
+        _button?.SetEnabled(false);
 
-        SetUI(1f, "Terminé");
+        map.Structures.Clear();
+
+        int totalSteps = steps.Count;
+
+        for (int i = 0; i < totalSteps; i++)
+        {
+            GenerationStep step = steps[i];
+            if (step == null)
+                continue;
+
+            int stepNumber = i + 1;
+            int stepSeed = pipeline.Seed + i;
+
+            SetStep($"[{stepNumber}/{totalSteps}] {step.Name}");
+            ReportItem(string.Empty);
+            ReportProgress(0f);
+
+            yield return null;
+
+            yield return StartCoroutine(step.DoGenerate(
+                map,
+                map.Width,
+                map.Height,
+                stepSeed,
+                this,
+                yieldEvery: 1
+            ));
+
+            ReportProgress(1f);
+            yield return null;
+        }
+
+        UpdateUI(1f, "Terminé");
         _button?.SetEnabled(true);
         _running = null;
     }
 
-    private void SetUI(float progress01, string text)
+    private void UpdateUI(float progress01, string text)
     {
         if (_progress != null)
-            _progress.value = Mathf.Clamp01(progress01) * 100f; // ProgressBar = 0..100
+            _progress.value = Mathf.Clamp01(progress01) * 100f;
 
         if (_label != null)
             _label.text = text;
+    }
+
+    public void SetStep(string stepName)
+    {
+        if (_label != null)
+            _label.text = stepName;
+    }
+
+    public void ReportItem(string itemLabel)
+    {
+        if (_label == null)
+            return;
+
+        if (string.IsNullOrEmpty(itemLabel))
+            return;
+
+        _label.text = $"{_label.text}\n{itemLabel}";
+    }
+
+    public void ReportProgress(float stepProgress01)
+    {
+        if (_progress != null)
+            _progress.value = Mathf.Clamp01(stepProgress01) * 100f;
+    }
+
+    public void Log(string line)
+    {
+        Debug.Log(line);
     }
 }

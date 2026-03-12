@@ -1416,7 +1416,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968ae2f8d30196c49bbf087c5ffddea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerationRunner
-  generator: {fileID: 11400000, guid: 4e3f47bb8642a924db898432ed7c3988, type: 2}
+  pipeline: {fileID: 11400000, guid: 95651621cb0fcb844b245e4fea5b76ca, type: 2}
   mapProvider: {fileID: 26081180}
   uiDocument: {fileID: 1731109773}
 --- !u!1 &1841006772

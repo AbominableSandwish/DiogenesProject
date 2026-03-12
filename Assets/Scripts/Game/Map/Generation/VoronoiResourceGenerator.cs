@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Map Generation/Voronoi Resource Generator")]
-public class VoronoiResourceGenerator : GenerationMap
+public class VoronoiResourceGenerator : GenerationStep
 {
     [Header("Voronoi Settings")]
     [SerializeField] private int sitesPer100Cells = 6;
@@ -23,11 +23,12 @@ public class VoronoiResourceGenerator : GenerationMap
         public ResourceKind kind;
     }
 
-    protected override IEnumerator DoGenerateRoutine(
+    public override IEnumerator DoGenerate(
         BasicMap map,
         int width,
         int height,
-        Action<float> onProgress,
+        int seed,
+        IGenerationReporter reporter,
         int yieldEvery)
     {
         var rng = new System.Random(seed);
@@ -35,7 +36,11 @@ public class VoronoiResourceGenerator : GenerationMap
         // 1) Sites
         var sites = CreateSites(width, height, rng);
 
+
         // 2) Remplissage voronoi (coûteux) -> progress + yield
+        int totalCells = width * height;
+        int processed = 0;
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -57,9 +62,9 @@ public class VoronoiResourceGenerator : GenerationMap
 
                 map.structures[new Vector3Int(x, y, 0)] = CreateResource(bestKind);
 
+                processed++;
 
-                // progression sur X
-                onProgress?.Invoke(map.structures.Count / (width * height));
+                reporter?.ReportProgress((float)processed / totalCells);
             }
 
             if (yieldEvery > 0 && (x % yieldEvery) == 0)
