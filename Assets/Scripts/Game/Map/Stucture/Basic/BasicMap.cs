@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using static Structure;
-using static UnityEngine.Rendering.GPUSort;
+
 
 
 public class BasicMap : StructureMap<BasicMap>

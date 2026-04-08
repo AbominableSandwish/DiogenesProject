@@ -8,12 +8,17 @@ public class CameraSystem : MonoBehaviour
     private Vector2 _maxArea;
     [SerializeField] private float velocity = 5.0f;
 
-    private Vector2 _movement;
+    private GameInput _gameInput;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _grid = FindAnyObjectByType<MapManager>();
+        _gameInput = FindAnyObjectByType<GameInput>();
+        if(_gameInput == null)
+        {
+            Debug.LogWarning("GameInput is not initialized");
+        }
 
         _center = transform.position;
         transform.position = new Vector3(_center.x, _center.y, transform.position.z);
@@ -22,9 +27,10 @@ public class CameraSystem : MonoBehaviour
 
     private void Update()
     {
-        if (_movement.magnitude > 0)
+        Vector2 input = _gameInput.MoveInput;
+        if (input.magnitude > 0)
         {
-            Vector3 newPosition = transform.position + (Vector3)_movement * velocity * Time.deltaTime;
+            Vector3 newPosition = transform.position + (Vector3)input * velocity * Time.deltaTime;
 
             if (newPosition.x > _center.x + _maxArea.x / 2.0f)
             {
@@ -48,10 +54,5 @@ public class CameraSystem : MonoBehaviour
 
             transform.position = newPosition;
         }
-    }
-
-    public void Move(Vector2 movement)
-    {
-        _movement = movement;
     }
 }
