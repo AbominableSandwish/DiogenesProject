@@ -86,3 +86,13 @@ Par exemple :
 
 ```bash
 git clone https://github.com/AbominableSandwish/DiogenesProject.git
+
+## 🎥 Aperçu
+![Generation](docs/ElectricityV2.gif)
+
+## 🔍 Technical Highlights
+
+- Pipeline de génération modulaire (ScriptableObject + Steps)
+- Système de loading pondéré avec progression globale
+- Pathfinding avec contraintes gameplay (climb, ladder, obstacles)
+- Architecture orientée systèmes et découplage
