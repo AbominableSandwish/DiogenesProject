@@ -3,16 +3,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
-
 public class BasicMap : StructureMap<BasicMap>
 {
     private TileRegistry _tileRegistry;
     private TileBase _ground;
     private TileBase _limit;
-
-
-
 
     #region Mono
     public void Init(int width, int height, bool Generation = false)
@@ -115,7 +110,7 @@ public class BasicMap : StructureMap<BasicMap>
                 if (structures[key] != null)
                 {
                     string name = structures[key].TileAssetReference();
-                    tileBase = _tileRegistry.Get(name);
+                    tileBase = _tileRegistry.Get(name); 
                     object[] args = { _tilemap, i, j };
                     _tilemap.SetTile(key, tileBase);
                 }

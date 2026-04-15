@@ -33,24 +33,16 @@ public class CameraSystem : MonoBehaviour
             Vector3 newPosition = transform.position + (Vector3)input * velocity * Time.deltaTime;
 
             if (newPosition.x > _center.x + _maxArea.x / 2.0f)
-            {
                 newPosition.x = _center.x + _maxArea.x / 2.0f;
-            }
 
             if (newPosition.x < _center.x - _maxArea.x / 2.0f)
-            {
                 newPosition.x = _center.x - _maxArea.x / 2.0f;
-            }
 
             if (newPosition.y > _center.y + _maxArea.y / 2.0f)
-            {
                 newPosition.y = _center.y + _maxArea.y / 2.0f;
-            }
 
             if (newPosition.y < _center.y - _maxArea.y / 2.0f)
-            {
                 newPosition.y = _center.y - _maxArea.y / 2.0f;
-            }
 
             transform.position = newPosition;
         }
