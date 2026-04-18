@@ -11,7 +11,7 @@ public class Lamp : Engine
     private Light2D _light;
     private float _outerRadius;
 
-    protected new StructureMap _map = StructureMap.Utility;
+    public override StructureLayer Layer => StructureLayer.Utility;
     #endregion
 
     #region Constructor

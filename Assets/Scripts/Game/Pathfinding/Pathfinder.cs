@@ -24,7 +24,7 @@ public class Pathfinder : MonoBehaviour
             if (!allNodes.TryGetValue(pos, out var node))
             {
                 // Walkable = dans les limites + walkable sur la map
-                bool walkable = IsInsideLimits(pos) && grid.IsWalkable(pos, StructureMap.Basic);
+                bool walkable = IsInsideLimits(pos) && grid.IsWalkable(pos, StructureLayer.Basic);
 
                 node = new Node(pos, walkable);
 
@@ -146,7 +146,7 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsClimbTile(Vector3Int cell)
     {
-        var s = grid.GetStructure(cell, StructureMap.Basic);
+        var s = grid.GetStructure(cell, StructureLayer.Basic);
         if (s == null) return false;
 
         return s.Type == StructureType.Ladder;
@@ -169,7 +169,7 @@ public class Pathfinder : MonoBehaviour
         // 0) Si un obstacle est présent AU MÊME NIVEAU, il prend la priorité sur IsWalkable
         //    - grimpable -> on tente Y+1
         //    - non grimpable -> on bloque
-        var obstacle = grid.GetStructure(front, StructureMap.Basic);
+        var obstacle = grid.GetStructure(front, StructureLayer.Basic);
 
         if (obstacle != null)
         {
@@ -221,7 +221,7 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsClimbableBlockAt(Vector3Int cell)
     {
-        var st = grid.GetStructure(cell, StructureMap.Basic);
+        var st = grid.GetStructure(cell, StructureLayer.Basic);
         if (st == null) return false;
 
         // Ici tu mets les blocs "1 de haut" qu'on peut escalader
@@ -232,7 +232,7 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsSolidBlockAt(Vector3Int cell)
     {
-        var st = grid.GetStructure(cell, StructureMap.Basic);
+        var st = grid.GetStructure(cell, StructureLayer.Basic);
         if (st == null) return false;
 
         // Mets ici le type exact qui “bloque” au même niveau
@@ -248,7 +248,7 @@ public class Pathfinder : MonoBehaviour
         if (!IsInsideLimits(cell))
             return false;
 
-        var body = grid.GetStructure(cell, StructureMap.Basic);
+        var body = grid.GetStructure(cell, StructureLayer.Basic);
 
         // Les échelles / escaliers n'obstruent PAS le corps
         if (body != null)
@@ -265,7 +265,7 @@ public class Pathfinder : MonoBehaviour
         if (!IsInsideLimits(head))
             return false;
 
-        var headStruct = grid.GetStructure(head, StructureMap.Basic);
+        var headStruct = grid.GetStructure(head, StructureLayer.Basic);
         if (headStruct != null &&
             headStruct.Type != StructureType.Ladder)
             return false;
@@ -280,7 +280,7 @@ public class Pathfinder : MonoBehaviour
             return false;
 
         // Walkable (sol/obstacle/etc.)
-        if (!grid.IsWalkable(to, StructureMap.Basic))
+        if (!grid.IsWalkable(to, StructureLayer.Basic))
             return false;
 
         // Si tu as la notion de "block qui bloque sur la même ligne",

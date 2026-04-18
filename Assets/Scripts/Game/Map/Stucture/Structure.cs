@@ -1,8 +1,9 @@
 using UnityEngine;
+using static MapManager;
 
-public class Structure
+public abstract  class Structure
 {
-    public enum StructureMap
+    public enum StructureLayer
     {
         None,
         Basic,
@@ -13,11 +14,8 @@ public class Structure
     #region Private Data
     protected bool _isEnabled = false;
     protected StructureType _type = StructureType.NONE;
-    protected StructureMap _map = StructureMap.None;
     protected string _name = "";
     protected Vector3Int _position;
-
-
     #endregion
 
     #region Public Data
@@ -35,7 +33,7 @@ public class Structure
 
     #region Public Method
     public string Name { get => _name; }
-    public StructureMap GetMap { get => _map; set => _map = value; }
+
     public StructureType Type { get => _type; }
     public Vector3Int Position { get => _position; set => _position = value; }
 
@@ -44,15 +42,17 @@ public class Structure
         return TILE_ASSET_REFERENCE;
     }
 
+    public abstract StructureLayer Layer { get; }
+
     public virtual bool ToPlace(Vector3Int pos)
     {
-        switch (_map)
+        switch (Layer)
         {
-            case StructureMap.Basic:
+            case StructureLayer.Basic:
                 break;
-            case StructureMap.Utility: 
+            case StructureLayer.Utility: 
                 break;
-            case StructureMap.Decoration:
+            case StructureLayer.Decoration:
                 break;
         }
         return false;
@@ -60,13 +60,13 @@ public class Structure
 
     public virtual bool ToRemove(Vector3Int pos)
     {
-        switch (_map)
+        switch (Layer)
         {
-            case StructureMap.Basic:
+            case StructureLayer.Basic:
                 break;
-            case StructureMap.Utility:
+            case StructureLayer.Utility:
                 break;
-            case StructureMap.Decoration:
+            case StructureLayer.Decoration:
                 break;
         }
         return false;

@@ -11,6 +11,7 @@ public class Storage : Structure
 
     public const float OUT_MAX = 0.0f;
     public const float CAPACITY_MAX = 10000.0f;
+    public override StructureLayer Layer => StructureLayer.Utility;
 
     #region Nested Method
     public Storage(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)

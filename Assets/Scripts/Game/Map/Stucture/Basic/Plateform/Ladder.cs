@@ -6,7 +6,7 @@ class Ladder : Structure
     new public static string TILE_ASSET_REFERENCE = "Ladder";
     new public bool IsWalkable = false;
 
-
+    public override StructureLayer Layer => StructureLayer.Utility;
     #region Constructor
     public Ladder(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {

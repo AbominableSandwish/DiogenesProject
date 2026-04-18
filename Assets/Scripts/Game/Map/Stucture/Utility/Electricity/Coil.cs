@@ -8,6 +8,7 @@ public class Coil : Structure
     new public static string TileAssetReference = "Coil";
 
     #region Public Method
+    public override StructureLayer Layer => StructureLayer.Utility;
     public Coil()
     {
        

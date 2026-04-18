@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class GameInput : MonoBehaviour
 {
-    private CameraSystem _camera = null;
     private Vector2 _moveInput;
 
     public Vector2 MoveInput { get => _moveInput; }

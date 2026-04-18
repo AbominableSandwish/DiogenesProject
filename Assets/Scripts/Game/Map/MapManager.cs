@@ -11,19 +11,12 @@ public class MapManager : MonoBehaviour
     private static MapManager _instance = null;
     [SerializeField] private int _height = 40;
     [SerializeField] private int _width = 40;
-    public float CellSize = 1f;
-
-    public bool isReady = false;
-    public Action OnExecute;
-
     //Others
     [SerializeField] private BasicMap _basicMap;
     [SerializeField] private UtilityMap _utilityMap;
     [SerializeField] private DecorationMap _decorationMap;
 
     [SerializeField] private bool GenerationMap = false;
-
- 
     #endregion
 
 
@@ -36,6 +29,17 @@ public class MapManager : MonoBehaviour
 
     public bool IsCellFree(Vector3Int gridPos)
         => _basicMap.GetStructure(gridPos) != null;
+
+    public float CellSize = 1f;
+
+    public bool isReady = false;
+    public Action OnExecute;
+    public enum StructureLayer
+    {
+        Basic,
+        Utility,
+        Decoration
+    }
     #endregion
 
     #region Mono
@@ -69,35 +73,35 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Public Method
-    public Structure GetStructure(Vector3Int position, Structure.StructureMap map)
+    public Structure GetStructure(Vector3Int position, Structure.StructureLayer layer)
     {
         Structure structure = null;
-        switch (map)
+        switch (layer)
         {
-            case Structure.StructureMap.Basic:
+            case Structure.StructureLayer.Basic:
                 structure = _basicMap?.GetStructure(position);
                 break;  
-            case Structure.StructureMap.Utility:
+            case Structure.StructureLayer.Utility:
                 structure = _utilityMap?.GetStructure(position);
                 break;
-            case Structure.StructureMap.Decoration:
+            case Structure.StructureLayer.Decoration:
                 structure = _decorationMap?.GetStructure(position);
                 break;
         }
         return structure;
     }
-    public bool IsWalkable(Vector3Int position, Structure.StructureMap map)
+    public bool IsWalkable(Vector3Int position, Structure.StructureLayer layer)
     {
         bool isWalkable = false;
-        switch (map)
+        switch (layer)
         {
-            case Structure.StructureMap.Basic:
+            case Structure.StructureLayer.Basic:
                 isWalkable = _basicMap.IsWalkable(position);
                 break;
-            case Structure.StructureMap.Utility:
+            case Structure.StructureLayer.Utility:
                 isWalkable = _utilityMap.IsWalkable(position);
                 break;
-            case Structure.StructureMap.Decoration:
+            case Structure.StructureLayer.Decoration:
                 isWalkable = _decorationMap.IsWalkable(position);
                 break;
         }

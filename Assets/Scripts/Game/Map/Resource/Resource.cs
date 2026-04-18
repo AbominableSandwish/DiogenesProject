@@ -6,6 +6,7 @@ public class Resource : Structure
     new public static string TILE_ASSET_REFERENCE = "Resource";
     new public bool IsWalkable = true;
 
+    public override StructureLayer Layer => StructureLayer.Basic;
     public override bool ToPlace(Vector3Int pos)
     {
         return MapManager.AddStructure<Ground>(pos);

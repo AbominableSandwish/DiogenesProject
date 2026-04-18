@@ -6,6 +6,8 @@ class Ground : Structure
     new public static string TILE_ASSET_REFERENCE = "Ground";
     new public bool IsWalkable = false;
 
+    public override StructureLayer Layer => StructureLayer.Utility;
+
     public override bool ToPlace(Vector3Int pos)
     {
         return MapManager.AddStructure<Ground>(pos);

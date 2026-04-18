@@ -8,6 +8,8 @@ class WoodPlateform : Structure
     new public static string TILE_ASSET_REFERENCE = "WoodPlateform";
     new public bool IsWalkable = true;
 
+
+
     #region Constructor
     public WoodPlateform(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
@@ -19,6 +21,8 @@ class WoodPlateform : Structure
         }
     }
     #endregion
+
+    public override StructureLayer Layer => StructureLayer.Utility;
 
     public override bool ToPlace(Vector3Int pos)
     {

@@ -20,6 +20,8 @@ class Limit : Structure
     }
     #endregion
 
+    public override StructureLayer Layer => StructureLayer.Basic;
+
     public override bool ToPlace(Vector3Int pos)
     {
         return MapManager.AddStructure<Limit>(pos);

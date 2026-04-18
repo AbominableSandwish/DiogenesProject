@@ -7,6 +7,7 @@ public class Engine : Structure
 {
     #region Public data
     public float EnginePerformance = 0.0f;
+    public override StructureLayer Layer => StructureLayer.Basic;
     #endregion
 
     #region Private data
