@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 class WoodPlateform : Structure
 {
     new protected string _name = "WoodPlateform";
-    new public static string TILE_ASSET_REFERENCE = "WoodPlateform";
+    public override string TileAssetReference => "WoodPlateform";
     new public bool IsWalkable = true;
 
 
@@ -26,10 +26,10 @@ class WoodPlateform : Structure
 
     public override bool ToPlace(Vector3Int pos)
     {
-        return MapManager.AddStructure<WoodPlateform>(pos);
+        return MapManager.Instance.AddStructure(new WoodPlateform(), pos);
     }
     public override bool ToRemove(Vector3Int pos)
     {
-        return MapManager.RemoveStructure<WoodPlateform>(pos);
+        return MapManager.Instance.AddStructure(new WoodPlateform(), pos);
     }
 }

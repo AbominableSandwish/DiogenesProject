@@ -9,7 +9,7 @@ public abstract  class Structure
     #endregion
 
     #region Public Data
-    public static string TILE_ASSET_REFERENCE = "";
+    public abstract string TileAssetReference { get; }
     public bool IsWalkable = false;
     public bool IsClimbable = true;
     #endregion
@@ -19,39 +19,15 @@ public abstract  class Structure
 
     public StructureType Type { get => _type; }
     public Vector3Int Position { get => _position; set => _position = value; }
-
-    public virtual string TileAssetReference()
-    {
-        return TILE_ASSET_REFERENCE;
-    }
-
     public abstract StructureLayer Layer { get; }
 
     public virtual bool ToPlace(Vector3Int pos)
     {
-        switch (Layer)
-        {
-            case StructureLayer.Basic:
-                break;
-            case StructureLayer.Utility: 
-                break;
-            case StructureLayer.Decoration:
-                break;
-        }
         return false;
     }
 
     public virtual bool ToRemove(Vector3Int pos)
     {
-        switch (Layer)
-        {
-            case StructureLayer.Basic:
-                break;
-            case StructureLayer.Utility:
-                break;
-            case StructureLayer.Decoration:
-                break;
-        }
         return false;
     }
     #endregion

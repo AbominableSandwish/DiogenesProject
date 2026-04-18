@@ -6,6 +6,7 @@ public class Generator : Structure
 {
     protected float _electricProduction = 0.0f;
     protected float _electricPower;
+    public override string TileAssetReference => "Generator";
 
     public override StructureLayer Layer => StructureLayer.Utility;
 

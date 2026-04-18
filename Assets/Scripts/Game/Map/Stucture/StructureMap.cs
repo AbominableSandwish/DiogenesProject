@@ -1,47 +1,53 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
-public class StructureMap<T> : MonoBehaviour
+public class StructureMap<TMap> : MonoBehaviour
 {
     #region Private Data
     [SerializeField] protected Tilemap _tilemap;
     public Dictionary<Vector3Int, Structure> structures;
 
     public int Width, Height;
-    protected static T _instance;
     protected GameManager _game;
     protected MapManager _map;
     #endregion
 
     #region Public Method
-    public virtual bool AddStructure<TStructure>(Vector3Int pos)
+    public virtual bool AddStructure(Structure structure, Vector3Int position)
     {
-        return false;
+        if (structure == null)
+            return false;
+
+        structure.Position = position;
+        this.structures[position] = structure;
+        return true;
     }
 
-    public virtual bool RemoveStructure<TStructure>(Vector3Int pos)
+    public virtual bool RemoveStructure(Vector3Int position)
     {
-        return false;
+        bool canRemove = structures.ContainsKey(position);
+        if (canRemove)
+        {
+            structures[position] = null;
+            _tilemap.SetTile(position, null);
+        }
+
+        return canRemove;
     }
 
-    public virtual Structure GetStructure(Vector3Int pos)
+    public virtual Structure GetStructure(Vector3Int position)
     {
+        if (structures.TryGetValue(position, out Structure structure))
+            return structure;
+
         return null;
     }
 
     public void SetStructure(Vector3Int pos, Structure structure)
     {
         structures[pos] = structure;
-    }
-    public void RemoveStructure(Vector3Int pos)
-    {
-        bool canRemove = structures.ContainsKey(pos);
-        if (canRemove)
-        {
-            structures[pos] = null;
-            _tilemap.SetTile(pos, null);
-        }
     }
 
     public bool HasStructure(Vector3Int pos)

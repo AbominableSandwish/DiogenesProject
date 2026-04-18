@@ -26,8 +26,8 @@ public class BasicMap : StructureMap<BasicMap>
 
     public void NewMap()
     {
-        _limit = _tileRegistry.Get(Limit.TILE_ASSET_REFERENCE);
-        _ground = _tileRegistry.Get(Ground.TILE_ASSET_REFERENCE);
+        _limit = _tileRegistry.Get(new Limit().TileAssetReference);
+        _ground = _tileRegistry.Get(new Ground().TileAssetReference);
 
         for (int i = -1; i <= _map.Width; i++)
         {
@@ -36,7 +36,7 @@ public class BasicMap : StructureMap<BasicMap>
                 if (i == -1 || j == -1 || i == _map.Width)
                 {
                     TileBase tile = _limit;
-                    MapManager.AddStructure<Limit>(new Vector3Int(i,j));
+                    _map.AddStructure(new Limit(), new Vector3Int(i,j));
                 }
                 else
                 {
@@ -50,45 +50,19 @@ public class BasicMap : StructureMap<BasicMap>
     #endregion
 
     #region Public Method
-    public static BasicMap Instance { get => _instance; protected set => _instance = value; }
     public Dictionary<Vector3Int, Structure> Structures { get => structures; set => structures = value; }
     public Dictionary<Vector3Int, Structure> Structures1 { get => structures; set => structures = value; }
 
-    public override bool AddStructure<T>(Vector3Int position)
+    public override bool AddStructure(Structure structure, Vector3Int position)
     {
-        TileBase tileBase = null;
-        switch (typeof(T))
-        {
-            case var cls when cls == typeof(Ground):
-                tileBase = _tileRegistry.Get(Ground.TILE_ASSET_REFERENCE);
-              
-                break;
-            case var cls when cls == typeof(Limit):
-                tileBase = _tileRegistry.Get(Limit.TILE_ASSET_REFERENCE);
-                break;
-            case var cls when cls == typeof(WoodPlateform):
-                tileBase = _tileRegistry.Get(WoodPlateform.TILE_ASSET_REFERENCE);
-                break;
-            case var cls when cls == typeof(Ladder):
-                tileBase = _tileRegistry.Get(Ladder.TILE_ASSET_REFERENCE);
-                break;
-            case var cls when cls == typeof(Door):
-                tileBase = _tileRegistry.Get(Door.TILE_ASSET_REFERENCE);
-                break;
-            case var cls when cls == typeof(Glass):
-                tileBase = _tileRegistry.Get(Glass.TILE_ASSET_REFERENCE);
-                break;
-        }
-
+        TileBase tileBase = _tileRegistry.Get(structure.TileAssetReference);
         object[] args = { _tilemap, position.x, position.y };
-        Structure instance = (Structure)typeof(T).Instantiate(true, args);
-        structures.Add(position, instance);
+        structures.Add(position, structure);
         _tilemap.SetTile(position, tileBase);
-
         return false;
     }
 
-    public override bool RemoveStructure<T>(Vector3Int pos)
+    public override bool RemoveStructure(Vector3Int pos)
     {
         bool canRemove = structures.ContainsKey(pos);
         if (canRemove)
@@ -109,7 +83,7 @@ public class BasicMap : StructureMap<BasicMap>
                 Vector3Int key = new Vector3Int(i, j, 0);
                 if (structures[key] != null)
                 {
-                    string name = structures[key].TileAssetReference();
+                    string name = structures[key].TileAssetReference;
                     tileBase = _tileRegistry.Get(name); 
                     object[] args = { _tilemap, i, j };
                     _tilemap.SetTile(key, tileBase);
@@ -178,22 +152,22 @@ public class BasicMap : StructureMap<BasicMap>
             switch ((StructureType)cdata.type)
             {
                 case StructureType.WoodPlateform:
-                    AddStructure<WoodPlateform>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new WoodPlateform(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Ladder:
-                    AddStructure<Ladder>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Ladder(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Door:
-                    AddStructure<Door>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Door(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Glass:
-                    AddStructure<Glass>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Glass(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Limit:
-                    AddStructure<Limit>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Limit(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Ground:
-                    AddStructure<Ground>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Ground(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
             }
         }

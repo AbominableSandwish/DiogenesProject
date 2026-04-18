@@ -36,34 +36,34 @@ public class PlayerController : MonoBehaviour
             switch (this.type)
             {
                 case StructureType.Coil:
-                    MapManager.AddStructure<Coil>(position);
+                    _map.AddStructure(new Coil(), position);
                     break;
                 case StructureType.Generator:
-                    MapManager.AddStructure<Generator>(position);
+                    _map.AddStructure(new Generator(), position);
                     break;
                 case StructureType.Engine:
-                    MapManager.AddStructure<Engine>(position);
+                    _map.AddStructure(new Engine(), position);
                     break;
                 case StructureType.Storage:
-                    MapManager.AddStructure<Storage>(position);
+                    _map.AddStructure(new Storage(), position);
                     break;
                 case StructureType.Lamp:
-                    MapManager.AddStructure<Lamp>(position);
+                    _map.AddStructure(new Lamp(), position);
                     break;
                 case StructureType.SolarPanel:
-                    MapManager.AddStructure<SolarPanel>(position);
+                    _map.AddStructure(new SolarPanel(), position);
                     break;
                 case StructureType.WoodPlateform:
-                    MapManager.AddStructure<WoodPlateform>(position);
+                    _map.AddStructure(new WoodPlateform(), position);
                     break;
                 case StructureType.Ladder:
-                    MapManager.AddStructure<Ladder>(position);
+                    _map.AddStructure(new Ladder(), position);
                     break;
                 case StructureType.Door:
-                    MapManager.AddStructure<Door>(position);
+                    _map.AddStructure(new Door(), position);
                     break;
                 case StructureType.Limit:
-                    MapManager.AddStructure<Limit>(position);
+                    _map.AddStructure(new Limit(), position);
                     break;
             }
         }

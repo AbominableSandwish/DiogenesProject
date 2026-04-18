@@ -5,7 +5,7 @@ public class Coil : Structure
 {
     Structure StructureConnect;
     new protected  string _name = "Coil";
-    new public static string TileAssetReference = "Coil";
+    public override string TileAssetReference => "Coil";
 
     #region Public Method
     public override StructureLayer Layer => StructureLayer.Utility;
@@ -26,11 +26,11 @@ public class Coil : Structure
     }
     public override bool ToPlace(Vector3Int pos)
     {
-        return MapManager.AddStructure<Coil>(pos);
+        return MapManager.Instance.AddStructure(new Coil(), pos);
     }
     public override bool ToRemove(Vector3Int pos)
     {
-        return MapManager.RemoveStructure<Coil>(pos);
+        return MapManager.Instance.AddStructure(new Coil(), pos);
     }
     #endregion
 }

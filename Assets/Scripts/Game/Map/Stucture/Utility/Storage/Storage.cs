@@ -11,6 +11,8 @@ public class Storage : Structure
 
     public const float OUT_MAX = 0.0f;
     public const float CAPACITY_MAX = 10000.0f;
+
+    public override string TileAssetReference => "Coil";
     public override StructureLayer Layer => StructureLayer.Utility;
 
     #region Nested Method

@@ -35,12 +35,12 @@ public class SolarPanel : Generator
 
     public override bool ToPlace(Vector3Int pos)
     {
-        return MapManager.AddStructure<SolarPanel>(pos);
+        return MapManager.Instance.RemoveStructure(new SolarPanel(), pos);
     }
 
     public override bool ToRemove(Vector3Int pos)
     {
-        return MapManager.RemoveStructure<SolarPanel>(pos);
+        return MapManager.Instance.RemoveStructure(new SolarPanel(), pos);
     }
     #endregion
 }

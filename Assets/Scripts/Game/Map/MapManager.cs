@@ -103,95 +103,59 @@ public class MapManager : MonoBehaviour
     }
 
 
-    public static bool AddStructure<T>(Vector3Int position)
+    public bool AddStructure(Structure structure, Vector3Int position)
     {
-        MapManager grid = Instance;
-        if (grid == null)
+        if (structure == null)
         {
-            Debug.LogWarning("Map is null");
+            Debug.LogError("Structure is null.", this);
             return false;
         }
 
-        string type = typeof(T).ToString();
-        switch (type) {
-            case "Ground":
-                grid._basicMap.AddStructure<Ground>(position);
-                break;
-            case "WoodPlateform":
-                grid._basicMap.AddStructure<WoodPlateform>(position);
-                break;
-            case "Limit":
-                grid._basicMap.AddStructure<Limit>(position);
-                break;
-            case "Door":
-                grid._basicMap.AddStructure<Door>(position);
-                break;
-            case "Glass":
-                grid._basicMap.AddStructure<Glass>(position);
-                break;
-            case "Ladder":
-                grid._basicMap.AddStructure<Ladder>(position);
-                break;
+        structure.Position = position;
 
-            case "Coil":
-                grid._utilityMap.AddStructure<Coil>(position);
-                break;
-            case "Generator":
-                grid._utilityMap.AddStructure<Generator>(position);
-                break;
-            case "Engine":
-                grid._utilityMap.AddStructure<Engine>(position);
-                break;
-            case "SolarPanel":
-                grid._utilityMap.AddStructure<SolarPanel>(position);
-                break;
-            case "Lamp":
-                grid._utilityMap.AddStructure<Lamp>(position);
-                break;
+        switch (structure.Layer)
+        {
+            case StructureLayer.Basic:
+                _basicMap.AddStructure(structure, position);
+                return true;
+
+            case StructureLayer.Utility:
+                _utilityMap.AddStructure(structure, position);
+                return true;
+
+            case StructureLayer.Decoration:
+                _decorationMap.AddStructure(structure, position);
+                return true;
+
+            default:
+                Debug.LogError($"Unsupported structure layer: {structure.Layer}", this);
+                return false;
         }
-
-        return true;
     }
 
-    public static bool RemoveStructure<T>(Vector3Int position)
+    public bool RemoveStructure(Structure structure, Vector3Int position)
     {
-        MapManager grid = Instance;
-        if (grid == null)
+        if (structure == null)
         {
-            Debug.LogWarning("Map is null");
+            Debug.LogError("Structure is null.", this);
             return false;
         }
 
-        switch (typeof(T).ToString())
+        switch (structure.Layer)
         {
-            case "Ground":
-                grid._basicMap.RemoveStructure<WoodPlateform>(position);
-                break;
-            case "Door":
-                grid._basicMap.RemoveStructure<Door>(position);
-                break;
-            case "Glass":
-                grid._basicMap.RemoveStructure<Glass>(position);
-                break;
+            case StructureLayer.Basic:
+                return _basicMap.RemoveStructure(position);
 
-            case "Coil":
-                grid._utilityMap.RemoveStructure<Coil>(position);
-                break;
-            case "Generator":
-                grid._utilityMap.RemoveStructure<Generator>(position);
-                break;
-            case "Engine":
-                grid._utilityMap.RemoveStructure<Engine>(position);
-                break;
-            case "SolarPanel":
-                grid._utilityMap.RemoveStructure<SolarPanel>(position);
-                break;
-            case "Lamp":
-                grid._utilityMap.RemoveStructure<Lamp>(position);
-                break;
+            case StructureLayer.Utility:
+                return _utilityMap.RemoveStructure(position);
+
+            case StructureLayer.Decoration:
+                return _decorationMap.RemoveStructure(position);
+
+            default:
+                Debug.LogError($"Unsupported structure layer: {structure.Layer}", this);
+                return false;
         }
-
-        return true;
     }
     #endregion
 
@@ -299,7 +263,6 @@ public class MapManager : MonoBehaviour
         OnExecute?.Invoke();
     }
     #endregion
-
 
 }
 

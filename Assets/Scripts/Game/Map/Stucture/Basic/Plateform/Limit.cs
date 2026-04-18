@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 class Limit : Structure
 {
     new protected string _name = "Limit";
-    new public static string TILE_ASSET_REFERENCE = "Limit";
+    public override string TileAssetReference => "Limit";
     new public bool IsWalkable = false;
     new public bool IsClimbable = true; 
 
@@ -24,10 +24,10 @@ class Limit : Structure
 
     public override bool ToPlace(Vector3Int pos)
     {
-        return MapManager.AddStructure<Limit>(pos);
+        return MapManager.Instance.RemoveStructure(new Limit(), pos);
     }
     public override bool ToRemove(Vector3Int pos)
     {
-        return MapManager.RemoveStructure<Limit>(pos);
+        return MapManager.Instance.RemoveStructure(new Limit(), pos);
     }
 }

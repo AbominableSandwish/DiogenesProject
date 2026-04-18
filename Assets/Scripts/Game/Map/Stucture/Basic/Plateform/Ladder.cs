@@ -3,7 +3,7 @@ using UnityEngine.Tilemaps;
 class Ladder : Structure
 {
     new protected string _name = "Ladder";
-    new public static string TILE_ASSET_REFERENCE = "Ladder";
+    public override string TileAssetReference => "Ladder";
     new public bool IsWalkable = false;
 
     public override StructureLayer Layer => StructureLayer.Utility;

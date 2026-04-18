@@ -107,7 +107,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                     return;
 
                 
-                Sprite sprite = TileRegistry.Instance.Get(Coil.TileAssetReference).sprite;
+                Sprite sprite = TileRegistry.Instance.Get(new Coil().TileAssetReference).sprite;
 
                 if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || _tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
@@ -231,16 +231,16 @@ public class UtilityMap : StructureMap<UtilityMap>
     #region Public Method
 
     #region Add
-    public override bool AddStructure<T>(Vector3Int pos)
+    public override bool AddStructure(Structure structure,Vector3Int pos)
     {
         bool canAdd = false;
-        switch (typeof(T))
+        switch (structure.GetType())
         {
             case var cls when cls == typeof(Coil):
                 AddCoil(pos);
                 break;
             case var cls when cls == typeof(SolarPanel):
-                AddGenerator<T>(pos);
+                AddGenerator((Generator)structure,  pos);
                 break;
             case var cls when cls == typeof(Lamp):
                 AddEngine<Lamp>(pos);
@@ -257,7 +257,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = null;
         tile = new Tile();
         tile.name = "Coil_" + _counterCoil.ToString();
-        tile.sprite = _tileRegistry.Get(Coil.TileAssetReference).sprite;
+        tile.sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _electric.SetTile(new Vector3Int(position.x, position.y), tile);    
 
@@ -403,7 +403,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     
 
-    public bool AddGenerator<T>(Vector3Int position)
+    public bool AddGenerator(Generator generator, Vector3Int position)
     {
         if (structures.ContainsKey(position))
             return false; // END
@@ -411,13 +411,13 @@ public class UtilityMap : StructureMap<UtilityMap>
         //Self
         Tile tile = null;
         tile = new Tile();
-        tile.name = typeof(T) + _counterGenerator.ToString();
+       
+        tile.name = generator.GetType() + _counterGenerator.ToString();
         tile.sprite = _tileRegistry.Get(SolarPanel.TileAssetReference).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
 
         object[] args = { position.x, position.y };
-        Generator generator = (Generator)typeof(T).Instantiate(true, args);
         structures.Add(position, generator);
         _counterGenerator++;
 
@@ -483,19 +483,19 @@ public class UtilityMap : StructureMap<UtilityMap>
     #endregion
 
     #region Remove
-    public override bool RemoveStructure<T>(Vector3Int pos)
+    public bool RemoveStructure(Structure structure, Vector3Int position)
     {
         bool canRemove = false;
-        switch (typeof(T))
+        switch (structure.GetType())
         {
             case var cls when cls == typeof(Coil):
-                RemoveCoil(pos);
+                RemoveCoil(position);
                 break;
             case var cls when cls == typeof(SolarPanel):
-                RemoveGenerator(pos);
+                RemoveGenerator(position);
                 break;
             case var cls when cls == typeof(Lamp):
-                RemoveEngine(pos);
+                RemoveEngine(position);
                 break;
         }
         return canRemove;
@@ -1010,13 +1010,13 @@ public class UtilityMap : StructureMap<UtilityMap>
         {
             switch ((StructureType)cdata.type) {
                 case StructureType.SolarPanel:
-                    AddStructure<SolarPanel>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new SolarPanel(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Coil:
-                    AddStructure<Coil>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Coil(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
                 case StructureType.Lamp:
-                    AddStructure<Lamp>(new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    AddStructure(new Lamp(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
             }
         }
@@ -1030,7 +1030,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             for (int j = 0; j < Height; j++)
             {
                 Vector3Int key = new Vector3Int(i, j, 0);
-                tileBase = _tileRegistry.Get(structures[key].TileAssetReference());
+                tileBase = _tileRegistry.Get(structures[key].TileAssetReference);
                 object[] args = { _tilemap, i, j };
                 _tilemap.SetTile(key, tileBase);
             }
