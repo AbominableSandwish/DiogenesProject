@@ -1,28 +1,28 @@
 using UnityEngine;
+using static UnityResolver;
 
 public class CameraSystem : MonoBehaviour
 {
-    [SerializeField] private Vector3 _center;
+    [SerializeField] private MapManager _map;
+    [SerializeField] private GameInput _gameInput;
 
-    private MapManager _grid;
-    private Vector2 _maxArea;
+    [SerializeField] private Vector3 _center;
     [SerializeField] private float velocity = 5.0f;
 
-    private GameInput _gameInput;
+    private Vector2 _maxArea;
+  
+    private void Awake()
+    {
+        UnityResolver.Resolve(_map, this, "MapaManager");
+        UnityResolver.Resolve(_gameInput, this, "GameInput");
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _grid = FindAnyObjectByType<MapManager>();
-        _gameInput = FindAnyObjectByType<GameInput>();
-        if(_gameInput == null)
-        {
-            Debug.LogWarning("GameInput is not initialized");
-        }
-
         _center = transform.position;
         transform.position = new Vector3(_center.x, _center.y, transform.position.z);
-        _maxArea = new Vector2(_grid.Width, _grid.Height);
+        _maxArea = new Vector2(_map.Width, _map.Height);
     }
 
     private void Update()

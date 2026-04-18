@@ -18,7 +18,11 @@ public class LoadingUIController : MonoBehaviour
 
     private void Awake()
     {
-        if (uiDocument == null) uiDocument = GetComponent<UIDocument>();
+        if (uiDocument == null)
+        {
+            Debug.LogWarning("UIDocument Component is null");
+            uiDocument = GetComponent<UIDocument>();
+        }
 
         var root = uiDocument.rootVisualElement;
         _title = root.Q<Label>("title");

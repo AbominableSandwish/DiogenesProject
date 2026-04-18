@@ -1,28 +1,27 @@
 using TMPro;
 using UnityEngine;
+using static UnityResolver;
 
 public class TestManager : MonoBehaviour
 {
-    SceneRegistry registry;
-    MapManager map;
-    VillagerTest test;
+    [SerializeField] private SceneRegistry registry;
+    [SerializeField] MapManager map;
+    [SerializeField] VillagerTest test;
 
     [SerializeField] private TextMeshProUGUI _title;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        registry = FindAnyObjectByType<SceneRegistry>();
-        map = FindAnyObjectByType<MapManager>();
-        test = FindAnyObjectByType<VillagerTest>();
+        registry = UnityResolver.Resolve(this, registry, nameof(SceneRegistry));
+        map = UnityResolver.Resolve(this, map, nameof(MapManager));
+        test = UnityResolver.Resolve(this, test, nameof(VillagerTest));
+
+        map.RegisterOnExecute(Action);
 
         NextTest();
     }
 
-    private void Update()
-    {
-        
-    }
 
     public void Action()
     {

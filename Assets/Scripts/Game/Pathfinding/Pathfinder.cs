@@ -2,14 +2,15 @@
 using System.Linq;
 using UnityEngine;
 using static Structure;
+using static UnityResolver;
 
 public class Pathfinder : MonoBehaviour
 {
-    private MapManager grid;
+    [SerializeField] private MapManager grid;
 
     private void Awake()
     {
-        grid = FindAnyObjectByType<MapManager>();
+        UnityResolver.Resolve(grid, this, "MapManager");
     }
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)

@@ -14,12 +14,7 @@ public class MapManager : MonoBehaviour
     public float CellSize = 1f;
 
     public bool isReady = false;
-    public Action onExecute;
-
-    public void Execute()
-    {
-        onExecute?.Invoke();
-    }
+    public Action OnExecute;
 
     //Others
     [SerializeField] private BasicMap _basicMap;
@@ -58,9 +53,16 @@ public class MapManager : MonoBehaviour
     {
         _basicMap?.Init(_width, _height, GenerationMap);
         _utilityMap?.Init(GenerationMap);
+    }
 
-        if (FindAnyObjectByType<TestManager>() != null)
-            onExecute += FindAnyObjectByType<TestManager>().Action;
+    public void Execute()
+    {
+        OnExecute?.Invoke();
+    }
+
+    public void RegisterOnExecute(Action action)
+    {
+        OnExecute += action;
     }
 
 
@@ -259,7 +261,7 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.Log($"✅ World Loaded: {fileName}");
-        onExecute?.Invoke();
+        OnExecute?.Invoke();
         isReady = true;
     }
 
@@ -296,7 +298,7 @@ public class MapManager : MonoBehaviour
 
         Debug.Log($"✅ World Loaded: {asset.name}");
         isReady = true;
-        onExecute?.Invoke();
+        OnExecute?.Invoke();
     }
     #endregion
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityResolver;
 
 public class LoadingManager : MonoBehaviour, ILoadReporter
 {
@@ -17,7 +18,7 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
 
     private void Awake()
     {
-        if (ui == null) ui = FindFirstObjectByType<LoadingUIController>();
+        UnityResolver.Resolve(ui, this, "LoadingUIController");
 
         // Enregistre tes steps ici
         _steps.Add(new LoadTilesAddressablesStep("Tile"));
