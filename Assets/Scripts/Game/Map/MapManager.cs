@@ -34,12 +34,6 @@ public class MapManager : MonoBehaviour
 
     public bool isReady = false;
     public Action OnExecute;
-    public enum StructureLayer
-    {
-        Basic,
-        Utility,
-        Decoration
-    }
     #endregion
 
     #region Mono
@@ -73,35 +67,35 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Public Method
-    public Structure GetStructure(Vector3Int position, Structure.StructureLayer layer)
+    public Structure GetStructure(Vector3Int position, StructureLayer layer)
     {
         Structure structure = null;
         switch (layer)
         {
-            case Structure.StructureLayer.Basic:
+            case StructureLayer.Basic:
                 structure = _basicMap?.GetStructure(position);
                 break;  
-            case Structure.StructureLayer.Utility:
+            case StructureLayer.Utility:
                 structure = _utilityMap?.GetStructure(position);
                 break;
-            case Structure.StructureLayer.Decoration:
+            case StructureLayer.Decoration:
                 structure = _decorationMap?.GetStructure(position);
                 break;
         }
         return structure;
     }
-    public bool IsWalkable(Vector3Int position, Structure.StructureLayer layer)
+    public bool IsWalkable(Vector3Int position, StructureLayer layer)
     {
         bool isWalkable = false;
         switch (layer)
         {
-            case Structure.StructureLayer.Basic:
+            case StructureLayer.Basic:
                 isWalkable = _basicMap.IsWalkable(position);
                 break;
-            case Structure.StructureLayer.Utility:
+            case StructureLayer.Utility:
                 isWalkable = _utilityMap.IsWalkable(position);
                 break;
-            case Structure.StructureLayer.Decoration:
+            case StructureLayer.Decoration:
                 isWalkable = _decorationMap.IsWalkable(position);
                 break;
         }

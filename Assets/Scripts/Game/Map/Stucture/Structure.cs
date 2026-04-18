@@ -1,16 +1,6 @@
 using UnityEngine;
-using static MapManager;
-
 public abstract  class Structure
 {
-    public enum StructureLayer
-    {
-        None,
-        Basic,
-        Utility,
-        Decoration
-    }
-
     #region Private Data
     protected bool _isEnabled = false;
     protected StructureType _type = StructureType.NONE;
@@ -22,13 +12,6 @@ public abstract  class Structure
     public static string TILE_ASSET_REFERENCE = "";
     public bool IsWalkable = false;
     public bool IsClimbable = true;
-    #endregion
-
-    #region Nested Method
-    public Structure()
-    {
-        return;
-    }
     #endregion
 
     #region Public Method

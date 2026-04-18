@@ -53,8 +53,8 @@ public class Villager : MonoBehaviour
         // Mouvement vertical uniquement si échelle ou escalier
         if (Mathf.Abs(diff.z) == 1)
         {
-            Structure s = map.GetStructure(currentGridPos, Structure.StructureLayer.Basic);
-            Structure s2 = map.GetStructure(destination, Structure.StructureLayer.Basic);
+            Structure s = map.GetStructure(currentGridPos, StructureLayer.Basic);
+            Structure s2 = map.GetStructure(destination, StructureLayer.Basic);
 
             bool hasLadderOrStair =
                 (s != null && (s.Type == StructureType.Ladder)) ||
