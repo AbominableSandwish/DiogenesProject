@@ -1,6 +1,7 @@
 ﻿using UITKUtils;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityResolver;
 
 class StructuresInterface : MonoBehaviour
 {
@@ -8,7 +9,7 @@ class StructuresInterface : MonoBehaviour
     [SerializeField] private StyleSheet _button_css;
     [SerializeField] private string name_visual = "structures";
 
-    private TilemapPlacer _placer;
+    [SerializeField] private TilemapPlacer _placer;
 
     VisualElement _root;
 
@@ -19,7 +20,7 @@ class StructuresInterface : MonoBehaviour
         _root = GetComponent<UIDocument>().rootVisualElement;
         if (_root == null) { Debug.LogError("Missing references."); return; }
 
-        _placer = FindAnyObjectByType<TilemapPlacer>();
+        UnityResolver.Resolve(_placer, this, "TilemapPlacer");
 
         VisualElement visual = _root.Q<VisualElement>(name_visual);
         visual.style.flexDirection = FlexDirection.Row;

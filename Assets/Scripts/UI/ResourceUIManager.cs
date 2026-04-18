@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 using UITKUtils;
-
+using static UnityResolver;
 class ResourceUIManager : MonoBehaviour
 {
     public enum TypeResource
@@ -37,7 +37,7 @@ class ResourceUIManager : MonoBehaviour
         Validation.CheckQuery(_copperLabel, _copperLabelName);
 
         //Manager
-        _resources = FindAnyObjectByType<ResourceSystem>();
+        UnityResolver.Resolve(_resources, this, "ResourceSystem");
     }
 
     private void Update()

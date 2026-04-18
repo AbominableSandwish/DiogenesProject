@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Structure;
+using static UnityResolver;
 
 public class Villager : MonoBehaviour
 {
@@ -11,15 +11,16 @@ public class Villager : MonoBehaviour
     public enum State { Idle, Moving, Working }
     public State currentState = State.Idle;
 
-    private Pathfinder pathfinder;
+
+    [SerializeField] private MapManager map;
+    [SerializeField] private Pathfinder pathfinder;
     private Queue<Vector3Int> pathQueue = new();
 
-    private MapManager map;
 
     private void Awake()
     {
-        map = FindAnyObjectByType<MapManager>();
-        pathfinder = FindAnyObjectByType<Pathfinder>();
+        UnityResolver.Resolve(map, this, "MapManager");
+        UnityResolver.Resolve(pathfinder, this, "Pathfinder");
     }
 
     private void Update()

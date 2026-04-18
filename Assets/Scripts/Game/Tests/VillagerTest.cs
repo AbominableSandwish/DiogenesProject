@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityResolver;
 
 public class VillagerTest : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class VillagerTest : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        villager = FindAnyObjectByType<Villager>();
+        UnityResolver.Resolve(villager, this, "Villager");
         spawnPosition = new Vector3Int((int)villager.transform.position.x, (int)villager.transform.position.y);
     }
 
