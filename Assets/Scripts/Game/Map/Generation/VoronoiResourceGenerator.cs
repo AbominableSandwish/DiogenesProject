@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Map Generation/Voronoi Resource Generator")]
-public class VoronoiResourceGenerator : GenerationStep
+public class VoronoiResourceGenerator : GenerationStep, IGenerationStep
 {
     [Header("Voronoi Settings")]
     [SerializeField] private int sitesPer100Cells = 6;

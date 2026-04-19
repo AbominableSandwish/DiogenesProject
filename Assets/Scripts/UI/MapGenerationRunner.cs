@@ -77,7 +77,7 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
                 yield break;
             }
 
-            map.Init(mapManager.Width, mapManager.Height, false);
+            map.Init(mapManager.Width, mapManager.Height);
         }
 
         Debug.Log($"After init: width={map.Width}, height={map.Height}, count={map.Structures.Count}");

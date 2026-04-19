@@ -15,6 +15,11 @@ public class StructureMap<TMap> : MonoBehaviour
     #endregion
 
     #region Public Method
+    public virtual void Init(int width, int height)
+    { 
+    
+    }
+
     public virtual bool AddStructure(Structure structure, Vector3Int position)
     {
         if (structure == null)
@@ -35,6 +40,11 @@ public class StructureMap<TMap> : MonoBehaviour
         }
 
         return canRemove;
+    }
+
+    public void Init()
+    {
+
     }
 
     public virtual Structure GetStructure(Vector3Int position)
@@ -89,7 +99,16 @@ public class StructureMap<TMap> : MonoBehaviour
     public void ClearMap()
     {
         structures.Clear();
-        _tilemap.ClearAllTiles();
+
+        if (_tilemap != null)
+        {
+            structures.Clear();
+            _tilemap.ClearAllTiles();
+        }
+        else
+        {
+            Debug.LogWarning("Tilemap is null in ClearMap");
+        }
     }
 
 }

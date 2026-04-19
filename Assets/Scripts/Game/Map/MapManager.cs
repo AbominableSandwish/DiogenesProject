@@ -49,7 +49,7 @@ public class MapManager : MonoBehaviour
 
     private void Start()
     {
-        _basicMap?.Init(_width, _height, GenerationMap);
+        _basicMap?.Init(_width, _height);
         _utilityMap?.Init(GenerationMap);
     }
 

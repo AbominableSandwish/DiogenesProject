@@ -10,7 +10,7 @@ public class BasicMap : StructureMap<BasicMap>
     private TileBase _limit;
 
     #region Mono
-    public void Init(int width, int height, bool Generation = false)
+    public override void Init(int width, int height)
     {
          Width = width; 
          Height = height;
@@ -19,33 +19,9 @@ public class BasicMap : StructureMap<BasicMap>
         _tileRegistry = TileRegistry.Instance;
 
         structures = new Dictionary<Vector3Int, Structure>();
-
-        if (Generation)
-            NewMap();
     }
 
-    public void NewMap()
-    {
-        _limit = _tileRegistry.Get(new Limit().TileAssetReference);
-        _ground = _tileRegistry.Get(new Ground().TileAssetReference);
-
-        for (int i = -1; i <= _map.Width; i++)
-        {
-            for (int j = -1; j <= _map.Height; j++)
-            {
-                if (i == -1 || j == -1 || i == _map.Width)
-                {
-                    TileBase tile = _limit;
-                    _map.AddStructure(new Limit(), new Vector3Int(i,j));
-                }
-                else
-                {
-                    TileBase tile = _ground;
-                    _tilemap.SetTile(new Vector3Int(i, j), _ground);
-                }
-            }
-        }
-    }
+  
 
     #endregion
 
@@ -76,7 +52,7 @@ public class BasicMap : StructureMap<BasicMap>
     public override void Refresh()
     {
         TileBase tileBase = null;
-        for (int i = 0; i < Width; i++)
+        for (int i = 0; i < Width ; i++)
         {
             for (int j = 0; j < Height; j++)
             {
