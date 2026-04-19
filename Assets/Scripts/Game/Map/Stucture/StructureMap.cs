@@ -86,5 +86,11 @@ public class StructureMap<TMap> : MonoBehaviour
     
     }
 
+    public void ClearMap()
+    {
+        structures.Clear();
+        _tilemap.ClearAllTiles();
+    }
+
 }
 

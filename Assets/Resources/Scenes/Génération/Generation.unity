@@ -187,6 +187,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 093ee16699e9ee046b2ca5e9967317f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &558363854 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1623174002461217012, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
+  m_PrefabInstance: {fileID: 558363852}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e4b48defd4684f46afad144aa353d4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1112782232
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,19 +576,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerationRunner
   pipeline: {fileID: 11400000, guid: 95651621cb0fcb844b245e4fea5b76ca, type: 2}
-  mapProvider: {fileID: 1895413156}
+  mapProvider: {fileID: 558363854}
   uiDocument: {fileID: 1731109773}
---- !u!114 &1895413156 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3965723977653521161, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
-  m_PrefabInstance: {fileID: 558363852}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e4b48defd4684f46afad144aa353d4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

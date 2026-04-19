@@ -65,6 +65,23 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
         }
 
         var map = mapProvider;
+
+        Debug.Log($"Before init: width={map.Width}, height={map.Height}, structures null? {map.Structures == null}");
+
+        if (map.Structures == null || map.Width <= 0 || map.Height <= 0)
+        {
+            var mapManager = MapManager.Instance;
+            if (mapManager == null)
+            {
+                Debug.LogError("MapManager.Instance est null. Impossible d'initialiser BasicMap.");
+                yield break;
+            }
+
+            map.Init(mapManager.Width, mapManager.Height, false);
+        }
+
+        Debug.Log($"After init: width={map.Width}, height={map.Height}, count={map.Structures.Count}");
+
         var steps = pipeline.Steps;
 
         if (steps == null || steps.Count == 0)
@@ -75,7 +92,7 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
 
         _button?.SetEnabled(false);
 
-        map.Structures.Clear();
+        map.ClearMap();
 
         int totalSteps = steps.Count;
 
