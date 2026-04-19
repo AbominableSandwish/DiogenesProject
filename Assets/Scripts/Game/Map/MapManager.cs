@@ -28,7 +28,7 @@ public class MapManager : MonoBehaviour
     public Vector3 GetWorldPosition(Vector3Int gridPos) => new Vector3(gridPos.x, gridPos.y + gridPos.z * 0.5f, 0) * CellSize;
 
     public bool IsCellFree(Vector3Int gridPos)
-        => _basicMap.GetStructure(gridPos) != null;
+        => _basicMap.GetStructure(gridPos) == null;
 
     public float CellSize = 1f;
 

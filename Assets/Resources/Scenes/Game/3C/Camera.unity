@@ -384,6 +384,34 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1107146538}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_DefaultActionMap
+      value: 277fa5c8-e56b-4392-950e-58a975fad3a1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_DefaultControlScheme
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3588022680853219551}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Move
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameInput, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4216124460301412686, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
+      propertyPath: m_ActionEvents.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4311930729859241205, guid: 89fa785acca41ca449085bee8dbb8408, type: 3}
       propertyPath: m_Name
       value: EventSystem

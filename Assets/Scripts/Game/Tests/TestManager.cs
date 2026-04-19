@@ -13,9 +13,9 @@ public class TestManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        registry = UnityResolver.Resolve(this, registry, nameof(SceneRegistry));
-        map = UnityResolver.Resolve(this, map, nameof(MapManager));
-        test = UnityResolver.Resolve(this, test, nameof(VillagerTest));
+        registry = UnityResolver.Resolve(registry, this, nameof(SceneRegistry));
+        map = UnityResolver.Resolve(map, this, nameof(MapManager));
+        test = UnityResolver.Resolve(test, this, nameof(VillagerTest));
 
         map.RegisterOnExecute(Action);
 

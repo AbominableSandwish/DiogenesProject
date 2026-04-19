@@ -13,8 +13,8 @@ public class CameraSystem : MonoBehaviour
   
     private void Awake()
     {
-        UnityResolver.Resolve(_map, this, "MapaManager");
-        UnityResolver.Resolve(_gameInput, this, "GameInput");
+        _map = UnityResolver.Resolve(_map, this, nameof(MapManager));
+        _gameInput = UnityResolver.Resolve(_gameInput, this, nameof(GameInput));
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

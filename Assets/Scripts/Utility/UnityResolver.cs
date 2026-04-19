@@ -2,7 +2,7 @@
 
 public static class UnityResolver
 {
-    public static T Resolve<T>(MonoBehaviour context, T reference, string label) where T : Object
+    public static T Resolve<T>(T reference, MonoBehaviour context, string label) where T : Object
     {
         if (reference != null)
             return reference;
