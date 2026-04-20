@@ -88,7 +88,7 @@ Par exemple :
 git clone https://github.com/AbominableSandwish/DiogenesProject.git
 ```
 ## 🎥 Aperçu
-![Generation](docs/ElectricityV2.gif)
+![Generation](Docs/ElectricityV2.gif)
 
 ## 🔍 Technical Highlights
 
