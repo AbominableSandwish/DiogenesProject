@@ -1,7 +1,8 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <ui:VisualElement style="padding: 12px; gap: 8px;">
         <ui:Label name="genLabel" text="Génération: 0%" />
         <ui:ProgressBar name="genProgress" title="Génération" value="0" />
+        <ui:TextField label="Seed" placeholder-text="filler text" name="seedField" />
         <ui:Button name="genButton" text="Générer" />
     </ui:VisualElement>
 </ui:UXML>

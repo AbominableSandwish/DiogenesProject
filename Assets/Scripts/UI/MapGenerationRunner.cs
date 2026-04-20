@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿    using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,6 +16,9 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
     private ProgressBar _progress;
     private Label _label;
     private Button _button;
+    private TextField _seedField;
+
+    private int seed;
 
     private Coroutine _running;
 
@@ -29,6 +32,11 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
         _progress = root.Q<ProgressBar>("genProgress");
         _label = root.Q<Label>("genLabel");
         _button = root.Q<Button>("genButton");
+        _seedField = root.Q<TextField>("seedField");
+
+        seed = UnityEngine.Random.Range(0, int.MaxValue);
+        if (_seedField != null)
+            _seedField.value = seed.ToString();
 
         if (_button != null)
             _button.clicked += OnGenerateClicked;
@@ -47,10 +55,25 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
         if (_running != null)
             StopCoroutine(_running);
 
-        _running = StartCoroutine(GenerateRoutine());
+        if (_seedField == null)
+            return;
+
+
+        int seed = 0;
+        if (int.TryParse(_seedField.value, out int value))
+        {
+            Debug.Log($"Seed = {value}");
+            seed = value;
+        }
+        else
+        {
+            Debug.LogWarning("Invalid seed");
+        }
+
+        _running = StartCoroutine(GenerateRoutine(seed));
     }
 
-    private IEnumerator GenerateRoutine()
+    private IEnumerator GenerateRoutine(int seed = 0)
     {
         if (pipeline == null)
         {
@@ -103,6 +126,7 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
                 continue;
 
             int stepNumber = i + 1;
+
             int stepSeed = pipeline.Seed + i;
 
             SetStep($"[{stepNumber}/{totalSteps}] {step.Name}");
@@ -115,7 +139,7 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
                 map,
                 map.Width,
                 map.Height,
-                stepSeed,
+                seed,
                 this,
                 yieldEvery: 1
             ));
