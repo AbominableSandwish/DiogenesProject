@@ -1,4 +1,4 @@
-﻿    using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -40,6 +40,11 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
 
         if (_button != null)
             _button.clicked += OnGenerateClicked;
+
+        _seedField.RegisterValueChangedCallback(evt =>
+        {
+            ValidateSeed(evt.newValue);
+        });
 
         UpdateUI(0f, "Prêt");
     }
@@ -184,5 +189,22 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
     public void Log(string line)
     {
         Debug.Log(line);
+    }
+
+    private void ValidateSeed(string value)
+    {
+        bool valid = int.TryParse(value, out _);
+
+        if (_button != null)
+            _button.SetEnabled(valid);
+
+        if (!valid)
+        {
+            _seedField.AddToClassList("invalid");
+        }
+        else
+        {
+            _seedField.RemoveFromClassList("invalid");
+        }
     }
 }

@@ -26,3 +26,9 @@
     flex-direction: row;
     width: 75%;
 }
+
+.invalid {
+    border-color: red;
+    -unity-text-outline-color: rgb(255, 0, 0);
+    background-color: rgb(255, 0, 0);
+}

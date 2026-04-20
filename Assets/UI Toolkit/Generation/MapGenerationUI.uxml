@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/UStyleSheet.uss?fileID=7433441132597879392&amp;guid=8af2d7dddd2e0da49ae8493d3760d832&amp;type=3#UStyleSheet" />
     <ui:VisualElement style="padding: 12px; gap: 8px;">
         <ui:Label name="genLabel" text="Génération: 0%" />
         <ui:ProgressBar name="genProgress" title="Génération" value="0" />
