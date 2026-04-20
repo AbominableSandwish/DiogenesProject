@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bd27c934d3d8c146a794a44ccffa3de, type: 3}
   m_Name: Voronoi
   m_EditorClassIdentifier: Assembly-CSharp::VoronoiResourceGenerator
-  seed: 1234
+  stepName: Voronoi Step
+  weight: 1
   sitesPer100Cells: 6
   earthPct: 0.3
   stonePct: 0.3

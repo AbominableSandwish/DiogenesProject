@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1717dff9f20b7b04fa7b356660e12440, type: 3}
   m_Name: BorderLimit
   m_EditorClassIdentifier: Assembly-CSharp::BorderLimitStep
-  stepName: Generation Step
+  stepName: Border Step
   weight: 1
