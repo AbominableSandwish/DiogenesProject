@@ -214,6 +214,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -475,26 +476,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7969643173860786121, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
-      propertyPath: grid
-      value: 
-      objectReference: {fileID: 719558912}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
---- !u!114 &719558912 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7936246769134783645, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
-  m_PrefabInstance: {fileID: 719558911}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 093ee16699e9ee046b2ca5e9967317f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &719558913 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8831518158852969073, guid: 17622dd5005af3a4ebb65e7fe634160a, type: 3}
@@ -716,6 +702,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -950,6 +937,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1003,6 +991,7 @@ GameObject:
   - component: {fileID: 1460109389}
   - component: {fileID: 1460109391}
   - component: {fileID: 1460109392}
+  - component: {fileID: 1460109393}
   m_Layer: 5
   m_Name: UID_PlayerUI
   m_TagString: Untagged
@@ -1064,6 +1053,7 @@ MonoBehaviour:
   _woodLabelName: wood_label
   _stoneLabelName: stone_label
   _copperLabelName: copper_label
+  _resources: {fileID: 1460109393}
 --- !u!114 &1460109392
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1076,9 +1066,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a900537db63e2294d8a0c09e2bbe75bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StructuresInterface
-  _button_css: {fileID: 7433441132597879392, guid: 8af2d7dddd2e0da49ae8493d3760d832, type: 3}
-  name_visual: structures
-  _placer: {fileID: 719558913}
+  nameVisual: structures
+  placer: {fileID: 719558913}
+--- !u!114 &1460109393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1460109388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af5f2ec8d4c31094c8ef2251f6a3e60c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceSystem
+  _food: 200
+  _wood: 200
+  _stone: 200
+  _copper: 200
 --- !u!1 &1527012391
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,6 +1434,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1683,7 +1689,7 @@ SceneRoots:
   - {fileID: 1460109390}
   - {fileID: 1041378880}
   - {fileID: 2098756581}
-  - {fileID: 1527012392}
   - {fileID: 1080849498}
   - {fileID: 719558911}
   - {fileID: 1049813458}
+  - {fileID: 1527012392}

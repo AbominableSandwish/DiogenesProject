@@ -21,14 +21,6 @@ class WoodPlateform : Structure
     }
     #endregion
 
-    public override StructureLayer Layer => StructureLayer.Utility;
+    public override StructureLayer Layer => StructureLayer.Basic;
 
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new WoodPlateform(), pos);
-    }
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new WoodPlateform(), pos);
-    }
 }

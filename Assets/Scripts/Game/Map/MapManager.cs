@@ -44,7 +44,7 @@ public class MapManager : MonoBehaviour
 
     public void RecordAction()
     {
-        
+
     }
 
     private void Start()
@@ -74,7 +74,7 @@ public class MapManager : MonoBehaviour
         {
             case StructureLayer.Basic:
                 structure = _basicMap?.GetStructure(position);
-                break;  
+                break;
             case StructureLayer.Utility:
                 structure = _utilityMap?.GetStructure(position);
                 break;
@@ -111,26 +111,30 @@ public class MapManager : MonoBehaviour
             return false;
         }
 
-        structure.Position = position;
-
-        switch (structure.Layer)
+        if (!_basicMap.HasStructure(position) && !_utilityMap.HasStructure(position))
         {
-            case StructureLayer.Basic:
-                _basicMap.AddStructure(structure, position);
-                return true;
+            structure.Position = position;
 
-            case StructureLayer.Utility:
-                _utilityMap.AddStructure(structure, position);
-                return true;
+            switch (structure.Layer)
+            {
+                case StructureLayer.Basic:
+                    _basicMap.AddStructure(structure, position);
+                    return true;
 
-            case StructureLayer.Decoration:
-                _decorationMap.AddStructure(structure, position);
-                return true;
+                case StructureLayer.Utility:
+                    _utilityMap.AddStructure(structure, position);
+                    return true;
 
-            default:
-                Debug.LogError($"Unsupported structure layer: {structure.Layer}", this);
-                return false;
+                case StructureLayer.Decoration:
+                    _decorationMap.AddStructure(structure, position);
+                    return true;
+
+                default:
+                    Debug.LogError($"Unsupported structure layer: {structure.Layer}", this);
+                    return false;
+            }
         }
+        return false;
     }
 
     public bool RemoveStructure(Structure structure, Vector3Int position)

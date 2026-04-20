@@ -21,14 +21,9 @@ public abstract  class Structure
     public Vector3Int Position { get => _position; set => _position = value; }
     public abstract StructureLayer Layer { get; }
 
-    public virtual bool ToPlace(Vector3Int pos)
+    public virtual void Init()
     {
-        return false;
     }
 
-    public virtual bool ToRemove(Vector3Int pos)
-    {
-        return false;
-    }
     #endregion
 }

@@ -44,13 +44,5 @@ public class Lamp : Engine
         return electricity;
     }
 
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new Lamp(), pos);
-    }
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new Lamp(), pos);
-    }
     #endregion
 }

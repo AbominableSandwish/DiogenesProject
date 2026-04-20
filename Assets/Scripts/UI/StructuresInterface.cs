@@ -4,55 +4,67 @@ using UnityEngine.UIElements;
 
 public class StructuresInterface : MonoBehaviour
 {
-    [SerializeField] private string name_visual = "structures";
-    [SerializeField] private StructurePlacementController _structurePlacementController;
+    [SerializeField] private string nameVisual = "structures";
+    [SerializeField] private StructurePlacementController placer;
 
-    private VisualElement _root;
+    private VisualElement root;
 
     private void Start()
     {
-        _root = GetComponent<UIDocument>().rootVisualElement;
-        if (_root == null)
+        UIDocument uiDocument = GetComponent<UIDocument>();
+        if (uiDocument == null)
         {
-            Debug.LogError("Missing root visual element.", this);
+            Debug.LogError("UIDocument missing.", this);
             return;
         }
 
-        _structurePlacementController = UnityResolver.Resolve(_structurePlacementController, this, "TilemapPlacer");
+        root = uiDocument.rootVisualElement;
+        if (root == null)
+        {
+            Debug.LogError("RootVisualElement missing.", this);
+            return;
+        }
 
-        VisualElement visual = _root.Q<VisualElement>(name_visual);
-        Validation.CheckQuery(visual, name_visual);
+        placer = UnityResolver.Resolve(placer, this, "StructurePlacementController");
+
+        VisualElement visual = root.Q<VisualElement>(nameVisual);
+        Validation.CheckQuery(visual, nameVisual);
 
         if (visual == null)
+        {
+            Debug.LogError($"VisualElement '{nameVisual}' not found.", this);
             return;
+        }
 
         visual.style.flexDirection = FlexDirection.Row;
 
         int i = 0;
-        VisualElement column = null;
+        VisualElement currentColumn = null;
 
         for (StructureType type = StructureType.Ground; type < StructureType.LENGTH; type++)
         {
             if (i == 0 || i % 4 == 0)
             {
-                column = new VisualElement();
-                column.name = "Structure_" + i;
-                column.style.flexDirection = FlexDirection.Column;
-                column.style.width = 80;
-                column.style.height = 100;
-                visual.Add(column);
+                currentColumn = new VisualElement();
+                currentColumn.name = $"Structure_{i}";
+                currentColumn.style.flexDirection = FlexDirection.Column;
+                currentColumn.style.width = 80;
+                currentColumn.style.height = 100;
+                visual.Add(currentColumn);
             }
 
             StructureType capturedType = type;
 
-            Button button = new Button();
-            button.name = type + "_btn";
+            Button button = new Button
+            {
+                name = $"{type}_btn",
+                text = type.ToString()
+            };
+
             button.style.width = 50;
-            button.text = type.ToString();
+            button.clicked += () => placer.SetSelectedType(capturedType);
 
-            button.clicked += () => _structurePlacementController.SetSelectedType(capturedType);
-
-            column.Add(button);
+            currentColumn.Add(button);
             i++;
         }
     }

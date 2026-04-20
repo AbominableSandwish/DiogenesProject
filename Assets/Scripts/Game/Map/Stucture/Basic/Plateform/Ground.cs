@@ -6,16 +6,8 @@ class Ground : Structure
     public override string TileAssetReference => "Ground";
     new public bool IsWalkable = false;
 
-    public override StructureLayer Layer => StructureLayer.Utility;
+    public override StructureLayer Layer => StructureLayer.Basic;
 
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new Ground(), pos);
-    }
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new Ground(), pos);
-    }
 }
 
 

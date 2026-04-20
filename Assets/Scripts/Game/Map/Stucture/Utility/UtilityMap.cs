@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 using static Circuit;
 using static Structure;
 
@@ -231,19 +232,25 @@ public class UtilityMap : StructureMap<UtilityMap>
     #region Public Method
 
     #region Add
-    public override bool AddStructure(Structure structure,Vector3Int pos)
+    public override bool AddStructure(Structure structure,Vector3Int position)
     {
+        if (HasStructure(position))
+            return false;
+
         bool canAdd = false;
         switch (structure.GetType())
         {
             case var cls when cls == typeof(Coil):
-                AddCoil(pos);
+                AddCoil(position);
+                canAdd = true;
                 break;
             case var cls when cls == typeof(SolarPanel):
-                AddGenerator((Generator)structure,  pos);
+                AddGenerator((Generator)structure, position);
+                canAdd = true;
                 break;
             case var cls when cls == typeof(Lamp):
-                AddEngine<Lamp>(pos);
+                AddEngine<Lamp>(position);
+                canAdd = true;
                 break;
         }
         return canAdd;
@@ -403,7 +410,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     
 
-    public bool AddGenerator(Generator Generator, Vector3Int position)
+    public bool AddGenerator(Generator generator, Vector3Int position)
     {
         if (structures.ContainsKey(position))
             return false; // END
@@ -412,13 +419,13 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = null;
         tile = new Tile();
        
-        tile.name = Generator.GetType() + _counterGenerator.ToString();
-        tile.sprite = _tileRegistry.Get(SolarPanel.TileAssetReference).sprite;
+        tile.name = generator.GetType() + _counterGenerator.ToString();
+        tile.sprite = _tileRegistry.Get(generator.TileAssetReference).sprite;
         tile.colliderType = Tile.ColliderType.Grid;
         _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
 
         object[] args = { position.x, position.y };
-        structures.Add(position, Generator);
+        structures.Add(position, generator);
         _counterGenerator++;
 
         //neighboor
@@ -444,7 +451,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             }
         
         
-            circuit.AddStructure(position, Generator);
+            circuit.AddStructure(position, generator);
             _circuits.Add(circuit);
         }
         
@@ -452,7 +459,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (neighborCircuits.Count == 1)
         {
             Circuit circuit = neighborCircuits.Dequeue();
-            circuit.AddStructure(position, Generator);
+            circuit.AddStructure(position, generator);
         }
         
         // Cas C: Plusieurs circuits connectés → fusion
@@ -466,7 +473,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 newCircuit.Merge(toMerge);
             }
         
-            newCircuit.AddStructure(position, Generator);
+            newCircuit.AddStructure(position, generator);
         
             _circuits.Add(newCircuit);
         }

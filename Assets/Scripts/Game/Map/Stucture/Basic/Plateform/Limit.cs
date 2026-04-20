@@ -18,14 +18,4 @@ class Limit : Structure
 
     #endregion
 
-
-
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new Limit(), pos);
-    }
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new Limit(), pos);
-    }
 }

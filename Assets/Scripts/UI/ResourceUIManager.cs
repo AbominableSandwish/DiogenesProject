@@ -19,7 +19,7 @@ class ResourceUIManager : MonoBehaviour
 
     private Label _foodLabel, _woodLabel, _stoneLabel, _copperLabel;
 
-    ResourceSystem _resources;
+    [SerializeField] private ResourceSystem _resources;
 
     void Start()
     {
@@ -37,7 +37,7 @@ class ResourceUIManager : MonoBehaviour
         Validation.CheckQuery(_copperLabel, _copperLabelName);
 
         //Manager
-        UnityResolver.Resolve(_resources, this, "ResourceSystem");
+        _resources = UnityResolver.Resolve(_resources, this, "ResourceSystem");
     }
 
     private void Update()

@@ -31,11 +31,14 @@ public class BasicMap : StructureMap<BasicMap>
 
     public override bool AddStructure(Structure structure, Vector3Int position)
     {
+        if (HasStructure(position))
+            return false;
+
         TileBase tileBase = _tileRegistry.Get(structure.TileAssetReference);
         object[] args = { _tilemap, position.x, position.y };
         structures.Add(position, structure);
         _tilemap.SetTile(position, tileBase);
-        return false;
+        return true;
     }
 
     public override bool RemoveStructure(Vector3Int pos)

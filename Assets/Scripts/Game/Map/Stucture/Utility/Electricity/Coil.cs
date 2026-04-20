@@ -20,13 +20,5 @@ public class Coil : Structure
     {
         return StructureConnect != null;
     }
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new Coil(), pos);
-    }
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.AddStructure(new Coil(), pos);
-    }
     #endregion
 }

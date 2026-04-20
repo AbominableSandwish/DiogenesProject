@@ -6,7 +6,7 @@ public class SolarPanel : Generator
     [SerializeField] protected new float _electricPower;
 
     new protected string _name = "SolarPanel";
-    new public static string TileAssetReference = "SolarPanel";
+    public override string TileAssetReference => "SolarPanel";
     new protected StructureType _type = StructureType.SolarPanel;
 
     #region Public Method
@@ -31,16 +31,6 @@ public class SolarPanel : Generator
     public void OnDisconnect()
     {
         _isEnabled = false;
-    }
-
-    public override bool ToPlace(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new SolarPanel(), pos);
-    }
-
-    public override bool ToRemove(Vector3Int pos)
-    {
-        return MapManager.Instance.RemoveStructure(new SolarPanel(), pos);
     }
     #endregion
 }

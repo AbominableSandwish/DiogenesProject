@@ -4,21 +4,21 @@ using UnityEngine.Tilemaps;
 
 public class StructurePlacementController : MonoBehaviour
 {
-    [Header("Preview")]
+    [Header("Dependencies")]
     [SerializeField] private Tilemap previewTilemap;
+    [SerializeField] private MapManager mapManager;
+
+    [Header("Preview")]
     [SerializeField] private TileBase previewTile;
-    [SerializeField] private Color previewColor = new Color(1f, 1f, 1f, 0.5f);
+    [SerializeField] private Color previewColor = new(1f, 1f, 1f, 0.5f);
 
     [Header("Occupation Check")]
     [SerializeField] private List<Tilemap> tilemapsToCheck;
     [SerializeField] private bool blockIfOccupied = true;
 
-    [Header("Dependencies")]
-    [SerializeField] private MapManager mapManager;
-
-    private Vector3Int lastCell = new Vector3Int(int.MinValue, int.MinValue, 0);
-    private StructureType? selectedType;
-    private bool isOccupied;
+    private Vector3Int _lastCell = new(int.MinValue, int.MinValue, 0);
+    private StructureType? _selectedType;
+    private bool _isOccupied;
 
     private void Awake()
     {
@@ -28,11 +28,11 @@ public class StructurePlacementController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (previewTilemap != null)
-        {
-            previewTilemap.ClearAllTiles();
-            previewTilemap.color = previewColor;
-        }
+        if (previewTilemap == null)
+            return;
+
+        previewTilemap.ClearAllTiles();
+        previewTilemap.color = previewColor;
     }
 
     private void OnDisable()
@@ -43,42 +43,43 @@ public class StructurePlacementController : MonoBehaviour
 
     public void SetSelectedType(StructureType type)
     {
-        selectedType = type;
+        _selectedType = type;
         previewTile = TileRegistry.Instance.Get(type.ToString());
+
+        if (previewTile == null)
+        {
+            Debug.LogWarning($"No preview tile found for type {type}", this);
+        }
     }
 
     public void ClearSelection()
     {
-        selectedType = null;
+        _selectedType = null;
 
         if (previewTilemap != null)
-            previewTilemap.SetTile(lastCell, null);
+            previewTilemap.SetTile(_lastCell, null);
 
-        lastCell = new Vector3Int(int.MinValue, int.MinValue, 0);
+        _lastCell = new Vector3Int(int.MinValue, int.MinValue, 0);
     }
 
     private void Update()
     {
-        if (selectedType == null || previewTilemap == null)
+        if (_selectedType == null || previewTilemap == null)
             return;
 
         Vector3Int cell = GetMouseCellPosition();
 
-        if (cell != lastCell)
+        if (cell != _lastCell)
         {
-            previewTilemap.SetTile(lastCell, null);
-            previewTilemap.SetTile(cell, previewTile);
-            lastCell = cell;
-
-            isOccupied = CheckOccupied(cell);
+            UpdatePreview(cell);
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (blockIfOccupied && isOccupied)
+            if (blockIfOccupied && _isOccupied)
                 return;
 
-            TryPlaceStructure(selectedType.Value, cell);
+            TryPlaceStructure(_selectedType.Value, cell);
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -90,18 +91,43 @@ public class StructurePlacementController : MonoBehaviour
     private Vector3Int GetMouseCellPosition()
     {
         Camera cam = Camera.main;
-        Vector3 mp = Input.mousePosition;
-        mp.z = -cam.transform.position.z;
-        Vector3 world = cam.ScreenToWorldPoint(mp);
+        if (cam == null)
+        {
+            Debug.LogError("Main Camera not found.", this);
+            return _lastCell;
+        }
 
-        return previewTilemap.WorldToCell(world);
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = -cam.transform.position.z;
+
+        Vector3 worldPosition = cam.ScreenToWorldPoint(mousePosition);
+        worldPosition.z = 0f;
+
+        return previewTilemap.WorldToCell(worldPosition);
+    }
+
+    private void UpdatePreview(Vector3Int cell)
+    {
+        previewTilemap.SetTile(_lastCell, null);
+
+        if (previewTile != null)
+            previewTilemap.SetTile(cell, previewTile);
+
+        _lastCell = cell;
+        _isOccupied = CheckOccupied(cell);
     }
 
     private bool CheckOccupied(Vector3Int cell)
     {
+        if (tilemapsToCheck == null || tilemapsToCheck.Count == 0)
+            return false;
+
         foreach (Tilemap tilemap in tilemapsToCheck)
         {
-            if (tilemap != null && tilemap.GetTile(cell))
+            if (tilemap == null)
+                continue;
+
+            if (tilemap.GetTile(cell) != null)
                 return true;
         }
 
@@ -113,16 +139,19 @@ public class StructurePlacementController : MonoBehaviour
         Structure structure = StructureFactory.Create(type);
         if (structure == null)
         {
-            Debug.LogError($"No structure found for type {type}", this);
+            Debug.LogError($"No structure mapped for type {type}", this);
             return;
         }
 
-        if (!structure.ToPlace(cell))
+        bool placed = mapManager.AddStructure(structure, cell);
+
+        if (!placed)
         {
-            Debug.Log($"Cannot place {type} at {cell}", this);
+            Debug.LogWarning($"cannot to place {type} at {cell}", this);
             return;
         }
 
-        mapManager.AddStructure(structure, cell);
+        // Optionnel : vider la preview après placement
+        // ClearSelection();
     }
 }

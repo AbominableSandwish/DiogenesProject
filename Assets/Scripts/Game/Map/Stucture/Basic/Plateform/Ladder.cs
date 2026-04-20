@@ -7,7 +7,7 @@ class Ladder : Structure
     new public bool IsWalkable = false;
     new protected StructureType _type = StructureType.Ladder;
 
-    public override StructureLayer Layer => StructureLayer.Utility;
+    public override StructureLayer Layer => StructureLayer.Basic;
     #region Constructor
     public Ladder(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
