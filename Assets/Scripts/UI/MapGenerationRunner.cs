@@ -58,17 +58,13 @@ public class MapGenerationRunnerUITK : MonoBehaviour, IGenerationReporter
         if (_seedField == null)
             return;
 
+        if (!int.TryParse(_seedField.value, out int seed))
+        {
+            Debug.LogWarning("Seed invalide → génération annulée");
+            return; // ⛔
+        }
 
-        int seed = 0;
-        if (int.TryParse(_seedField.value, out int value))
-        {
-            Debug.Log($"Seed = {value}");
-            seed = value;
-        }
-        else
-        {
-            Debug.LogWarning("Invalid seed");
-        }
+        Debug.Log($"Seed = {seed}");
 
         _running = StartCoroutine(GenerateRoutine(seed));
     }
