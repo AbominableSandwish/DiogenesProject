@@ -86,7 +86,7 @@ Par exemple :
 
 ```bash
 git clone https://github.com/AbominableSandwish/DiogenesProject.git
-
+```
 ## 🎥 Aperçu
 ![Generation](docs/ElectricityV2.gif)
 
