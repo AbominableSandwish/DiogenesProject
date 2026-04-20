@@ -1,19 +1,17 @@
 public enum StructureType
 {
     NONE = -1,
-    //Utility
+    Ground,
+    Ladder,
+    Door,
     Coil,
     Generator,
     Engine,
     Storage,
     SolarPanel,
     Lamp,
-    //Basic
-    Ground,
     WoodPlateform,
-    Door,
-    Ladder,
     Limit,
     Glass,
-    LENGHT
+    LENGTH
 }

@@ -292,7 +292,7 @@ public class Pathfinder : MonoBehaviour
     }
 
     // ------------------------------------------------------------
-    // LIMIT ZONE (à adapter selon ton MapManager)
+    // Limit ZONE (à adapter selon ton MapManager)
     // ------------------------------------------------------------
 
     private bool IsInsideLimits(Vector3Int pos)

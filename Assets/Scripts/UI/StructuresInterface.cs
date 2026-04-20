@@ -1,68 +1,59 @@
 ﻿using UITKUtils;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityResolver;
 
-class StructuresInterface : MonoBehaviour
+public class StructuresInterface : MonoBehaviour
 {
-    // Root.
-    [SerializeField] private StyleSheet _button_css;
     [SerializeField] private string name_visual = "structures";
+    [SerializeField] private StructurePlacementController _structurePlacementController;
 
-    [SerializeField] private TilemapPlacer _placer;
-
-    VisualElement _root;
-
-    private PlayerController _player;
+    private VisualElement _root;
 
     private void Start()
     {
         _root = GetComponent<UIDocument>().rootVisualElement;
-        if (_root == null) { Debug.LogError("Missing references."); return; }
+        if (_root == null)
+        {
+            Debug.LogError("Missing root visual element.", this);
+            return;
+        }
 
-        UnityResolver.Resolve(_placer, this, "TilemapPlacer");
+        _structurePlacementController = UnityResolver.Resolve(_structurePlacementController, this, "TilemapPlacer");
 
         VisualElement visual = _root.Q<VisualElement>(name_visual);
-        visual.style.flexDirection = FlexDirection.Row;
         Validation.CheckQuery(visual, name_visual);
 
-        int i = 0;
-        VisualElement visualElement = null;
-        for (StructureType type = StructureType.Coil; type < StructureType.LENGHT; type++)
-        {
+        if (visual == null)
+            return;
 
-            if (i == 0 | i % 4 == 0)
+        visual.style.flexDirection = FlexDirection.Row;
+
+        int i = 0;
+        VisualElement column = null;
+
+        for (StructureType type = StructureType.Ground; type < StructureType.LENGTH; type++)
+        {
+            if (i == 0 || i % 4 == 0)
             {
-                visualElement = new VisualElement();
-                visualElement.name = "Structure_" + i.ToString();          
-                visualElement.style.flexDirection = FlexDirection.Column;
-                visualElement.style.width = 80;
-                visualElement.style.height = 100;
-                visual.Add(visualElement);
+                column = new VisualElement();
+                column.name = "Structure_" + i;
+                column.style.flexDirection = FlexDirection.Column;
+                column.style.width = 80;
+                column.style.height = 100;
+                visual.Add(column);
             }
 
-            var capturedType = type;
+            StructureType capturedType = type;
 
             Button button = new Button();
-            button.name = type.ToString() + "_btn";
+            button.name = type + "_btn";
             button.style.width = 50;
             button.text = type.ToString();
 
-            // TODO Register action
-            button.clicked += () => NewStructure(capturedType) ;
-            button.clicked += () => _placer.SetSelectedType(capturedType);
+            button.clicked += () => _structurePlacementController.SetSelectedType(capturedType);
 
-            visualElement.Add(button);
+            column.Add(button);
             i++;
         }
-
-        _player = FindFirstObjectByType<PlayerController>();
-       
     }
-
-    private void NewStructure(StructureType type) {
-         this._player.SelectStructure(type);
-    }
-
 }
-

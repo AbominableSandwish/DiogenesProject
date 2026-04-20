@@ -98,18 +98,18 @@ public class Circuit
             {
                 //Calculer le manquant d'energie
                 Power = Production - Consumption;
-                foreach (Storage storage in _storages.Values)
+                foreach (Storage Storage in _storages.Values)
                 {
-                    Power += storage.Output(Power / _storages.Count);
+                    Power += Storage.Output(Power / _storages.Count);
                 }
             }
         }
 
         if (_engines != null)
         {
-            foreach (Engine engine in _engines.Values)
+            foreach (Engine Engine in _engines.Values)
             {
-                engine.Input(Power / _engines.Count);
+                Engine.Input(Power / _engines.Count);
             }
         }
     }
@@ -154,22 +154,22 @@ public class Circuit
     
 
     #region ADD
-    public void AddCable(Vector3Int position, Coil coil)
+    public void AddCable(Vector3Int position, Coil Coil)
     {
         _connMask[position] = NewConnection(position);
-        _coils.Add(position, coil);
+        _coils.Add(position, Coil);
         RecomputeStates();
     }
-    public void AddEngine(Vector3Int position, Engine engine)
+    public void AddEngine(Vector3Int position, Engine Engine)
     {      
-        _engines.Add(position, engine);
+        _engines.Add(position, Engine);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
 
-    public void AddGenerator(Vector3Int position, Generator generator)
+    public void AddGenerator(Vector3Int position, Generator Generator)
     {
-        _generators.Add(position, generator);
+        _generators.Add(position, Generator);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
@@ -255,9 +255,9 @@ public class Circuit
         //Connaitre la quantité d'energie demandé
         if (_engines != null && _generators.Count != 0)
         {
-            foreach (Engine engine in _engines.Values)
+            foreach (Engine Engine in _engines.Values)
             {
-                Consumption += engine.ElectricityConsumption;
+                Consumption += Engine.ElectricityConsumption;
             }
         }
 
@@ -265,9 +265,9 @@ public class Circuit
         //Récupéré la production des générateur
         if (_generators != null && _generators.Count != 0)
         {
-            foreach (Generator generator in _generators.Values)
+            foreach (Generator Generator in _generators.Values)
             {
-                Production += generator.Output();
+                Production += Generator.Output();
             }
         }
     }

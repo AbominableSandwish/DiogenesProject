@@ -11,6 +11,8 @@ public class Engine : Structure
     public override StructureLayer Layer => StructureLayer.Basic;
     #endregion
 
+    new protected StructureType _type = StructureType.Engine;
+
     #region Private data
     protected GameObject _object;
     protected float _electricityConsumption = 0.0f;
@@ -19,7 +21,6 @@ public class Engine : Structure
     #region Constructor
     public Engine(Tilemap tilemap = null, Vector3Int position = new Vector3Int())
     {
-        this._type = StructureType.Engine;
         this._position = position;
 
         if(tilemap != null)

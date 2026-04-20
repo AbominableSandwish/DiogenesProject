@@ -7,12 +7,12 @@ public class SolarPanel : Generator
 
     new protected string _name = "SolarPanel";
     new public static string TileAssetReference = "SolarPanel";
+    new protected StructureType _type = StructureType.SolarPanel;
 
     #region Public Method
 
     public SolarPanel(int x = 0, int y = 0)
     {
-        this._type = StructureType.SolarPanel;
         this._position =new Vector3Int(x, y);
     }
 
