@@ -7,6 +7,7 @@ public class Resource : Structure
     new public bool IsWalkable = true;
 
     public override StructureLayer Layer => StructureLayer.Basic;
+    public override StructureType Type => StructureType.Resource;
 
 }
 

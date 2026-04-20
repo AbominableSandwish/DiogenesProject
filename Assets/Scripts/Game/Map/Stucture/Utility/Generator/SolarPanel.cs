@@ -7,7 +7,7 @@ public class SolarPanel : Generator
 
     new protected string _name = "SolarPanel";
     public override string TileAssetReference => "SolarPanel";
-    new protected StructureType _type = StructureType.SolarPanel;
+    public override StructureType Type => StructureType.SolarPanel;
 
     #region Public Method
 

@@ -9,9 +9,10 @@ public class Engine : Structure
     public float EnginePerformance = 0.0f;
     public override string TileAssetReference => "Engine";
     public override StructureLayer Layer => StructureLayer.Basic;
+    public override StructureType Type => StructureType.Engine;
     #endregion
 
-    new protected StructureType _type = StructureType.Engine;
+
 
     #region Private data
     protected GameObject _object;

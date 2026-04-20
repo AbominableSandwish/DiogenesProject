@@ -14,7 +14,7 @@ public class Storage : Structure
 
     public override string TileAssetReference => "Coil";
     public override StructureLayer Layer => StructureLayer.Utility;
-    new protected StructureType _type = StructureType.Storage;
+    public override StructureType Type => StructureType.Storage;
 
     #region Nested Method
     public Storage(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)

@@ -7,6 +7,7 @@ class Ground : Structure
     new public bool IsWalkable = false;
 
     public override StructureLayer Layer => StructureLayer.Basic;
+    public override StructureType Type => StructureType.Ground;
 
 }
 

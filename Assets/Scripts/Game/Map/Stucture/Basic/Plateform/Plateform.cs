@@ -8,8 +8,6 @@ class WoodPlateform : Structure
     public override string TileAssetReference => "WoodPlateform";
     new public bool IsWalkable = true;
 
-    new protected StructureType _type = StructureType.WoodPlateform;
-
     #region Constructor
     public WoodPlateform(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
@@ -22,5 +20,6 @@ class WoodPlateform : Structure
     #endregion
 
     public override StructureLayer Layer => StructureLayer.Basic;
+    public override StructureType Type => StructureType.Door;
 
 }

@@ -20,7 +20,7 @@ public class UIManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(this);
 
-        _player = FindFirstObjectByType<PlayerController>();
+        _player = FindAnyObjectByType<PlayerController>();
     }
     #endregion
 

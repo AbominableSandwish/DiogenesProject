@@ -13,5 +13,6 @@ public enum StructureType
     WoodPlateform,
     Limit,
     Glass,
+    Resource,
     LENGTH
 }

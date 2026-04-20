@@ -6,6 +6,8 @@ public class Lamp : Engine
 {
     new protected string _name = "Lamp";
     new public static string TileAssetReference = "Lamp";
+    public override StructureType Type => StructureType.Lamp;
+
 
     #region Private data
     private Light2D _light;
@@ -17,8 +19,6 @@ public class Lamp : Engine
     #region Constructor
     public Lamp(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
     {
-        this._type = StructureType.Lamp;
-
         if (tilemap != null) {
             _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));
             _light = _object.GetComponent<Light2D>();

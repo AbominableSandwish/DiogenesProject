@@ -269,8 +269,8 @@ public class UtilityMap : StructureMap<UtilityMap>
         _electric.SetTile(new Vector3Int(position.x, position.y), tile);    
 
         // Coil
-        Coil Coil = new Coil(position);
-        structures.Add(position, Coil);
+        Coil coil = new Coil(position);
+        structures.Add(position, coil);
         RefreshTile(position);
         _counterCoil++;
 
@@ -278,7 +278,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
         foreach (var neighboor in neighboors)
         {
-            if (structures[neighboor.Key].Type == StructureType.Coil)
+            if (neighboor.Value.Type == StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
@@ -290,7 +290,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (neighborCircuits.Count == 0)
         {
             Dictionary<Vector3Int, Coil> path = new Dictionary<Vector3Int, Coil>();
-            path.Add(position, Coil);
+            path.Add(position, coil);
 
             Circuit circuit = new Circuit(path);
 
@@ -305,7 +305,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (neighborCircuits.Count == 1)
         {
             Circuit circuit = neighborCircuits.Dequeue();
-            circuit.AddStructure(position, Coil);
+            circuit.AddStructure(position, coil);
         }
 
         // Cas C: Plusieurs circuits connectés → fusion
@@ -319,7 +319,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 newCircuit.Merge(toMerge);
             }
 
-            newCircuit.AddStructure(position, Coil);
+            newCircuit.AddStructure(position, coil);
             _circuits.Add(newCircuit);
         }
 

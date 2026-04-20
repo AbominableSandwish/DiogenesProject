@@ -143,10 +143,10 @@ MonoBehaviour:
     y: 36
     width: 1920
     height: 933
-  m_MinSize: {x: 300, y: 100}
+  m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 117
+  controlID: 36
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -169,10 +169,10 @@ MonoBehaviour:
     y: 0
     width: 1412
     height: 933
-  m_MinSize: {x: 200, y: 100}
+  m_MinSize: {x: 200, y: 112}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 41
+  controlID: 37
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -195,10 +195,10 @@ MonoBehaviour:
     y: 0
     width: 1412
     height: 560
-  m_MinSize: {x: 200, y: 50}
+  m_MinSize: {x: 200, y: 56}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 42
+  controlID: 38
   draggingID: 0
 --- !u!114 &9
 MonoBehaviour:
@@ -616,7 +616,7 @@ MonoBehaviour:
     m_VAllowExceedBaseRangeMax: 1
     m_ScaleWithWindow: 0
     m_HSlider: 0
-    m_VSlider: 0
+    m_VSlider: 1
     m_IgnoreScrollWheelUntilClicked: 0
     m_EnableMouseInput: 1
     m_EnableSliderZoomHorizontal: 0
@@ -629,18 +629,18 @@ MonoBehaviour:
       y: 21
       width: 1082
       height: 513
-    m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 541, y: 256.5}
+    m_Scale: {x: 1.0526053, y: 1.0526053}
+    m_Translation: {x: 541, y: 243.00674}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -541
-      y: -256.5
-      width: 1082
-      height: 513
+      x: -513.9628
+      y: -230.86218
+      width: 1027.9257
+      height: 487.36218
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_LastWindowPixelSize: {x: 1082, y: 534}
@@ -694,7 +694,26 @@ MonoBehaviour:
       m_SelectedIDs: []
       m_LastClickedID:
         m_Data: 0
-      m_ExpandedIDs: []
+      m_ExpandedIDs:
+      - m_Data: -106672
+      - m_Data: -103284
+      - m_Data: -102892
+      - m_Data: -102054
+      - m_Data: -101450
+      - m_Data: -99234
+      - m_Data: -99232
+      - m_Data: -98508
+      - m_Data: -97292
+      - m_Data: -95850
+      - m_Data: -95848
+      - m_Data: -90608
+      - m_Data: -90582
+      - m_Data: -76020
+      - m_Data: -75994
+      - m_Data: -71138
+      - m_Data: -68442
+      - m_Data: -67548
+      - m_Data: 88958
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1752,7 +1771,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Resources/Scenes/EditorMap
+    - Assets/Scripts/Game/Map/Stucture/Utility
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1762,33 +1781,34 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 74
   m_LastFolders:
-  - Assets/Resources/Scenes/EditorMap
+  - Assets/Scripts/Game/Map/Stucture/Utility
   m_LastFoldersGridSize: 74
   m_LastProjectPath: C:\Git\Personnal\CleanSim
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 129}
-    m_SelectedIDs: []
+    scrollPos: {x: 0, y: 489}
+    m_SelectedIDs:
+    - m_Data: 74286
     m_LastClickedID:
-      m_Data: 0
+      m_Data: 74286
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 73428
-    - m_Data: 74228
-    - m_Data: 74286
-    - m_Data: 76744
-    - m_Data: 77736
-    - m_Data: 77890
-    - m_Data: 77892
-    - m_Data: 79026
-    - m_Data: 79236
-    - m_Data: 80808
-    - m_Data: 81012
-    - m_Data: 81068
-    - m_Data: 81928
-    - m_Data: 84158
+    - m_Data: 54736
+    - m_Data: 54738
+    - m_Data: 54740
+    - m_Data: 54742
+    - m_Data: 54744
+    - m_Data: 54746
+    - m_Data: 54748
+    - m_Data: 54750
+    - m_Data: 54752
+    - m_Data: 54754
+    - m_Data: 54756
+    - m_Data: 54758
+    - m_Data: 54760
+    - m_Data: 54762
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1822,20 +1842,20 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 73428
-    - m_Data: 74228
-    - m_Data: 74286
-    - m_Data: 76744
-    - m_Data: 77736
-    - m_Data: 77890
-    - m_Data: 77892
-    - m_Data: 79026
-    - m_Data: 79236
-    - m_Data: 80808
-    - m_Data: 81012
-    - m_Data: 81068
-    - m_Data: 81928
-    - m_Data: 84158
+    - m_Data: 54736
+    - m_Data: 54738
+    - m_Data: 54740
+    - m_Data: 54742
+    - m_Data: 54744
+    - m_Data: 54746
+    - m_Data: 54748
+    - m_Data: 54750
+    - m_Data: 54752
+    - m_Data: 54754
+    - m_Data: 54756
+    - m_Data: 54758
+    - m_Data: 54760
+    - m_Data: 54762
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1863,9 +1883,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: []
+    m_SelectedInstanceIDs:
+    - m_Data: 62316
     m_LastClickedEntityId:
-      m_Data: 0
+      m_Data: 62316
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: []
     m_RenameOverlay:
