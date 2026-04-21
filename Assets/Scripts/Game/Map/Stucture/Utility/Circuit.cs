@@ -20,6 +20,8 @@ public class Circuit
     new(0,-1, 0),  // Down
     new(-1,0, 0),  // Left
     };
+    private static int _nextId = 0;
+    public int Id { get; private set; }
 
 
     public float Production;
@@ -37,28 +39,42 @@ public class Circuit
     public Dictionary<int, Vector3Int> _position; // circuitId -> position  
     public Dictionary<Vector3Int, Conn> _connMask = new(); // position -> bitmask connexions
 
+    #endregion
+
+    #region Debug
+    public Color DebugColor { get; private set; }
+    private static System.Random rng = new System.Random();
+
+    private static Color RandomDebugColor()
+    {
+        float hue = (float)rng.NextDouble();
+        float saturation = 0.7f + (float)rng.NextDouble() * 0.3f;
+        float value = 0.8f + (float)rng.NextDouble() * 0.2f;
+
+        return Color.HSVToRGB(hue, saturation, value);
+    }
+
 
     #endregion
 
     #region Nested Method
     public Circuit()
     {
-        _coils = new Dictionary<Vector3Int, Coil>();
-        _idStructures = new HashSet<int>();
-        _generators = new Dictionary<Vector3Int, Generator>();
-        _engines = new Dictionary<Vector3Int, Engine>();
-        _storages = new Dictionary<Vector3Int, Storage>();
+        Id = _nextId++;
+        Debug.Log($"Circuit {Id}");
 
-        _connMask = new Dictionary<Vector3Int, Conn>();
+        DebugColor = RandomDebugColor();
     }
-    public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null)
+    public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null) : this()
     {
-        _coils = new Dictionary<Vector3Int, Coil>();
+
+        _coils = _coils ?? new Dictionary<Vector3Int, Coil>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
         _connMask = new Dictionary<Vector3Int, Conn>();
+
 
         _coils = coils;
         if(structures != null)
@@ -72,6 +88,8 @@ public class Circuit
 
         if(connMask != null)
             _connMask = connMask;
+
+
     }
     #endregion
 

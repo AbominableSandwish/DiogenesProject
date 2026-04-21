@@ -33,6 +33,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         LENGHT
     }
 
+
     #region Private Data
 
     private TileRegistry _tileRegistry;
@@ -45,9 +46,16 @@ public class UtilityMap : StructureMap<UtilityMap>
     private int _counterGenerator = 0;
     private int _counterStorage = 0;
     private int _counterEngine = 0;
+
+    [SerializeField] private CircuitDebugRenderer _circuitDebugRenderer;
     #endregion
 
     #region Mono
+
+    private void Start()
+    {
+        _circuitDebugRenderer = UnityResolver.Resolve(_circuitDebugRenderer, this, "CircuitDebugRenderer");
+    }
 
     public void Init(bool Generation = false)
     {
@@ -60,6 +68,13 @@ public class UtilityMap : StructureMap<UtilityMap>
         _tileRegistry = TileRegistry.Instance;
     }
 
+    public void FixedUpdate()
+    {
+        foreach (Circuit circuit in _circuits)
+        {
+            circuit.Update();
+        }
+    }
     #endregion
 
     public bool IsWalkable(Vector3Int gridPos)
@@ -84,13 +99,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     #region Private Method
 
-    public void FixedUpdate()
-    {
-        foreach(Circuit circuit in _circuits)
-        {
-            circuit.Update();
-        }
-    }
+ 
 
     private void RefreshTile(Vector3Int pos)
     {
@@ -365,6 +374,8 @@ public class UtilityMap : StructureMap<UtilityMap>
             return true;
         }
 
+
+        RefreshCircuitDebug();
         return true;
     }
 
@@ -451,6 +462,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             OwnerAt[position] = newCircuit;
         }
 
+        RefreshCircuitDebug();
         return true; // END
     }
 
@@ -529,12 +541,14 @@ public class UtilityMap : StructureMap<UtilityMap>
             OwnerAt[position] = newCircuit;
         }
 
+        RefreshCircuitDebug();
         return true; // END
     }
 
     public bool AddStorage<T>(Vector3Int position)
     {
         _counterStorage++;
+        RefreshCircuitDebug();
         return false;
     }
 
@@ -595,6 +609,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
+        RefreshCircuitDebug();
         return true;
     }
 
@@ -642,6 +657,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
+        RefreshCircuitDebug();
         return true;
     }
 
@@ -689,6 +705,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
+        RefreshCircuitDebug();
         return true;
     }
 
@@ -1096,5 +1113,17 @@ public class UtilityMap : StructureMap<UtilityMap>
         {
             OwnerAt[pos] = circuit;
         }
+    }
+
+    public event System.Action OnCircuitsChanged;
+
+    private void NotifyCircuitsChanged()
+    {
+        OnCircuitsChanged?.Invoke();
+    }
+
+    private void RefreshCircuitDebug()
+    {
+        _circuitDebugRenderer?.RefreshDebug();
     }
 }
