@@ -258,33 +258,41 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     public bool AddCoil(Vector3Int position)
     {
-        if (_tilemap.GetTile(position) != null || _electric.GetTile(position)) return false; // END
+        if (_tilemap.GetTile(position) != null || _electric.GetTile(position) != null)
+            return false;
 
+        // =====================
         // Self
-        Tile tile = null;
-        tile = new Tile();
-        tile.name = "Coil_" + _counterCoil.ToString();
-        tile.sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite;
-        tile.colliderType = Tile.ColliderType.Grid;
-        _electric.SetTile(new Vector3Int(position.x, position.y), tile);    
+        // =====================
+        Tile tile = new Tile
+        {
+            name = "Coil_" + _counterCoil,
+            sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite,
+            colliderType = Tile.ColliderType.Grid
+        };
 
-        // Coil
+        _electric.SetTile(position, tile);
+
         Coil coil = new Coil(position);
         structures.Add(position, coil);
+
         RefreshTile(position);
         _counterCoil++;
 
-        // Neighboor
+        // =====================
+        // Neighbors
+        // =====================
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
 
         foreach (var neighboor in neighboors)
         {
-            if (neighboor.Value.Type == StructureType.Coil)
+            if (structures[neighboor.Key].Type == StructureType.Coil)
                 RefreshTile(neighboor.Key);
         }
 
         if (neighboors.Count == 0)
         {
+            // Aucun voisin → circuit local unique
             Dictionary<Vector3Int, Coil> path = new();
             path.Add(position, coil);
 
@@ -297,7 +305,9 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         Queue<Circuit> neighborCircuits = GetCircuitNeighbors(neighboors.Keys);
 
-        // Cas A: Aucun voisin de circuit → nouveau circuit indépendant
+        // =====================
+        // Cas A: aucun circuit voisin
+        // =====================
         if (neighborCircuits.Count == 0)
         {
             Dictionary<Vector3Int, Coil> path = new();
@@ -311,25 +321,38 @@ public class UtilityMap : StructureMap<UtilityMap>
             }
 
             _circuits.Add(circuit);
-            OwnerAt[position] = circuit;
+            RebuildOwnerMap(circuit);
+
+            return true;
         }
 
-        // Cas B: Un seul circuit → ajouter la tuile au même circuit
+        // =====================
+        // Cas B: un seul circuit voisin
+        // =====================
         if (neighborCircuits.Count == 1)
         {
             Circuit circuit = neighborCircuits.Dequeue();
             circuit.AddStructure(position, coil);
+
             OwnerAt[position] = circuit;
+            return true;
         }
 
-        // Cas C: Plusieurs circuits connectés → fusion
+        // =====================
+        // Cas C: plusieurs circuits voisins → merge
+        // =====================
         if (neighborCircuits.Count > 1)
         {
             Circuit newCircuit = new Circuit();
+            HashSet<Circuit> mergedCircuits = new();
 
-            while (neighborCircuits.Count != 0)
+            while (neighborCircuits.Count > 0)
             {
                 Circuit toMerge = neighborCircuits.Dequeue();
+
+                if (!mergedCircuits.Add(toMerge))
+                    continue;
+
                 _circuits.Remove(toMerge);
                 newCircuit.Merge(toMerge);
             }
@@ -337,13 +360,12 @@ public class UtilityMap : StructureMap<UtilityMap>
             newCircuit.AddStructure(position, coil);
             _circuits.Add(newCircuit);
 
-            // minimum immédiat
-            OwnerAt[position] = newCircuit;
+            RebuildOwnerMap(newCircuit);
 
-            // idéal ensuite : rebuild complet des owners du circuit fusionné
+            return true;
         }
 
-        return true; // END
+        return true;
     }
 
     public bool AddEngine<T>(Vector3Int position)
