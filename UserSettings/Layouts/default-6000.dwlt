@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Console
   m_RootView: {fileID: 3}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -695,25 +695,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -106672
-      - m_Data: -103284
-      - m_Data: -102892
-      - m_Data: -102054
-      - m_Data: -101450
-      - m_Data: -99234
-      - m_Data: -99232
-      - m_Data: -98508
-      - m_Data: -97292
-      - m_Data: -95850
-      - m_Data: -95848
-      - m_Data: -90608
-      - m_Data: -90582
-      - m_Data: -76020
-      - m_Data: -75994
-      - m_Data: -71138
-      - m_Data: -68442
-      - m_Data: -67548
-      - m_Data: 88958
+      - m_Data: -1392
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1795,20 +1777,20 @@ MonoBehaviour:
       m_Data: 74286
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54736
-    - m_Data: 54738
-    - m_Data: 54740
-    - m_Data: 54742
-    - m_Data: 54744
-    - m_Data: 54746
-    - m_Data: 54748
-    - m_Data: 54750
-    - m_Data: 54752
-    - m_Data: 54754
-    - m_Data: 54756
-    - m_Data: 54758
-    - m_Data: 54760
-    - m_Data: 54762
+    - m_Data: 54848
+    - m_Data: 54850
+    - m_Data: 54852
+    - m_Data: 54854
+    - m_Data: 54856
+    - m_Data: 54858
+    - m_Data: 54860
+    - m_Data: 54862
+    - m_Data: 54864
+    - m_Data: 54866
+    - m_Data: 54868
+    - m_Data: 54870
+    - m_Data: 54872
+    - m_Data: 54874
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1842,20 +1824,20 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54736
-    - m_Data: 54738
-    - m_Data: 54740
-    - m_Data: 54742
-    - m_Data: 54744
-    - m_Data: 54746
-    - m_Data: 54748
-    - m_Data: 54750
-    - m_Data: 54752
-    - m_Data: 54754
-    - m_Data: 54756
-    - m_Data: 54758
-    - m_Data: 54760
-    - m_Data: 54762
+    - m_Data: 54848
+    - m_Data: 54850
+    - m_Data: 54852
+    - m_Data: 54854
+    - m_Data: 54856
+    - m_Data: 54858
+    - m_Data: 54860
+    - m_Data: 54862
+    - m_Data: 54864
+    - m_Data: 54866
+    - m_Data: 54868
+    - m_Data: 54870
+    - m_Data: 54872
+    - m_Data: 54874
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
