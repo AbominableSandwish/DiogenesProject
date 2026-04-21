@@ -542,182 +542,132 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         if (!structures.ContainsKey(position))
             return false;
-        if (structures[position].Type != StructureType.Coil) 
+
+        if (structures[position].Type != StructureType.Coil)
             return false;
 
-        Structure self = null;
-        Dictionary<Vector3Int, Structure> neighboors = new Dictionary<Vector3Int, Structure>();
-        bool canRemove = false;
+        if (!OwnerAt.TryGetValue(position, out Circuit target))
+            return false;
 
-        if ((position.x > -1 || position.x < _map.Height) || (position.y > -1 || position.y < _map.Width))
+        _electric.SetTile(position, null);
+        RefreshTile(position);
+
+        structures.Remove(position);
+        OwnerAt.Remove(position);
+
+        target.RemoveCable(position);
+
+        if (target.Count() <= 0)
         {
-            if (_electric.GetTile(new Vector3Int(position.x, position.y)) != null)
-            {
-                self = structures[position];
-
-                if (!OwnerAt.TryGetValue(position, out Circuit target))
-                    return false;
-
-                _electric.SetTile(new Vector3Int(position.x, position.y), null);
-                RefreshTile(position);
-
-                structures.Remove(position);
-                OwnerAt.Remove(position);
-
-                //neighboor
-                neighboors = GetConnectedNeighborsIgnoring(position);
-
-                if (target != null)
-                {
-                    //Self
-                    target.RemoveCable(position);
-                    
-                    if (target.Count() > 1)
-                    {
-                        if (neighboors.Count > 1)
-                        {
-                            List<Circuit> circuits = Split(position);
-                        }                        
-                    }
-                    else
-                    {
-                        _circuits.Remove(target);
-                    }
-
-                    foreach (var neighboor in neighboors)
-                    {
-                        if (structures[neighboor.Key].Type == StructureType.Coil)
-                            RefreshTile(neighboor.Key);
-                    }
-
-
-                }
-                canRemove = true;
-            }
+            _circuits.Remove(target);
+            return true;
         }
-        return canRemove;
+
+        SplitFromCircuit(target, position);
+
+        Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
+
+        foreach (var neighboor in neighboors)
+        {
+            if (structures[neighboor.Key].Type == StructureType.Coil)
+                RefreshTile(neighboor.Key);
+        }
+
+        return true;
     }
 
     public bool RemoveGenerator(Vector3Int position)
     {
         if (!structures.ContainsKey(position))
             return false;
+
         if (structures[position].Type != StructureType.Generator)
             return false;
 
-        Generator self = (Generator)structures[position];
-        Dictionary<Vector3Int, Structure> neighboors = new Dictionary<Vector3Int, Structure>();
-        bool canRemove = false;
+        if (_tilemap.GetTile(position) == null)
+            return false;
 
-        if (_tilemap.GetTile(new Vector3Int(position.x, position.y)) != null)
+        if (!OwnerAt.TryGetValue(position, out Circuit target))
+            return false;
+
+        // Supprimer le rendu
+        _tilemap.SetTile(position, null);
+        _tilemap.RefreshTile(position);
+
+        // Supprimer de la map globale
+        structures.Remove(position);
+        OwnerAt.Remove(position);
+
+        // Supprimer du circuit
+        target.RemoveGenerator(position);
+
+        // Si le circuit est vide, on l’enlève
+        if (target.Count() <= 0)
         {
-            if (!OwnerAt.TryGetValue(position, out Circuit target))
-                return false;
-
-            //Self
-            _tilemap.SetTile(new Vector3Int(position.x, position.y), null);
-            _tilemap.RefreshTile(position);
-
-            structures.Remove(position);
-            OwnerAt.Remove(position);
-
-            //neighboor
-            neighboors = GetConnectedNeighborsIgnoring(position);
-
-            if (target != null)
-            {
-                //Self
-                target.RemoveGenerator(position);
-
-                if (target.Count() > 1)
-                {
-                    if (neighboors.Count > 1)
-                    {
-                        List<Circuit> circuits = Split(position);
-
-                    }
-                }
-                else
-                {
-                    _circuits.Remove(target);
-                }
-
-                
-                foreach (var neighboor in neighboors)
-                {
-                    if (structures[neighboor.Key].Type == StructureType.Coil)
-                        RefreshTile(neighboor.Key);
-                }
-
-
-            }
-
-            canRemove = true;
+            _circuits.Remove(target);
+            return true;
         }
-        return canRemove;
+
+        // Recalcul du circuit restant
+        target.RecomputeStates();
+
+        // Rafraîchir les coils voisins si besoin
+        Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
+
+        foreach (var neighboor in neighboors)
+        {
+            if (structures[neighboor.Key].Type == StructureType.Coil)
+                RefreshTile(neighboor.Key);
+        }
+
+        return true;
     }
 
     public bool RemoveEngine(Vector3Int position)
     {
         if (!structures.ContainsKey(position))
             return false;
+
         if (structures[position].Type != StructureType.Engine)
             return false;
 
-        Engine self = null;
-        Dictionary<Vector3Int, Structure> neighboors = new Dictionary<Vector3Int, Structure>();
-        bool canRemove = false;
+        if (_tilemap.GetTile(position) == null)
+            return false;
 
-        if ((position.x > -1 || position.x < _map.Height) || (position.y > -1 || position.y < _map.Width))
+        if (!OwnerAt.TryGetValue(position, out Circuit target))
+            return false;
+
+        // Supprimer le rendu
+        _tilemap.SetTile(position, null);
+        _tilemap.RefreshTile(position);
+
+        // Supprimer de la map globale
+        structures.Remove(position);
+        OwnerAt.Remove(position);
+
+        // Supprimer du circuit
+        target.RemoveEngine(position);
+
+        // Si le circuit est vide, on l’enlève
+        if (target.Count() <= 0)
         {
-            if (_tilemap.GetTile(new Vector3Int(position.x, position.y)) != null)
-            {
-                self = (Engine)structures[position];
-
-                if (!OwnerAt.TryGetValue(position, out Circuit target))
-                    return false;
-
-                //Self
-                _tilemap.SetTile(new Vector3Int(position.x, position.y), null);
-                _tilemap.RefreshTile(position);
-
-                structures.Remove(position);
-                OwnerAt.Remove(position);
-
-                //neighboor
-                neighboors = GetConnectedNeighborsIgnoring(position);
-                
-                if (target != null)
-                {
-                    //Self
-                    target.RemoveEngine(position);
-
-                    if (target.Count() > 1)
-                    {
-                        if (neighboors.Count > 1)
-                        {
-                            List<Circuit> circuits = Split(position);
-
-                        }
-                    }
-                    else
-                    {
-                        _circuits.Remove(target);
-                    }
-
-                   
-                    foreach (var neighboor in neighboors)
-                    {
-                        if (structures[neighboor.Key].Type == StructureType.Coil)
-                            RefreshTile(neighboor.Key);
-                    }
-
-
-                }
-                canRemove = true;
-            }
+            _circuits.Remove(target);
+            return true;
         }
-        return canRemove;
+
+        // Recalcul du circuit restant
+        target.RecomputeStates();
+
+        // Rafraîchir les coils voisins si besoin
+        Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
+
+        foreach (var neighboor in neighboors)
+        {
+            if (structures[neighboor.Key].Type == StructureType.Coil)
+                RefreshTile(neighboor.Key);
+        }
+
+        return true;
     }
 
     public bool RemoveStructure(Vector3Int pos, UtilityType type)
@@ -734,64 +684,65 @@ public class UtilityMap : StructureMap<UtilityMap>
     }
     #endregion
 
-    List<Circuit> Split(Vector3Int position)
+    private List<Circuit> SplitFromCircuit(Circuit oldCircuit, Vector3Int removedPosition)
     {
-        // 🔹 1. Rafraîchit les tiles voisines pour s’assurer que les masques sont à jour
-        Dictionary<Vector3Int, Structure> neighbors = GetTileNeighbor(position);
-        foreach (var neighbor in neighbors)
-            RefreshTile(neighbor.Key);
+        List<Circuit> result = new();
 
-        // 🔹 2. Récupère TOUS les circuits voisins impactés
-        Queue<Circuit> neighborCircuitsQ = GetCircuitNeighbors(neighbors.Keys);
-        if (neighborCircuitsQ.Count == 0) return null;
+        if (oldCircuit == null)
+            return result;
 
-        // Important : certains circuits voisins peuvent être identiques (hashset pour éviter les doublons)
-        var neighborCircuits = new HashSet<Circuit>(neighborCircuitsQ);
+        List<Circuit.ComponentData> components = oldCircuit.ComputeComponentsAfterChangeData(removedPosition);
 
-        // 🔹 3. Pour chaque circuit impacté → le recalculer individuellement
-        List<Circuit> newCircuits = new List<Circuit>();
-
-        foreach (var old in neighborCircuits)
+        if (components == null || components.Count == 0)
         {
-            if (old == null) continue;
-
-            // Calcul des composantes restantes après cassure
-            var components = old.ComputeComponentsAfterChangeData(position)
-                                .OrderByDescending(c => c.Tiles.Count)
-                                .ToList();
-
-            // Si aucune séparation réelle, on passe
-            if (components == null || components.Count <= 1)
-            {
-                ReindexCircuit(old);
-                old.RecomputeStates();
-                continue;
-            }
-
-           
-
-            // 🔹 5. Les autres deviennent de nouveaux circuits
-            for (int i = 1; i < components.Count; i++)
-            {
-                var comp = components[i];
-                var neo = new Circuit();
-
-                _circuits.Add(neo);
-                newCircuits.Add(neo);
-
-                MoveSubset(old, neo, comp);
-                neo.RecomputeStates();
-                ReindexCircuit(neo);
-            }
-
-            // 🔹 4. La 1ʳᵉ composante garde l’ancien circuit
-            var keep = components[0];
-            RetainSubset(old, keep);
-            old.RecomputeStates();
-            ReindexCircuit(old);
+            _circuits.Remove(oldCircuit);
+            return result;
         }
 
-        return newCircuits;
+        // Trier du plus grand au plus petit
+        components.Sort((a, b) => b.Tiles.Count.CompareTo(a.Tiles.Count));
+
+        // Supprimer les anciens owners du circuit
+        RemoveOwner(oldCircuit.GetAllPositions());
+
+        // =====================
+        // Circuit principal
+        // =====================
+        Circuit.ComponentData main = components[0];
+
+        oldCircuit.Clear();
+
+        foreach (Vector3Int pos in main.Tiles)
+        {
+            if (structures.TryGetValue(pos, out Structure structure) && structure is Coil coil)
+                oldCircuit.AddStructure(pos, coil);
+        }
+
+        foreach (var kv in main.Generators)
+            oldCircuit.AddGenerator(kv.Key, kv.Value);
+
+        foreach (var kv in main.Engines)
+            oldCircuit.AddEngine(kv.Key, kv.Value);
+
+        foreach (var kv in main.Storages)
+            oldCircuit.AddStorage(kv.Key, kv.Value);
+
+        oldCircuit.RecomputeStates();
+        RebuildOwnerMap(oldCircuit);
+        result.Add(oldCircuit);
+
+        // =====================
+        // Nouveaux circuits
+        // =====================
+        for (int i = 1; i < components.Count; i++)
+        {
+            Circuit newCircuit = BuildCircuitFromComponent(components[i]);
+            _circuits.Add(newCircuit);
+            RebuildOwnerMap(newCircuit);
+            result.Add(newCircuit);
+        }
+
+        return result;
     }
 
     void ReindexCircuit(Circuit c)
@@ -999,6 +950,31 @@ public class UtilityMap : StructureMap<UtilityMap>
         return list;
     }
 
+    private Circuit BuildCircuitFromComponent(Circuit.ComponentData component)
+    {
+        Circuit circuit = new Circuit();
+
+        foreach (Vector3Int pos in component.Tiles)
+        {
+            if (structures.TryGetValue(pos, out Structure structure) && structure is Coil coil)
+            {
+                circuit.AddStructure(pos, coil);
+            }
+        }
+
+        foreach (var kv in component.Generators)
+            circuit.AddGenerator(kv.Key, kv.Value);
+
+        foreach (var kv in component.Engines)
+            circuit.AddEngine(kv.Key, kv.Value);
+
+        foreach (var kv in component.Storages)
+            circuit.AddStorage(kv.Key, kv.Value);
+
+        circuit.RecomputeStates();
+        return circuit;
+    }
+
     public override Structure GetStructure(Vector3Int pos)
     {
         if (structures == null)
@@ -1074,5 +1050,29 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         return result;
+    }
+
+    private void AssignOwner(Circuit circuit, IEnumerable<Vector3Int> positions)
+    {
+        foreach (Vector3Int pos in positions)
+        {
+            OwnerAt[pos] = circuit;
+        }
+    }
+
+    private void RemoveOwner(IEnumerable<Vector3Int> positions)
+    {
+        foreach (Vector3Int pos in positions)
+        {
+            OwnerAt.Remove(pos);
+        }
+    }
+
+    private void RebuildOwnerMap(Circuit circuit)
+    {
+        foreach (Vector3Int pos in circuit.GetAllPositions())
+        {
+            OwnerAt[pos] = circuit;
+        }
     }
 }

@@ -151,25 +151,56 @@ public class Circuit
         RecomputeStates();
     }
 
-    
+    public IEnumerable<Vector3Int> GetAllPositions()
+    {
+        HashSet<Vector3Int> result = new();
+
+        foreach (var kv in _generators)
+            result.Add(kv.Key);
+
+        foreach (var kv in _engines)
+            result.Add(kv.Key);
+
+        foreach (var kv in _storages)
+            result.Add(kv.Key);
+
+        return result;
+    }
+
+    public void Clear()
+    {
+        _generators.Clear();
+        _engines.Clear();
+        _storages.Clear();
+        _connMask.Clear();
+        _idStructures.Clear();
+    }
+
 
     #region ADD
-    public void AddCable(Vector3Int position, Coil Coil)
+    public void AddCable(Vector3Int position, Coil coil)
     {
         _connMask[position] = NewConnection(position);
-        _coils.Add(position, Coil);
+        _coils.Add(position, coil);
         RecomputeStates();
     }
-    public void AddEngine(Vector3Int position, Engine Engine)
+    public void AddEngine(Vector3Int position, Engine engine)
     {      
-        _engines.Add(position, Engine);
+        _engines.Add(position, engine);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
 
-    public void AddGenerator(Vector3Int position, Generator Generator)
+    public void AddGenerator(Vector3Int position, Generator generator)
     {
-        _generators.Add(position, Generator);
+        _generators.Add(position, generator);
+        _connMask[position] = NewConnection(position);
+        RecomputeStates();
+    }
+
+    public void AddStorage(Vector3Int position, Storage storage)
+    {
+        _storages.Add(position, storage);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
     }
