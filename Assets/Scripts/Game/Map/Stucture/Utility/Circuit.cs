@@ -181,6 +181,9 @@ public bool HasEnoughPower => PowerProduced >= PowerConsumed;
     {
         HashSet<Vector3Int> result = new();
 
+        foreach (var kv in _coils)
+            result.Add(kv.Key);
+
         foreach (var kv in _generators)
             result.Add(kv.Key);
 
