@@ -24,10 +24,13 @@ public class Circuit
     public int Id { get; private set; }
 
 
-    public float Production;
-    public float Consumption;
+    public float PowerProduced { get; private set; }
+    public float PowerConsumed { get; private set; }
     public float TotalCapacity;
     public float Capacity;
+
+    public float PowerBalance => PowerProduced - PowerConsumed;
+public bool HasEnoughPower => PowerProduced >= PowerConsumed;
 
     #region Public Data
 
@@ -73,6 +76,8 @@ public class Circuit
         _connMask = new Dictionary<Vector3Int, Conn>();
 
         DebugColor = RandomDebugColor();
+
+        DebugColor = Color.green;
     }
     public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null) : this()
     {
@@ -109,15 +114,15 @@ public class Circuit
 
     public void Update()
     {
-        float Power = Production;
+        float Power = PowerProduced;
         //Si quantité total d'energie insuffisant
-        if (Production < Consumption)
+        if (PowerProduced < PowerConsumed)
         {
             //Si il y a du stockage
             if (_storages != null && _storages.Count != 0)
             {
                 //Calculer le manquant d'energie
-                Power = Production - Consumption;
+                Power = PowerProduced - PowerConsumed;
                 foreach (Storage Storage in _storages.Values)
                 {
                     Power += Storage.Output(Power / _storages.Count);
@@ -308,23 +313,24 @@ public class Circuit
 
     public void RecomputeStates()
     {
-        Consumption = 0;
-        //Connaitre la quantité d'energie demandé
-        if (_engines != null && _generators.Count != 0)
-        {
-            foreach (Engine Engine in _engines.Values)
-            {
-                Consumption += Engine.ElectricityConsumption;
-            }
-        }
+        PowerProduced = 0f;
+        PowerConsumed = 0f;
 
-        Production = 0;
         //Récupéré la production des générateur
         if (_generators != null && _generators.Count != 0)
         {
             foreach (Generator Generator in _generators.Values)
             {
-                Production += Generator.Output();
+                PowerProduced += Generator.Output();
+            }
+        }
+
+        //Connaitre la quantité d'energie demandé
+        if (_engines != null && _engines.Count != 0)
+        {
+            foreach (Engine Engine in _engines.Values)
+            {
+                PowerConsumed += Engine.ElectricityConsumption;
             }
         }
     }
@@ -431,5 +437,16 @@ public class Circuit
             }
         }
         return data;
+    }
+
+    public float PowerRatio
+    {
+        get
+        {
+            if (PowerConsumed <= 0f)
+                return 1f;
+
+            return Mathf.Clamp01(PowerProduced / PowerConsumed);
+        }
     }
 }

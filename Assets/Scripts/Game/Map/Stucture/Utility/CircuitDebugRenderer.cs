@@ -17,6 +17,7 @@ public class CircuitDebugRenderer : MonoBehaviour
 
     public void RefreshDebug()
     {
+
         if (debugTilemap == null || utilityMap == null)
             return;
 
@@ -32,26 +33,23 @@ public class CircuitDebugRenderer : MonoBehaviour
             Vector3Int pos = kv.Key;
             Circuit circuit = kv.Value;
 
+            float ratio = circuit.PowerRatio;
+            Color color = Color.Lerp(Color.red, Color.green, ratio);
+
             debugTilemap.SetTile(pos, debugTile);
-            debugTilemap.SetColor(pos, circuit.DebugColor);
+            debugTilemap.SetTileFlags(pos, TileFlags.None);
+            debugTilemap.SetColor(pos, color);
         }
+    }
+
+    public void Update()
+    {
+        RefreshDebug();
     }
 
     public void SetVisible(bool visible)
     {
         showDebug = visible;
         RefreshDebug();
-    }
-
-    private void OnEnable()
-    {
-        if (utilityMap != null)
-            utilityMap.OnCircuitsChanged += RefreshDebug;
-    }
-
-    private void OnDisable()
-    {
-        if (utilityMap != null)
-            utilityMap.OnCircuitsChanged -= RefreshDebug;
     }
 }

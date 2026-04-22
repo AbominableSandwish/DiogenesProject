@@ -375,7 +375,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
 
-        RefreshCircuitDebug();
         ValidateCircuits("AddCoil");
         return true;
     }
@@ -420,7 +419,6 @@ public class UtilityMap : StructureMap<UtilityMap>
             _circuits.Add(circuit);
             OwnerAt[position] = circuit;
 
-            RefreshCircuitDebug();
             ValidateCircuits("AddEngine");
             return true;
         }
@@ -468,7 +466,6 @@ public class UtilityMap : StructureMap<UtilityMap>
             RebuildOwnerMap(newCircuit);
         }
 
-        RefreshCircuitDebug();
         ValidateCircuits("AddEngine");
         return true;
     }
@@ -513,7 +510,6 @@ public class UtilityMap : StructureMap<UtilityMap>
             _circuits.Add(circuit);
             OwnerAt[position] = circuit;
 
-            RefreshCircuitDebug();
             ValidateCircuits("AddGenerator");
             return true;
         }
@@ -560,7 +556,6 @@ public class UtilityMap : StructureMap<UtilityMap>
             RebuildOwnerMap(newCircuit);
         }
 
-        RefreshCircuitDebug();
         ValidateCircuits("AddGenerator");
         return true;
     }
@@ -568,7 +563,6 @@ public class UtilityMap : StructureMap<UtilityMap>
     public bool AddStorage<T>(Vector3Int position)
     {
         _counterStorage++;
-        RefreshCircuitDebug();
         ValidateCircuits("AddStorage");
         return false;
     }
@@ -630,7 +624,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
-        RefreshCircuitDebug();
         ValidateCircuits("RemoveCoil");
         return true;
     }
@@ -679,7 +672,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
-        RefreshCircuitDebug();
         ValidateCircuits("RemoveGenerator");
         return true;
     }
@@ -728,7 +720,6 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
-        RefreshCircuitDebug();
         ValidateCircuits("RemoveEngine");
         return true;
     }
@@ -808,14 +799,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         return result;
     }
 
-    void ReindexCircuit(Circuit c)
-    {
-        foreach (var p in c._coils.Keys)
-            OwnerAt[p] = c;
-    }
-
-
-
     Dictionary<Vector3Int , Structure> GetConnectedNeighborsIgnoring(Vector3Int center)
     {
         var result = new Dictionary<Vector3Int, Structure>();
@@ -857,80 +840,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         return neighboors;
     }
     #endregion
-
-    void MoveSubset(Circuit from, Circuit to, List<Vector3Int> subset)
-    {
-        foreach (var p in subset)
-        {
-            if (from._coils.TryGetValue(p, out var t)) { to._coils[p] = t; from._coils.Remove(p); OwnerAt[p] = to; }
-            if (from._connMask.TryGetValue(p, out var m)) { to._connMask[p] = m; from._connMask.Remove(p); }
-            if (from._generators.TryGetValue(p, out var g)) { to._generators[p] = g; from._generators.Remove(p); }
-            if (from._engines.TryGetValue(p, out var e)) { to._engines[p] = e; from._engines.Remove(p); }
-            if (from._storages.TryGetValue(p, out var s)) { to._storages[p] = s; from._storages.Remove(p); }
-        }
-    }
-
-    void MoveSubset(Circuit from, Circuit to, ComponentData comp)
-    {
-        foreach (var p in comp.Tiles)
-        {
-            if (from._coils.TryGetValue(p, out var t))
-            {
-                to._coils[p] = t;
-                from._coils.Remove(p);
-            }
-
-            if (from._connMask.TryGetValue(p, out var m))
-            {
-                to._connMask[p] = m;
-                from._connMask.Remove(p);
-            }
-        }
-
-
-        foreach (var kv in comp.Generators)
-        {
-            to._generators[kv.Key] = kv.Value;
-            from._generators.Remove(kv.Key);
-        }
-
-        foreach (var kv in comp.Engines)
-        {
-            to._engines[kv.Key] = kv.Value;
-            from._engines.Remove(kv.Key);
-        }
-
-        foreach (var kv in comp.Storages)
-        {
-            to._storages[kv.Key] = kv.Value;
-            from._storages.Remove(kv.Key);
-        }
-    }
-
-    void RetainSubset(Circuit circuit, ComponentData keep)
-    {
-        var keepSet = new HashSet<Vector3Int>(keep.Tiles);
-
-        circuit._coils = circuit._coils
-            .Where(kvp => keepSet.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        circuit._connMask = circuit._connMask
-            .Where(kvp => keepSet.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        circuit._generators = keep.Generators
-            .Where(kvp => keepSet.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        circuit._engines = keep.Engines
-            .Where(kvp => keepSet.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        
-        circuit._storages = keep.Storages
-            .Where(kvp => keepSet.Contains(kvp.Key))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-    }
 
     public CircuitData ExportCircuits()
     {
@@ -1101,28 +1010,6 @@ public class UtilityMap : StructureMap<UtilityMap>
             }
         }
     }
-
-    private HashSet<Circuit> GetNeighborCircuits(IEnumerable<Vector3Int> neighborPositions)
-    {
-        HashSet<Circuit> result = new();
-
-        foreach (var pos in neighborPositions)
-        {
-            if (OwnerAt.TryGetValue(pos, out Circuit circuit))
-                result.Add(circuit);
-        }
-
-        return result;
-    }
-
-    private void AssignOwner(Circuit circuit, IEnumerable<Vector3Int> positions)
-    {
-        foreach (Vector3Int pos in positions)
-        {
-            OwnerAt[pos] = circuit;
-        }
-    }
-
     private void RemoveOwner(IEnumerable<Vector3Int> positions)
     {
         foreach (Vector3Int pos in positions)
@@ -1139,18 +1026,6 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
     }
 
-    public event System.Action OnCircuitsChanged;
-
-    private void NotifyCircuitsChanged()
-    {
-        OnCircuitsChanged?.Invoke();
-    }
-
-    private void RefreshCircuitDebug()
-    {
-        _circuitDebugRenderer?.RefreshDebug();
-    }
-
     #region DEBUG
 
     private void ValidateCircuits(string context)
@@ -1161,18 +1036,18 @@ public class UtilityMap : StructureMap<UtilityMap>
             {
                 if (!OwnerAt.TryGetValue(pos, out Circuit owner))
                 {
-                    Debug.LogError($"[{context}] Missing owner for {pos} in circuit {circuit.Id}");
+                    Debug.LogWarning($"[{context}] Missing owner for {pos} in circuit {circuit.Id}");
                     continue;
                 }
 
                 if (owner != circuit)
                 {
-                    Debug.LogError($"[{context}] Wrong owner for {pos}. Expected circuit {circuit.Id}, got {owner.Id}");
+                    Debug.LogWarning($"[{context}] Wrong owner for {pos}. Expected circuit {circuit.Id}, got {owner.Id}");
                 }
 
                 if (!structures.ContainsKey(pos))
                 {
-                    Debug.LogError($"[{context}] Circuit {circuit.Id} contains {pos} but structures does not.");
+                    Debug.LogWarning($"[{context}] Circuit {circuit.Id} contains {pos} but structures does not.");
                 }
             }
         }
@@ -1184,12 +1059,12 @@ public class UtilityMap : StructureMap<UtilityMap>
 
             if (!structures.ContainsKey(pos))
             {
-                Debug.LogError($"[{context}] OwnerAt has {pos} -> circuit {circuit.Id}, but no structure exists there.");
+                Debug.LogWarning($"[{context}] OwnerAt has {pos} -> circuit {circuit.Id}, but no structure exists there.");
             }
 
             if (!_circuits.Contains(circuit))
             {
-                Debug.LogError($"[{context}] OwnerAt has {pos} -> missing circuit {circuit.Id} not in _circuits.");
+                Debug.LogWarning($"[{context}] OwnerAt has {pos} -> missing circuit {circuit.Id} not in _circuits.");
             }
         }
     }
