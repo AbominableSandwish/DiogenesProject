@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [Serializable]
 public class Generator : Structure
@@ -11,8 +12,9 @@ public class Generator : Structure
 
     public override StructureLayer Layer => StructureLayer.Utility;
 
-    public Generator(Vector3Int position = new Vector3Int())
-    {    
+    public Generator(Tilemap tilemap = null, Vector3Int position = new Vector3Int())
+    {
+        this._tilemap = tilemap;
         this._position = position;
     }
 

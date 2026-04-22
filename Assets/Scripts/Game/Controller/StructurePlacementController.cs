@@ -134,6 +134,8 @@ public class StructurePlacementController : MonoBehaviour
         return false;
     }
 
+
+
     private void TryPlaceStructure(StructureType type, Vector3Int cell)
     {
         Structure structure = StructureFactory.Create(type);

@@ -254,7 +254,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 canAdd = true;
                 break;
             case var cls when cls == typeof(SolarPanel):
-                AddGenerator((Generator)structure, position);
+                AddGenerator<SolarPanel>(position);
                 canAdd = true;
                 break;
             case var cls when cls == typeof(Lamp):
@@ -275,7 +275,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         // =====================
         Tile tile = new Tile
         {
-            name = "Coil_" + _counterCoil,
+            name = "Coil_" + _counterCoil.ToString(),
             sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite,
             colliderType = Tile.ColliderType.Grid
         };
@@ -376,38 +376,33 @@ public class UtilityMap : StructureMap<UtilityMap>
 
 
         RefreshCircuitDebug();
+        ValidateCircuits("AddCoil");
         return true;
     }
 
     public bool AddEngine<T>(Vector3Int position)
     {
         if (structures.ContainsKey(position))
-            return false; // END
+            return false;
 
-        Tile tile = null;
-        tile = new Tile();
-        TileBase tileBase = null;
-        switch (typeof(T))
-        {
-            case var cls when cls == typeof(Lamp):
-                tileBase = _tileRegistry.Get(Lamp.TileAssetReference); ;
-                break;
-        }
-
-        //Self
-        tile.name = typeof(T) + _counterEngine.ToString();
-        _tilemap.SetTile(new Vector3Int(position.x, position.y), tileBase);
-        tile = (Tile)_tilemap.GetTile(new Vector3Int(position.x, position.y));
-        tile.colliderType = Tile.ColliderType.Grid;
-        _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
-
-        object[] args = { _tilemap, position.x, position.y };
+        // Self
+        object[] args = { _tilemap, position };
         Engine instance = (Engine)typeof(T).Instantiate(true, args);
         structures.Add(position, instance);
 
+
+        Tile tile = new Tile
+        {
+            name = typeof(T) + _counterEngine.ToString(),
+            colliderType = Tile.ColliderType.Grid
+        };
+
+        _tilemap.SetTile(position, _tileRegistry.Get(instance.TileAssetReference));
+
+        instance.OnTilePlaced();
         _counterEngine++;
 
-        //neighboor
+        // Neighbors
         Dictionary<Vector3Int, Structure> neighboors = GetConnectedNeighborsIgnoring(position);
 
         foreach (var neighboor in neighboors)
@@ -416,12 +411,23 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
+        // Cas 0 : engine seul => il crée son propre circuit
         if (neighboors.Count == 0)
+        {
+            Circuit circuit = new Circuit();
+            circuit.AddEngine(position, instance);
+
+            _circuits.Add(circuit);
+            OwnerAt[position] = circuit;
+
+            RefreshCircuitDebug();
+            ValidateCircuits("AddEngine");
             return true;
+        }
 
         Queue<Circuit> neighborCircuits = GetCircuitNeighbors(neighboors.Keys);
 
-        // Cas A
+        // Cas A : voisins présents mais aucun circuit owner valide
         if (neighborCircuits.Count == 0)
         {
             Dictionary<Vector3Int, Coil> path = new();
@@ -434,10 +440,10 @@ public class UtilityMap : StructureMap<UtilityMap>
 
             circuit.AddEngine(position, instance);
             _circuits.Add(circuit);
-            OwnerAt[position] = circuit;
+            RebuildOwnerMap(circuit);
         }
 
-        // Cas B
+        // Cas B : un seul circuit voisin
         if (neighborCircuits.Count == 1)
         {
             Circuit circuit = neighborCircuits.Dequeue();
@@ -445,7 +451,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             OwnerAt[position] = circuit;
         }
 
-        // Cas C
+        // Cas C : plusieurs circuits voisins => merge
         if (neighborCircuits.Count > 1)
         {
             Circuit newCircuit = new Circuit();
@@ -459,34 +465,37 @@ public class UtilityMap : StructureMap<UtilityMap>
 
             newCircuit.AddEngine(position, instance);
             _circuits.Add(newCircuit);
-            OwnerAt[position] = newCircuit;
+            RebuildOwnerMap(newCircuit);
         }
 
         RefreshCircuitDebug();
-        return true; // END
+        ValidateCircuits("AddEngine");
+        return true;
     }
 
-    
-
-    public bool AddGenerator(Generator generator, Vector3Int position)
+    public bool AddGenerator<T>(Vector3Int position)
     {
         if (structures.ContainsKey(position))
-            return false; // END
+            return false;
 
-        //Self
-        Tile tile = null;
-        tile = new Tile();
-       
-        tile.name = generator.GetType() + _counterGenerator.ToString();
-        tile.sprite = _tileRegistry.Get(generator.TileAssetReference).sprite;
-        tile.colliderType = Tile.ColliderType.Grid;
-        _tilemap.SetTile(new Vector3Int(position.x, position.y), tile);
-
-        object[] args = { position.x, position.y };
+        // Self
+        object[] args = { _tilemap, position };
+        Generator generator = (Generator)typeof(T).Instantiate(true, args);
         structures.Add(position, generator);
+
+        // View
+        Tile tile = new Tile
+        {
+            name = typeof(T) + _counterGenerator.ToString(),
+            sprite = _tileRegistry.Get(generator.TileAssetReference).sprite,
+            colliderType = Tile.ColliderType.Grid
+        };
+        _tilemap.SetTile(position, tile);
+
+        generator.OnTilePlaced();
         _counterGenerator++;
 
-        //neighboor
+        // Neighbors
         Dictionary<Vector3Int, Structure> neighboors = GetTileNeighbor(position);
 
         foreach (var neighboor in neighboors)
@@ -495,36 +504,46 @@ public class UtilityMap : StructureMap<UtilityMap>
                 RefreshTile(neighboor.Key);
         }
 
+        // Cas 0 : generator seul => il crée son propre circuit
         if (neighboors.Count == 0)
+        {
+            Circuit circuit = new Circuit();
+            circuit.AddGenerator(position, generator);
+
+            _circuits.Add(circuit);
+            OwnerAt[position] = circuit;
+
+            RefreshCircuitDebug();
+            ValidateCircuits("AddGenerator");
             return true;
+        }
 
         Queue<Circuit> neighborCircuits = GetCircuitNeighbors(neighboors.Keys);
 
-        // Cas A
+        // Cas A : voisins présents mais aucun circuit owner valide
         if (neighborCircuits.Count == 0)
         {
-            Dictionary<Vector3Int, Coil> path = new();
-            Circuit circuit = new Circuit(path);
+            Circuit circuit = new Circuit();
 
             foreach (var key in neighboors.Keys)
             {
                 circuit.AddStructure(key, neighboors[key]);
             }
 
-            circuit.AddStructure(position, generator);
+            circuit.AddGenerator(position, generator);
             _circuits.Add(circuit);
-            OwnerAt[position] = circuit;
+            RebuildOwnerMap(circuit);
         }
 
-        // Cas B
+        // Cas B : un seul circuit voisin
         if (neighborCircuits.Count == 1)
         {
             Circuit circuit = neighborCircuits.Dequeue();
-            circuit.AddStructure(position, generator);
+            circuit.AddGenerator(position, generator);
             OwnerAt[position] = circuit;
         }
 
-        // Cas C
+        // Cas C : plusieurs circuits voisins => merge
         if (neighborCircuits.Count > 1)
         {
             Circuit newCircuit = new Circuit();
@@ -536,19 +555,21 @@ public class UtilityMap : StructureMap<UtilityMap>
                 newCircuit.Merge(toMerge);
             }
 
-            newCircuit.AddStructure(position, generator);
+            newCircuit.AddGenerator(position, generator);
             _circuits.Add(newCircuit);
-            OwnerAt[position] = newCircuit;
+            RebuildOwnerMap(newCircuit);
         }
 
         RefreshCircuitDebug();
-        return true; // END
+        ValidateCircuits("AddGenerator");
+        return true;
     }
 
     public bool AddStorage<T>(Vector3Int position)
     {
         _counterStorage++;
         RefreshCircuitDebug();
+        ValidateCircuits("AddStorage");
         return false;
     }
 
@@ -610,6 +631,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         RefreshCircuitDebug();
+        ValidateCircuits("RemoveCoil");
         return true;
     }
 
@@ -658,6 +680,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         RefreshCircuitDebug();
+        ValidateCircuits("RemoveGenerator");
         return true;
     }
 
@@ -706,6 +729,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
 
         RefreshCircuitDebug();
+        ValidateCircuits("RemoveEngine");
         return true;
     }
 
@@ -1126,4 +1150,49 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         _circuitDebugRenderer?.RefreshDebug();
     }
+
+    #region DEBUG
+
+    private void ValidateCircuits(string context)
+    {
+        foreach (Circuit circuit in _circuits)
+        {
+            foreach (Vector3Int pos in circuit.GetAllPositions())
+            {
+                if (!OwnerAt.TryGetValue(pos, out Circuit owner))
+                {
+                    Debug.LogError($"[{context}] Missing owner for {pos} in circuit {circuit.Id}");
+                    continue;
+                }
+
+                if (owner != circuit)
+                {
+                    Debug.LogError($"[{context}] Wrong owner for {pos}. Expected circuit {circuit.Id}, got {owner.Id}");
+                }
+
+                if (!structures.ContainsKey(pos))
+                {
+                    Debug.LogError($"[{context}] Circuit {circuit.Id} contains {pos} but structures does not.");
+                }
+            }
+        }
+
+        foreach (var kv in OwnerAt)
+        {
+            Vector3Int pos = kv.Key;
+            Circuit circuit = kv.Value;
+
+            if (!structures.ContainsKey(pos))
+            {
+                Debug.LogError($"[{context}] OwnerAt has {pos} -> circuit {circuit.Id}, but no structure exists there.");
+            }
+
+            if (!_circuits.Contains(circuit))
+            {
+                Debug.LogError($"[{context}] OwnerAt has {pos} -> missing circuit {circuit.Id} not in _circuits.");
+            }
+        }
+    }
+
+    #endregion
 }

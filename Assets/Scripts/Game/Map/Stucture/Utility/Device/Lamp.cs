@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class Lamp : Engine
 {
     new protected string _name = "Lamp";
-    new public static string TileAssetReference = "Lamp";
+    public override string TileAssetReference => "Lamp";
     public override StructureType Type => StructureType.Lamp;
 
 
@@ -17,15 +17,9 @@ public class Lamp : Engine
     #endregion
 
     #region Constructor
-    public Lamp(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)
+    public Lamp(Tilemap tilemap = null, Vector3Int position = new Vector3Int()) : base(tilemap, position)
     {
-        if (tilemap != null) {
-            _object = tilemap.GetInstantiatedObject(new Vector3Int(pos_x, pos_y));
-            _light = _object.GetComponent<Light2D>();
-            _light.intensity = 0;
-            _outerRadius = _light.pointLightOuterRadius;
-            _electricityConsumption = 50.0f;
-        }
+        _electricityConsumption = 50.0f;
     }
     #endregion
 
@@ -42,6 +36,31 @@ public class Lamp : Engine
         }
 
         return electricity;
+    }
+
+    public override void OnTilePlaced()
+    {
+        if (_tilemap == null)
+            return;
+
+        _object = _tilemap.GetInstantiatedObject(_position);
+
+        if (_object == null)
+        {
+            Debug.LogWarning($"Lamp.OnTilePlaced: no instantiated object at {_position}");
+            return;
+        }
+
+        _light = _object.GetComponent<Light2D>();
+
+        if (_light == null)
+        {
+            Debug.LogWarning($"Lamp.OnTilePlaced: no Light2D found at {_position}");
+            return;
+        }
+
+        _light.intensity = 0;
+        _outerRadius = _light.pointLightOuterRadius;
     }
 
     #endregion

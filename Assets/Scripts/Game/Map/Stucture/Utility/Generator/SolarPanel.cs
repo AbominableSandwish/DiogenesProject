@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class SolarPanel : Generator
 {
@@ -11,9 +13,8 @@ public class SolarPanel : Generator
 
     #region Public Method
 
-    public SolarPanel(int x = 0, int y = 0)
+    public SolarPanel(Tilemap tilemap = null, Vector3Int position = new Vector3Int()): base(tilemap, position)
     {
-        this._position =new Vector3Int(x, y);
     }
 
     public override float Output()

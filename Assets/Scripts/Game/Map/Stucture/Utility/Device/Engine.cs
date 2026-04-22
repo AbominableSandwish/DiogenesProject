@@ -22,6 +22,7 @@ public class Engine : Structure
     #region Constructor
     public Engine(Tilemap tilemap = null, Vector3Int position = new Vector3Int())
     {
+        this._tilemap = tilemap;
         this._position = position;
 
         if(tilemap != null)

@@ -1,9 +1,10 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 public abstract  class Structure
 {
     #region Private Data
     protected bool _isEnabled = false;
-    
+    protected Tilemap _tilemap;
     protected string _name = "";
     protected Vector3Int _position;
     #endregion
@@ -12,6 +13,7 @@ public abstract  class Structure
     public abstract string TileAssetReference { get; }
     public bool IsWalkable = false;
     public bool IsClimbable = true;
+
     #endregion
 
     #region Public Method
@@ -21,6 +23,10 @@ public abstract  class Structure
     public abstract StructureType Type { get; }
 
     public virtual void Init()
+    {
+    }
+
+    public virtual void OnTilePlaced()
     {
     }
 

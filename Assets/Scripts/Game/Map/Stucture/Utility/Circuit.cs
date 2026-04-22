@@ -30,6 +30,8 @@ public class Circuit
     public float Capacity;
 
     #region Public Data
+
+    public int NbrStructure = 0;
     public Dictionary<Vector3Int, Coil> _coils;
     public HashSet<int> _idStructures;
     public Dictionary<Vector3Int, Generator> _generators;
@@ -63,20 +65,19 @@ public class Circuit
         Id = _nextId++;
         Debug.Log($"Circuit {Id}");
 
-        DebugColor = RandomDebugColor();
-    }
-    public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null) : this()
-    {
-
-        _coils = _coils ?? new Dictionary<Vector3Int, Coil>();
+        _coils = new Dictionary<Vector3Int, Coil>();
         _idStructures = new HashSet<int>();
         _generators = new Dictionary<Vector3Int, Generator>();
         _engines = new Dictionary<Vector3Int, Engine>();
         _storages = new Dictionary<Vector3Int, Storage>();
         _connMask = new Dictionary<Vector3Int, Conn>();
 
-
+        DebugColor = RandomDebugColor();
+    }
+    public Circuit(Dictionary<Vector3Int, Coil> coils, HashSet<int> structures = null, Dictionary<Vector3Int, Generator> generators = null, Dictionary<Vector3Int, Engine> engines = null, Dictionary<Vector3Int, Storage> storages = null, Dictionary<Vector3Int, Conn> connMask = null) : this()
+    {
         _coils = coils;
+
         if(structures != null)
             _idStructures = structures;
         if(generators != null)
@@ -89,6 +90,7 @@ public class Circuit
         if(connMask != null)
             _connMask = connMask;
 
+        this.NbrStructure += _coils.Count;
 
     }
     #endregion
@@ -165,6 +167,7 @@ public class Circuit
         if (circuit._connMask != null)
             _connMask.AddRange(circuit._connMask);
 
+        this.NbrStructure += circuit.NbrStructure;
         circuit = null;
         RecomputeStates();
     }
@@ -201,12 +204,14 @@ public class Circuit
         _connMask[position] = NewConnection(position);
         _coils.Add(position, coil);
         RecomputeStates();
+        this.NbrStructure++;
     }
     public void AddEngine(Vector3Int position, Engine engine)
     {      
         _engines.Add(position, engine);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
+        this.NbrStructure++;
     }
 
     public void AddGenerator(Vector3Int position, Generator generator)
@@ -214,6 +219,7 @@ public class Circuit
         _generators.Add(position, generator);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
+        this.NbrStructure++;
     }
 
     public void AddStorage(Vector3Int position, Storage storage)
@@ -221,6 +227,7 @@ public class Circuit
         _storages.Add(position, storage);
         _connMask[position] = NewConnection(position);
         RecomputeStates();
+        this.NbrStructure++;
     }
 
     public void AddStructure(Vector3Int position, Structure structure)
@@ -250,6 +257,7 @@ public class Circuit
 
         _connMask[position] = NewConnection(position);
         RecomputeStates();
+        this.NbrStructure++;
     }
 
     #endregion
