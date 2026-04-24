@@ -2,7 +2,6 @@ public enum StructureType
 {
     NONE = -1,
     Ground,
-    Ladder,
     Door,
     Coil,
     Generator,
@@ -11,6 +10,7 @@ public enum StructureType
     SolarPanel,
     Lamp,
     WoodPlateform,
+    Ladder,
     Limit,
     Glass,
     Resource,

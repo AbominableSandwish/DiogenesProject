@@ -22,7 +22,6 @@ public class LoadingManager : MonoBehaviour, ILoadReporter
 
         // Enregistre tes steps ici
         _steps.Add(new LoadTilesAddressablesStep("Tile"));
-
         if (FindAnyObjectByType<SceneRegistry>())
         {
             _steps.Add(new LoadScenesAddressablesStep("SceneTest"));

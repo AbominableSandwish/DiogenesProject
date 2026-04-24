@@ -161,6 +161,13 @@ public class MapManager : MonoBehaviour
                 return false;
         }
     }
+
+    public bool IsInBounds(Vector3Int pos)
+    {
+        return pos.x >= 0 && pos.x < Width &&
+               pos.y >= 0 && pos.y < Height;
+    }
+
     #endregion
 
     #region Serialization

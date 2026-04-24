@@ -2,15 +2,17 @@
 using System.Linq;
 using UnityEngine;
 using static Structure;
+using static UnityEditor.PlayerSettings;
 using static UnityResolver;
 
 public class Pathfinder : MonoBehaviour
 {
     [SerializeField] private MapManager grid;
+    [SerializeField] private List<SpecialConnection> specialConnections = new();
 
     private void Awake()
     {
-        UnityResolver.Resolve(grid, this, "MapManager");
+        grid = UnityResolver.Resolve(grid, this, "MapManager");
     }
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)
@@ -23,25 +25,19 @@ public class Pathfinder : MonoBehaviour
         {
             if (!allNodes.TryGetValue(pos, out var node))
             {
-                // Walkable = dans les limites + walkable sur la map
-                bool walkable = IsInsideLimits(pos) && grid.IsWalkable(pos, StructureLayer.Basic);
-
-                node = new Node(pos, walkable);
-
-                // Important si ton Node.gCost démarre à 0 par défaut :
-                // ça évite des comparaisons bizarres (tentativeG < neighbor.gCost).
+                node = new Node(pos, true);
                 node.gCost = float.PositiveInfinity;
-
                 allNodes[pos] = node;
             }
+
             return node;
         }
 
-        Node startNode = GetNode(start);
-        Node endNode   = GetNode(end);
-
-        if (!startNode.walkable || !endNode.walkable)
+        if (!IsInsideLimits(start) || !IsInsideLimits(end))
             return null;
+
+        Node startNode = GetNode(start);
+        Node endNode = GetNode(end);
 
         startNode.gCost = 0f;
         startNode.hCost = Heuristic(start, end);
@@ -62,7 +58,7 @@ public class Pathfinder : MonoBehaviour
             {
                 Node neighbor = GetNode(neighborPos);
 
-                if (!neighbor.walkable || closedList.Contains(neighbor))
+                if (closedList.Contains(neighbor))
                     continue;
 
                 float tentativeG = current.gCost + MoveCost(current.position, neighbor.position);
@@ -106,42 +102,139 @@ public class Pathfinder : MonoBehaviour
     /// Déplacement libre uniquement en X (même hauteur = même Y).
     /// Changement de Y uniquement via Ladder/Stair.
     /// </summary>
-   private IEnumerable<Vector3Int> GetNeighbors(Vector3Int pos)
+    private IEnumerable<Vector3Int> GetNeighbors(Vector3Int pos)
     {
-        // Déplacement horizontal (X)
-        TryAddHorizontalWithStep(pos, -1, out var leftSame, out var leftUp, out var leftDown);
-        if (leftSame.HasValue) yield return leftSame.Value;
-        if (leftUp.HasValue) yield return leftUp.Value;
-        if (leftDown.HasValue) yield return leftDown.Value;
+        foreach (var n in GetHorizontalNeighbors(pos))
+            yield return n;
 
-        TryAddHorizontalWithStep(pos, +1, out var rightSame, out var rightUp, out var rightDown);
-        if (rightSame.HasValue) yield return rightSame.Value;
-        if (rightUp.HasValue) yield return rightUp.Value;
-        if (rightDown.HasValue) yield return rightDown.Value;
+        foreach (var n in GetVerticalNeighbors(pos))
+            yield return n;
 
-        // Vertical (Y) via Ladder/Stair en CHAÎNE
+        foreach (var n in GetSpecialNeighbors(pos))
+            yield return n;
+    }
+
+    private IEnumerable<Vector3Int> GetHorizontalNeighbors(Vector3Int pos)
+    {
+        foreach (var n in GetHorizontalMoves(pos, -1))
+            yield return n;
+
+        foreach (var n in GetHorizontalMoves(pos, +1))
+            yield return n;
+    }
+
+    private IEnumerable<Vector3Int> GetVerticalNeighbors(Vector3Int pos)
+    {
+        Vector3Int up = new(pos.x, pos.y + 1, pos.z);
+        Vector3Int down = new(pos.x, pos.y - 1, pos.z);
+
+        Debug.Log(
+            $"Vertical check from {pos} | " +
+            $"up={up} upLadder={IsClimbTile(up)} upEmpty={IsEmptyForBody(up)} | " +
+            $"down={down} downLadder={IsClimbTile(down)} downEmpty={IsEmptyForBody(down)}"
+            );
+
+        if (CanClimbBetween(pos, up))
         {
-            var up = new Vector3Int(pos.x, pos.y + 1, pos.z);
-            var down = new Vector3Int(pos.x, pos.y - 1, pos.z);
+            Debug.Log($"ADD UP {pos} -> {up}");
+            yield return up;
+        }
 
-            if (CanClimbBetween(pos, up)) yield return up;
-            if (CanClimbBetween(pos, down)) yield return down;
+        if (CanClimbBetween(pos, down))
+        {
+            Debug.Log($"ADD DOWN {pos} -> {down}");
+            yield return down;
         }
     }
 
+    private IEnumerable<Vector3Int> GetHorizontalMoves(Vector3Int from, int dx)
+    {
+        Vector3Int front = new(from.x + dx, from.y, from.z);
+
+        if (!IsInsideLimits(front))
+            yield break;
+
+        Structure obstacle = grid.GetStructure(front, StructureLayer.Basic);
+
+        // Obstacle présent à même niveau
+        if (obstacle != null)
+        {
+            // Bloc grimpable => tentative de montée d'1 case
+            if (IsClimbableBlockType(obstacle.Type))
+            {
+                Vector3Int ontoTop = new(front.x, front.y + 1, front.z);
+
+                if (IsInsideLimits(ontoTop) && IsEmptyForBody(ontoTop))
+                    yield return ontoTop;
+
+                yield break;
+            }
+
+            // Une échelle ne bloque pas le mouvement horizontal
+            if (obstacle.Type != StructureType.Ladder)
+                yield break;
+        }
+
+        // Déplacement à même niveau
+        if (IsValidStep(from, front))
+            yield return front;
+
+        // Descente d'un niveau
+        Vector3Int down = new(front.x, front.y - 1, front.z);
+        if (IsValidStep(from, down))
+            yield return down;
+    }
+
+    private IEnumerable<Vector3Int> GetSpecialNeighbors(Vector3Int pos)
+    {
+        foreach (var connection in specialConnections)
+        {
+            if (connection.From == pos)
+                yield return connection.To;
+
+            if (connection.Bidirectional && connection.To == pos)
+                yield return connection.From;
+        }
+    }
+
+    private bool IsValidStep(Vector3Int from, Vector3Int to)
+    {
+        if (!IsInsidePlayableArea(to))
+            return false;
+
+        if (!IsEmptyForBody(to))
+            return false;
+
+        if (IsClimbTile(to))
+            return true;
+
+        return HasSupport(to);
+    }
+
+
+
     private bool CanClimbBetween(Vector3Int from, Vector3Int to)
     {
-        if (!IsInsideLimits(to)) return false;
+        if (!IsInsidePlayableArea(to))
+            return false;
 
-        // On ne grimpe verticalement que sur la même colonne X/Z
-        if (from.x != to.x || from.z != to.z) return false;
+        if (from.x != to.x || from.z != to.z)
+            return false;
 
-        // Il faut que l'espace cible soit occupable (au moins vide pour le corps)
-        // (On ne met pas grid.IsWalkable ici, sinon tu risques de bloquer le climb)
-        if (!IsEmptyForBody(to)) return false;
+        bool fromIsLadder = IsClimbTile(from);
+        bool toIsLadder = IsClimbTile(to);
 
-        // Il faut une échelle/escalier sur la case de départ OU sur la case d'arrivée
-        return IsClimbTile(from) || IsClimbTile(to);
+        bool empty = IsEmptyForBody(to);
+
+        Debug.Log($"Climb {from}->{to} | fromLadder={fromIsLadder} toLadder={toIsLadder} empty={empty}");
+
+        if (!fromIsLadder && !toIsLadder)
+            return false;
+
+        if (!empty)
+            return false;
+
+        return true;
     }
 
     private bool IsClimbTile(Vector3Int cell)
@@ -152,66 +245,7 @@ public class Pathfinder : MonoBehaviour
         return s.Type == StructureType.Ladder;
     }
 
-    private void TryAddHorizontalWithStep(
-    Vector3Int from,
-    int dx,
-    out Vector3Int? sameLevel,
-    out Vector3Int? stepUp,
-    out Vector3Int? stepDown
-)
-    {
-        sameLevel = null;
-        stepUp = null;
-        stepDown = null;
-
-        var front = new Vector3Int(from.x + dx, from.y, from.z);
-
-        // 0) Si un obstacle est présent AU MÊME NIVEAU, il prend la priorité sur IsWalkable
-        //    - grimpable -> on tente Y+1
-        //    - non grimpable -> on bloque
-        var obstacle = grid.GetStructure(front, StructureLayer.Basic);
-
-        if (obstacle != null)
-        {
-            // Grimpable (ex: WoodPlateform) => step-up d'1
-            if (IsClimbableBlockType(obstacle.Type))
-            {
-                var ontoTop = new Vector3Int(front.x, front.y + 1, front.z);
-
-                // Monter sur le bloc : espace libre pour le corps + dans les limites
-                if (IsInsideLimits(ontoTop) && IsEmptyForBody(ontoTop))
-                {
-                    stepUp = ontoTop;
-                }
-                // sinon : bloqué (pas de sameLevel)
-                return;
-            }
-
-            // Si c'est une échelle/escalier, on ne bloque pas le mouvement horizontal à cause de ça.
-            // (Sinon une échelle posée sur une case empêcherait de marcher)
-            if (obstacle.Type == StructureType.Ladder)
-            {
-                // on continue sur le check normal plus bas
-            }
-            else
-            {
-                // Obstacle non grimpable => bloqué net
-                return;
-            }
-        }
-
-        // 1) Déplacement normal à même niveau
-        if (IsValidStep(from, front))
-        {
-            sameLevel = front;
-            return;
-        }
-
-        // 2) Optionnel: step down
-        var down = new Vector3Int(front.x, front.y - 1, front.z);
-        if (IsValidStep(from, down))
-            stepDown = down;
-    }
+   
 
     private bool IsClimbableBlockType(StructureType type)
     {
@@ -219,25 +253,6 @@ public class Pathfinder : MonoBehaviour
         return type == StructureType.WoodPlateform;
     }
 
-    private bool IsClimbableBlockAt(Vector3Int cell)
-    {
-        var st = grid.GetStructure(cell, StructureLayer.Basic);
-        if (st == null) return false;
-
-        // Ici tu mets les blocs "1 de haut" qu'on peut escalader
-        return st.Type == StructureType.WoodPlateform;
-    }
-
-    // --- Helpers "bloc / espace libre" (à adapter à tes types réels) ---
-
-    private bool IsSolidBlockAt(Vector3Int cell)
-    {
-        var st = grid.GetStructure(cell, StructureLayer.Basic);
-        if (st == null) return false;
-
-        // Mets ici le type exact qui “bloque” au même niveau
-        return st.Type == StructureType.WoodPlateform; // <- adapte (Wall, Rock, etc.)
-    }
 
     /// <summary>
     /// Si ton PNJ occupe 1 case, tu peux juste retourner true.
@@ -245,8 +260,8 @@ public class Pathfinder : MonoBehaviour
     /// </summary>
     private bool IsEmptyForBody(Vector3Int cell)
     {
-        if (!IsInsideLimits(cell))
-            return false;
+     if (!IsInsidePlayableArea(cell))
+    return false;
 
         var body = grid.GetStructure(cell, StructureLayer.Basic);
 
@@ -273,22 +288,33 @@ public class Pathfinder : MonoBehaviour
         return true;
     }
 
-    private bool IsValidStep(Vector3Int from, Vector3Int to)
+    private bool HasSupport(Vector3Int cell)
     {
-        // Limites (zone max)
-        if (!IsInsideLimits(to))
+        Vector3Int below = new(cell.x, cell.y - 1, cell.z);
+
+        // Cas spécial : le sol de base est la Limit en y = -1
+        if (below.y == -1)
+            return true;
+
+        Structure belowStruct = grid.GetStructure(below, StructureLayer.Basic);
+
+        Debug.Log($"SUPPORT for {cell} | below={below} | type={belowStruct?.Type.ToString() ?? "NULL"}");
+
+        if (belowStruct == null)
             return false;
 
-        // Walkable (sol/obstacle/etc.)
-        if (!grid.IsWalkable(to, StructureLayer.Basic))
-            return false;
+        return belowStruct.Type == StructureType.Limit
+            || belowStruct.Type == StructureType.WoodPlateform
+            || belowStruct.Type == StructureType.Ladder;
+    }
 
-        // Si tu as la notion de "block qui bloque sur la même ligne",
-        // c’est souvent un obstacle sur la case cible => IsWalkable couvre déjà.
-        // Sinon, tu peux ajouter un test spécifique ici :
-        // if (grid.GetStructure(to, StructureMap.Basic)?.Type == StructureType.Block) return false;
-
-        return true;
+    private bool IsInsidePlayableArea(Vector3Int pos)
+    {
+        return grid != null
+            && pos.x >= 0
+            && pos.x < grid.Width
+            && pos.y >= 0
+            && pos.y < grid.Height;
     }
 
     // ------------------------------------------------------------
@@ -297,19 +323,7 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsInsideLimits(Vector3Int pos)
     {
-        // OPTION A (recommandée) : tu ajoutes une fonction côté MapManager
-        // return grid.IsInsideLimits(pos);
-
-        // OPTION B : si ton "Limit" est une tuile/structure placée sur la map
-        // et que sortir de la zone revient à tomber sur un Limit ou "no cell":
-        // - soit tu as un IsInBounds(pos)
-        // - soit tu testes la présence de limites autour
-        //
-        // Exemple minimal si tu as une taille de grille:
-        // return grid.IsInBounds(pos);
-
-        // Par défaut, on ne bloque rien tant que tu n'as pas branché.
-        return true;
+        return grid != null && grid.IsInBounds(pos);
     }
 
     // ------------------------------------------------------------
@@ -324,8 +338,15 @@ public class Pathfinder : MonoBehaviour
 
     private float MoveCost(Vector3Int from, Vector3Int to)
     {
-        // Tu peux pénaliser le changement de hauteur si tu veux :
-        // return (from.y != to.y) ? 2f : 1f;
+        foreach (var connection in specialConnections)
+        {
+            if (connection.From == from && connection.To == to)
+                return connection.Cost;
+
+            if (connection.Bidirectional && connection.To == from && connection.From == to)
+                return connection.Cost;
+        }
+
         return 1f;
     }
 }

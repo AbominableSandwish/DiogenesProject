@@ -9,7 +9,7 @@ class Limit : Structure
     new public bool IsClimbable = true;
 
     public override StructureLayer Layer => StructureLayer.Basic;
-    public override StructureType Type => StructureType.Door;
+    public override StructureType Type => StructureType.Limit;
 
     #region Constructor
     public Limit(Tilemap tilemap = null, int pos_x = 0, int pos_y = 0)

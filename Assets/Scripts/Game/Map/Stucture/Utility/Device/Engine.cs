@@ -17,6 +17,7 @@ public class Engine : Structure
     #region Private data
     protected GameObject _object;
     protected float _electricityConsumption = 0.0f;
+    protected bool _isPowered;
     #endregion
 
     #region Constructor
@@ -41,6 +42,13 @@ public class Engine : Structure
         if (EnginePerformance > 1.0f)
             EnginePerformance = 1.0f;   
         return electricity - _electricityConsumption;
+    }
+
+    public bool IsPowered => _isPowered;
+
+    public virtual void SetPowered(bool powered)
+    {
+        _isPowered = powered;
     }
     #endregion
 }

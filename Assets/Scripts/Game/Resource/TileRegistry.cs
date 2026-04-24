@@ -4,6 +4,8 @@ using UnityEngine.Tilemaps;
 
 public class TileRegistry : MonoBehaviour
 {
+
+
     public static TileRegistry Instance { get; private set; }
 
     private readonly Dictionary<string, Tile> _tiles = new();

@@ -63,5 +63,15 @@ public class Lamp : Engine
         _outerRadius = _light.pointLightOuterRadius;
     }
 
+
+    public override void SetPowered(bool powered)
+    {
+        base.SetPowered(powered);
+
+        if (_light == null)
+            return;
+
+        _light.intensity = powered ? 1f : 0f;
+    }
     #endregion
 }

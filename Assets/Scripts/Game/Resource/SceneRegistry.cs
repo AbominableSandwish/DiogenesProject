@@ -29,6 +29,7 @@ public class SceneRegistry : MonoBehaviour
         if (_scenes.ContainsKey(key))
             Debug.LogWarning($"TileRegistry: clé dupliquée '{key}' (remplacement).");
 
+        sceneNames.Add(scene);
         _scenes[key] = scene.text;
     }
 
@@ -36,7 +37,6 @@ public class SceneRegistry : MonoBehaviour
     {
         foreach (TextAsset s in scenes)
         {
-            sceneNames.Add(s);
             Register(s);
         }
     }
