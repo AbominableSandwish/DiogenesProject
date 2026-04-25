@@ -25,6 +25,13 @@ public class TestManager : MonoBehaviour
 
     public void Action()
     {
+        if (!test.TrySetupFromMarkers())
+        {
+            Debug.LogError("Test setup failed.");
+            return;
+        }
+
+
         test.Respawn();
         test.LaunchTest();
     }

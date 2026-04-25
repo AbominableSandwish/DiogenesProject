@@ -30,8 +30,7 @@ MonoBehaviour:
   - m_GUID: 0dd0b67792346b24a9a48dc591d0347b
     m_Address: Assets/Resources_moved/SceneTest/World.json
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - SceneTest
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0f595bd9049668d4c9eeda930ed829e8
     m_Address: Assets/Basic/Earth
@@ -57,14 +56,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2db4a319b6d954740ba4ef788278ef67
-    m_Address: Assets/Resources_moved/SceneTest/World 1.json
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - SceneTest
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2fc7d024efe911c439020a257d396de1
     m_Address: Tile/Coils/2_connect/CableCoil_7
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41eeadd882b70d6478831eea15dfbd1a
+    m_Address: Tile/Basic/End
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
@@ -138,11 +137,16 @@ MonoBehaviour:
   - m_GUID: 912bd8e5e8007cb41b78fbc472d1b1f3
     m_Address: Assets/Resources_moved/SceneTest/World 2.json
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - SceneTest
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 93a01d32aeb747649aec56ab9b369c59
     m_Address: Tile/Coils/1_connect/CableCoil_1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9df3fe7af571d0e4081473579c9c4f50
+    m_Address: Tile/Basic/Begin
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
@@ -152,6 +156,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cff43e19b70cb2a469e9884084358b2a
+    m_Address: Assets/Resources_moved/SceneTest/World 0.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SceneTest
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d064c2619723a554c9dd17a8c3b58217
     m_Address: Tile/Basic/Wood_Stair

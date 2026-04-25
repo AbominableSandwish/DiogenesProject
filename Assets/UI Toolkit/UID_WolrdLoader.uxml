@@ -1,10 +1,10 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement style="flex-grow: 1; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; width: 528px; position: absolute; right: 0; height: 100%; padding-top: 12px; padding-right: 12px; padding-bottom: 12px; padding-left: 12px;">
-        <ui:Label text="World Load" style="height: 10%; -unity-text-align: middle-left; -unity-font-style: bold; font-size: 28px;" />
-        <ui:ListView name="world_list" style="height: 80%;" />
+        <ui:Label text="World Load" style="height: 10%; -unity-text-align: middle-left; -unity-font-style: bold; font-size: 28px;"/>
+        <ui:ListView name="world_list" style="height: 80%;"/>
         <ui:VisualElement style="flex-grow: 1; flex-direction: row-reverse; height: 10%;">
-            <ui:Button text="Button" />
-            <ui:Button text="Button" name="load_btn" />
+            <ui:Button text="Button"/>
+            <ui:Button text="Load" name="load_btn" enable-rich-text="true"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

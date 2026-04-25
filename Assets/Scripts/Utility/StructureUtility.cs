@@ -39,6 +39,12 @@ public static class StructureFactory
             case StructureType.Lamp:
                 return new Lamp();
 
+            case StructureType.Begin:
+                return new Begin();
+
+            case StructureType.End:
+                return new End();
+
             default:
                 Debug.LogWarning($"No factory entry for structure type {type}");
                 return null;

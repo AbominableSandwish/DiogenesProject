@@ -41,7 +41,7 @@ public class StructuresInterface : MonoBehaviour
         int i = 0;
         VisualElement currentColumn = null;
 
-        for (StructureType type = StructureType.Ground; type < StructureType.LENGTH; type++)
+        for (StructureType type = StructureType.Begin; type < StructureType.LENGTH; type++)
         {
             if (i == 0 || i % 4 == 0)
             {

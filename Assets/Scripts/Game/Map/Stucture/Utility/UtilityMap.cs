@@ -908,13 +908,13 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if(structure != null)
-                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
+                        list.Add(new MapCellData(x, y, 0, structure.Type));
                 }
                 else
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
+                        list.Add(new MapCellData(x, y, 0, structure.Type));
                 }
             }
         }

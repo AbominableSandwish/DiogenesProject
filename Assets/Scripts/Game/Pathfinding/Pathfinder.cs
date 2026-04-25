@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using static Structure;
 using static UnityEditor.PlayerSettings;
@@ -17,6 +18,8 @@ public class Pathfinder : MonoBehaviour
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)
     {
+        Debug.Log($"FindPath start={start} end={end}");
+
         List<Node> openList = new();
         HashSet<Node> closedList = new();
         Dictionary<Vector3Int, Node> allNodes = new();
@@ -49,7 +52,10 @@ public class Pathfinder : MonoBehaviour
             Node current = openList.OrderBy(n => n.fCost).First();
 
             if (current.position == end)
+            {
+                Debug.Log($"PATH FOUND at {current.position}");
                 return RetracePath(startNode, current);
+            }
 
             openList.Remove(current);
             closedList.Add(current);
@@ -170,9 +176,26 @@ public class Pathfinder : MonoBehaviour
                 yield break;
             }
 
-            // Une échelle ne bloque pas le mouvement horizontal
-            if (obstacle.Type != StructureType.Ladder)
-                yield break;
+            if (obstacle != null)
+            {
+                if (IsClimbableBlockType(obstacle.Type))
+                {
+                    Vector3Int ontoTop = new(front.x, front.y + 1, front.z);
+
+                    if (IsInsidePlayableArea(ontoTop) && IsEmptyForBody(ontoTop))
+                        yield return ontoTop;
+
+                    yield break;
+                }
+
+                // Les markers ne bloquent pas le mouvement horizontal
+                if (obstacle.Type != StructureType.Ladder &&
+                    obstacle.Type != StructureType.Begin &&
+                    obstacle.Type != StructureType.End)
+                {
+                    yield break;
+                }
+            }
         }
 
         // Déplacement à même niveau
@@ -199,6 +222,11 @@ public class Pathfinder : MonoBehaviour
 
     private bool IsValidStep(Vector3Int from, Vector3Int to)
     {
+        if (to.x >= 36)
+        {
+            Debug.Log($"STEP CHECK {to} | inside={IsInsidePlayableArea(to)} empty={IsEmptyForBody(to)} support={HasSupport(to)} type={grid.GetStructure(to, StructureLayer.Basic)?.Type.ToString() ?? "NULL"}");
+        }
+
         if (!IsInsidePlayableArea(to))
             return false;
 
@@ -207,6 +235,7 @@ public class Pathfinder : MonoBehaviour
 
         if (IsClimbTile(to))
             return true;
+       
 
         return HasSupport(to);
     }
@@ -268,7 +297,9 @@ public class Pathfinder : MonoBehaviour
         // Les échelles / escaliers n'obstruent PAS le corps
         if (body != null)
         {
-            if (body.Type == StructureType.Ladder)
+            if (body.Type == StructureType.Ladder ||
+                body.Type == StructureType.Begin ||
+                body.Type == StructureType.End)
                 return true;
 
             // Tout autre type bloque
@@ -282,8 +313,12 @@ public class Pathfinder : MonoBehaviour
 
         var headStruct = grid.GetStructure(head, StructureLayer.Basic);
         if (headStruct != null &&
-            headStruct.Type != StructureType.Ladder)
+            headStruct.Type != StructureType.Ladder &&
+            headStruct.Type != StructureType.Begin &&
+            headStruct.Type != StructureType.End)
+        {
             return false;
+        }
 
         return true;
     }

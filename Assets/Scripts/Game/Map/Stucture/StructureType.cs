@@ -1,6 +1,8 @@
 public enum StructureType
 {
     NONE = -1,
+    Begin = 0,
+    End = 1,
     Ground,
     Door,
     Coil,
@@ -8,11 +10,11 @@ public enum StructureType
     Engine,
     Storage,
     SolarPanel,
+    Ladder = 9,
+    Limit = 10,
     Lamp,
     WoodPlateform,
-    Ladder,
-    Limit,
     Glass,
-    Resource,
+    Resource, 
     LENGTH
 }

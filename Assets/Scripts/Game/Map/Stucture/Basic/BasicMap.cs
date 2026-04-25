@@ -55,14 +55,15 @@ public class BasicMap : StructureMap<BasicMap>
     public override void Refresh()
     {
         TileBase tileBase = null;
-        for (int i = 0; i < Width ; i++)
+        for (int i = -1; i <= Width - 1 ; i++)
         {
-            for (int j = 0; j < Height; j++)
+            for (int j = -1; j <= Height - 1; j++)
             {
                 Vector3Int key = new Vector3Int(i, j, 0);
-                if (structures[key] != null)
+                structures.TryGetValue(key, out Structure value);
+                if (value != null)
                 {
-                    string name = structures[key].TileAssetReference;
+                    string name = value.TileAssetReference;
                     tileBase = _tileRegistry.Get(name); 
                     object[] args = { _tilemap, i, j };
                     _tilemap.SetTile(key, tileBase);
@@ -148,6 +149,12 @@ public class BasicMap : StructureMap<BasicMap>
                 case StructureType.Ground:
                     AddStructure(new Ground(), new Vector3Int(cdata.x, cdata.y, cdata.z));
                     break;
+                case StructureType.Begin:
+                    AddStructure(new Begin(), new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
+                case StructureType.End:
+                    AddStructure(new End(), new Vector3Int(cdata.x, cdata.y, cdata.z));
+                    break;
             }
         }
     }
@@ -164,13 +171,13 @@ public class BasicMap : StructureMap<BasicMap>
                 {
                     Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
+                        list.Add(new MapCellData(x, y, 0, structure.Type));
                 }
                 else
                 {
                    Structure structure = GetStructure(new Vector3Int(x, y));
                     if (structure != null)
-                        list.Add(new MapCellData(x, y, 0, (int)structure.Type));
+                        list.Add(new MapCellData(x, y, 0, structure.Type));
                 }
             }
         }

@@ -372,7 +372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Villager
   currentGridPos: {x: 0, y: 0, z: 0}
   targetGridPos: {x: 0, y: 0, z: 0}
-  moveSpeed: 2
+  moveSpeed: 8
   currentState: 0
   map: {fileID: 1558542203}
   pathfinder: {fileID: 1558542202}
@@ -1064,6 +1064,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   villager: {fileID: 767495061}
+  map: {fileID: 1558542203}
+  testManager: {fileID: 1774966864}
   IsFinish: 0
   IsSuccess: 0
   _result: {fileID: 1477313389}

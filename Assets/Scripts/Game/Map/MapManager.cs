@@ -24,11 +24,12 @@ public class MapManager : MonoBehaviour
     public static MapManager Instance { get => _instance; protected set => _instance = value; }
     public int Height { get => _height; set => _height = value; }
     public int Width { get => _width; set => _width = value; }
+    public BasicMap BasicMap { get => _basicMap; set => _basicMap = value; }
 
     public Vector3 GetWorldPosition(Vector3Int gridPos) => new Vector3(gridPos.x, gridPos.y + gridPos.z * 0.5f, 0) * CellSize;
 
     public bool IsCellFree(Vector3Int gridPos)
-        => _basicMap.GetStructure(gridPos) == null;
+        => BasicMap.GetStructure(gridPos) == null;
 
     public float CellSize = 1f;
 
@@ -49,7 +50,7 @@ public class MapManager : MonoBehaviour
 
     private void Start()
     {
-        _basicMap?.Init(_width, _height);
+        BasicMap?.Init(_width, _height);
         _utilityMap?.Init(GenerationMap);
     }
 
@@ -73,7 +74,7 @@ public class MapManager : MonoBehaviour
         switch (layer)
         {
             case StructureLayer.Basic:
-                structure = _basicMap?.GetStructure(position);
+                structure = BasicMap?.GetStructure(position);
                 break;
             case StructureLayer.Utility:
                 structure = _utilityMap?.GetStructure(position);
@@ -90,7 +91,7 @@ public class MapManager : MonoBehaviour
         switch (layer)
         {
             case StructureLayer.Basic:
-                isWalkable = _basicMap.IsWalkable(position);
+                isWalkable = BasicMap.IsWalkable(position);
                 break;
             case StructureLayer.Utility:
                 isWalkable = _utilityMap.IsWalkable(position);
@@ -111,14 +112,14 @@ public class MapManager : MonoBehaviour
             return false;
         }
 
-        if (!_basicMap.HasStructure(position) && !_utilityMap.HasStructure(position))
+        if (!BasicMap.HasStructure(position) && !_utilityMap.HasStructure(position))
         {
             structure.Position = position;
 
             switch (structure.Layer)
             {
                 case StructureLayer.Basic:
-                    _basicMap.AddStructure(structure, position);
+                    BasicMap.AddStructure(structure, position);
                     return true;
 
                 case StructureLayer.Utility:
@@ -148,7 +149,7 @@ public class MapManager : MonoBehaviour
         switch (structure.Layer)
         {
             case StructureLayer.Basic:
-                return _basicMap.RemoveStructure(position);
+                return BasicMap.RemoveStructure(position);
 
             case StructureLayer.Utility:
                 return _utilityMap.RemoveStructure(position);
@@ -190,8 +191,8 @@ public class MapManager : MonoBehaviour
         };
 
         // Capture de chaque couche
-        if (_basicMap != null)
-            world.maps.Add(new NamedMapData { name = "Basic", data = _basicMap.Capture() });
+        if (BasicMap != null)
+            world.maps.Add(new NamedMapData { name = "Basic", data = BasicMap.Capture() });
         if (_utilityMap != null)
             world.maps.Add(new NamedMapData { name = "Utility", data = _utilityMap.Capture() });
         if (_decorationMap != null)
@@ -219,7 +220,7 @@ public class MapManager : MonoBehaviour
             switch (nm.name)
             {
                 case "Basic":
-                    if (_basicMap != null) _basicMap.Restore(nm.data);
+                    if (BasicMap != null) BasicMap.Restore(nm.data);
                     break;
                 case "Utility":
                     if (_utilityMap != null) _utilityMap.Restore(nm.data);
@@ -255,7 +256,7 @@ public class MapManager : MonoBehaviour
             switch (nm.name)
             {
                 case "Basic":
-                    if (_basicMap != null) _basicMap.Restore(nm.data);
+                    if (BasicMap != null) BasicMap.Restore(nm.data);
                     break;
                 case "Utility":
                     if (_utilityMap != null) _utilityMap.Restore(nm.data);

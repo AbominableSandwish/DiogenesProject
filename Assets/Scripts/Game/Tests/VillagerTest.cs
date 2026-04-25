@@ -6,37 +6,76 @@ using static UnityResolver;
 public class VillagerTest : MonoBehaviour
 {
     [SerializeField] private Villager villager;
-    Vector3Int spawnPosition;
+    [SerializeField] private MapManager map;
+    [SerializeField] private TestManager testManager;
 
     public bool IsFinish = true;
     public bool IsSuccess = false;
 
-    Vector3Int Targetposition = new Vector3Int(39, 0, 0);
-
+    private Vector3Int spawnPosition;
+    private Vector3Int targetPosition;
 
     [SerializeField] private TextMeshProUGUI _result;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    public bool TrySetupFromMarkers()
     {
-        UnityResolver.Resolve(villager, this, "Villager");
-        spawnPosition = new Vector3Int((int)villager.transform.position.x, (int)villager.transform.position.y);
-    }
+        if (!TryFindMarker(StructureType.Begin, out spawnPosition))
+        {
+            Debug.LogError("Missing Begin marker.");
+            return false;
+        }
 
-    public void LaunchTest()
-    {
-     
-        // Le villageois cherche un chemin jusqu’au niveau supérieur
-        villager.MoveTo(Targetposition);
+        if (!TryFindMarker(StructureType.End, out targetPosition))
+        {
+            Debug.LogError("Missing End marker.");
+            return false;
+        }
 
-        _result.text = "";
-        _result.color = Color.white;
-        IsFinish = false;
+        return true;
     }
 
     public void Respawn()
     {
         villager.SetPosition(spawnPosition);
+    }
+
+
+    private bool TryFindMarker(StructureType type, out Vector3Int position)
+    {
+        foreach (var kv in map.BasicMap.Structures)
+        {
+            if (kv.Value.Type == type)
+            {
+                position = kv.Key;
+                return true;
+            }
+        }
+
+        position = default;
+        return false;
+    }
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Awake()
+    {
+        villager = UnityResolver.Resolve(villager, this, "Villager");
+        map = UnityResolver.Resolve(map, this, nameof(MapManager));
+        testManager = UnityResolver.Resolve(testManager, this, nameof(TestManager));
+    }
+
+    public void LaunchTest()
+    {
+
+        Debug.Log($"BEGIN = {spawnPosition}");
+        Debug.Log($"END = {targetPosition}");
+        Debug.Log($"Villager start = {villager.transform.position}");
+        // Le villageois cherche un chemin jusqu’au niveau supérieur
+        villager.MoveTo(targetPosition);
+
+        _result.text = "";
+        _result.color = Color.white;
+        IsFinish = false;
     }
 
     private void Update()
@@ -46,7 +85,7 @@ public class VillagerTest : MonoBehaviour
             {
                 IsFinish = true;
                 
-                if (Vector3.Distance(villager.transform.position, Targetposition) < 0.01f)
+                if (Vector3.Distance(villager.transform.position, targetPosition) < 0.01f)
                 {
                     IsSuccess = true;
                     _result.text = "Success";
