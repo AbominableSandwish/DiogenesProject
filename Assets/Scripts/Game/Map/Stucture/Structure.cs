@@ -13,7 +13,7 @@ public abstract  class Structure
     public abstract string TileAssetReference { get; }
     public bool IsWalkable = false;
     public bool IsClimbable = true;
-
+    public virtual bool IsTraversable => false;
     #endregion
 
     #region Public Method

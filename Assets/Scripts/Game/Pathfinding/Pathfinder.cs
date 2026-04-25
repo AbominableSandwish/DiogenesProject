@@ -188,13 +188,8 @@ public class Pathfinder : MonoBehaviour
                     yield break;
                 }
 
-                // Les markers ne bloquent pas le mouvement horizontal
-                if (obstacle.Type != StructureType.Ladder &&
-                    obstacle.Type != StructureType.Begin &&
-                    obstacle.Type != StructureType.End)
-                {
+                if (!obstacle.IsTraversable)
                     yield break;
-                }
             }
         }
 
@@ -294,17 +289,8 @@ public class Pathfinder : MonoBehaviour
 
         var body = grid.GetStructure(cell, StructureLayer.Basic);
 
-        // Les échelles / escaliers n'obstruent PAS le corps
-        if (body != null)
-        {
-            if (body.Type == StructureType.Ladder ||
-                body.Type == StructureType.Begin ||
-                body.Type == StructureType.End)
-                return true;
-
-            // Tout autre type bloque
+        if (body != null && !body.IsTraversable)
             return false;
-        }
 
         // Vérification de la tête (PNJ = 2 cases de haut)
         var head = new Vector3Int(cell.x, cell.y + 1, cell.z);
@@ -312,13 +298,8 @@ public class Pathfinder : MonoBehaviour
             return false;
 
         var headStruct = grid.GetStructure(head, StructureLayer.Basic);
-        if (headStruct != null &&
-            headStruct.Type != StructureType.Ladder &&
-            headStruct.Type != StructureType.Begin &&
-            headStruct.Type != StructureType.End)
-        {
+        if (headStruct != null && !headStruct.IsTraversable)
             return false;
-        }
 
         return true;
     }
@@ -383,5 +364,10 @@ public class Pathfinder : MonoBehaviour
         }
 
         return 1f;
+    }
+
+    private bool IsTraversableStructure(Structure structure)
+    {
+        return structure == null || structure.IsTraversable;
     }
 }

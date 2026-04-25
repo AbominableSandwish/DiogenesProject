@@ -3,6 +3,7 @@
     new protected string _name = "End";
     public override StructureLayer Layer => StructureLayer.Basic;
     public override string TileAssetReference => "End";
+    public override bool IsTraversable => true;
     public override StructureType Type => StructureType.End;
 
     public End()
