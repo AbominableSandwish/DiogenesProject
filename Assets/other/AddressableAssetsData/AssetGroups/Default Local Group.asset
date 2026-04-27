@@ -187,6 +187,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eedbacff79ab19c4ea30773c09b1e8c3
+    m_Address: Tile/Construction/ConstructionSite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f0e443feefa75bb459123d26b52ee344
     m_Address: Tile/Basic/WoodPlateform
     m_ReadOnly: 0

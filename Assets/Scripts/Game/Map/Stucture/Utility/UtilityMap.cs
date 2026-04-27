@@ -261,6 +261,11 @@ public class UtilityMap : StructureMap<UtilityMap>
                 AddEngine<Lamp>(position);
                 canAdd = true;
                 break;
+            case var cls when cls == typeof(ConstructionSite):
+                structures.Add(position, structure);
+                Refresh();
+                canAdd = true;
+                break;
         }
         return canAdd;
     }

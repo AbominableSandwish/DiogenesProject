@@ -30,8 +30,11 @@ EditorBuildSettings:
     path: "Assets/Resources/Scenes/G\xE9n\xE9ration/Generation.unity"
     guid: b54003a0b0b2f2c409f011ba0f115647
   - enabled: 1
-    path: Assets/Resources/Scenes/Game/3C/Camera.unity
+    path: Assets/Resources/Scenes/Game/3C/Camera/Camera.unity
     guid: b23d328001aaa6c47a90f5d022ecf20e
+  - enabled: 1
+    path: Assets/Resources/Scenes/Game/3C/Controller/ControllerMap.unity
+    guid: 60900d625de39ec42aedb1a48c45f01b
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: ce04005762cc8384ebe0d2e0baf44add, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

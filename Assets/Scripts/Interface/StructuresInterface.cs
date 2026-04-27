@@ -7,6 +7,7 @@ public class StructuresInterface : MonoBehaviour
     [SerializeField] private string nameVisual = "structures";
     [SerializeField] private StructurePlacementController placer;
 
+
     private VisualElement root;
 
     private void Start()
@@ -63,6 +64,7 @@ public class StructuresInterface : MonoBehaviour
 
             button.style.width = 50;
             button.clicked += () => placer.SetSelectedType(capturedType);
+
 
             currentColumn.Add(button);
             i++;

@@ -11,21 +11,29 @@ public class Villager : MonoBehaviour
     }
 
     public State currentState = State.Idle;
+    private System.Action _onMoveFinishedCallback;
 
     private void Awake()
     {
         agent = UnityResolver.Resolve(agent, this, nameof(Agent));
     }
 
-    public void MoveTo(Vector3Int target)
+    public void MoveTo(Vector3Int target, System.Action onFinished = null)
     {
+        _onMoveFinishedCallback = onFinished;
+
+
         currentState = State.Moving;
         agent.MoveTo(target, OnMoveFinished);
     }
 
     private void OnMoveFinished()
     {
+
         currentState = State.Idle;
+
+        _onMoveFinishedCallback?.Invoke();
+        _onMoveFinishedCallback = null;
     }
 
     public void SetPosition(Vector3Int position)

@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="Resources" src="project://database/Assets/UI%20Toolkit/Player/Resources.uxml?fileID=9197481963319205126&amp;guid=a878b21cb5b1772408a4c2a71e941efa&amp;type=3#Resources"/>
+    <ui:VisualElement name="Debug" style="flex-grow: 0; top: 0; height: 8%;">
+        <ui:Button text="Add Border" name="BorderBtn" style="width: 10%;"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="Body" style="flex-grow: 0; flex-direction: row; bottom: 0; flex-shrink: 1; position: absolute; width: 100%;">
+        <ui:Instance template="Resources" name="resources" style="width: 25%;"/>
+        <ui:VisualElement name="Main" style="flex-grow: 1; width: 50%;">
+            <ui:VisualElement name="task-menu" style="flex-grow: 1;"/>
+            <ui:VisualElement name="build-menu" style="flex-grow: 1; flex-direction: row;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="Map" style="flex-grow: 1; width: 25%;"/>
+    </ui:VisualElement>
+</ui:UXML>

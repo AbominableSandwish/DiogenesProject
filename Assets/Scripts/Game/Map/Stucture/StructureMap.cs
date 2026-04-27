@@ -35,7 +35,7 @@ public class StructureMap<TMap> : MonoBehaviour
         bool canRemove = structures.ContainsKey(position);
         if (canRemove)
         {
-            structures[position] = null;
+            structures.Remove(position);
             _tilemap.SetTile(position, null);
         }
 
