@@ -16,6 +16,7 @@ public class ConstructionSiteView : MonoBehaviour
     private ConstructionSite site;
     private Vector3Int cellPosition;
     private Tilemap tilemap;
+    private bool _isVisible = false;
 
     private void Awake()
     {
@@ -25,6 +26,8 @@ public class ConstructionSiteView : MonoBehaviour
 
         if (targetCamera == null)
             targetCamera = Camera.main;
+
+        root.style.display = DisplayStyle.None;
     }
 
     public void Bind(ConstructionSite constructionSite, Vector3Int cell, Tilemap sourceTilemap, MapManager mapManager)
@@ -41,7 +44,21 @@ public class ConstructionSiteView : MonoBehaviour
             return;
 
         UpdateScreenPosition();
-        Refresh();
+
+        bool shouldShow = site.Progress > 0f;
+
+        if (shouldShow != _isVisible)
+        {
+            _isVisible = shouldShow;
+            root.style.display = _isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        if (_isVisible)
+            Refresh();
+
+        if (site.IsCompleted)
+            FinishConstruction();
+
     }
 
     private void UpdateScreenPosition()
@@ -61,12 +78,6 @@ public class ConstructionSiteView : MonoBehaviour
 
         fill.style.width = Length.Percent(progress);
         label.text = $"{Mathf.RoundToInt(progress)}%";
-
-        if (site.IsCompleted)
-        {
-            FinishConstruction();
-            
-        }
     }
 
 
