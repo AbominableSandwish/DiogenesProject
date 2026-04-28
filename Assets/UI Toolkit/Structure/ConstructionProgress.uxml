@@ -1,9 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/ProgressStyleSheet.uss?fileID=7433441132597879392&amp;guid=4751047fcee548047b1c6a340bb828a0&amp;type=3#ProgressStyleSheet"/>
-    <ui:VisualElement name="construction-progress-panel" class="progress-panel">
-        <ui:Label name="construction-progress-label" text="0%"/>
-        <ui:VisualElement name="construction-progress-background" class="progress-background">
+    <Style src="project://database/Assets/UI%20Toolkit/Structure/ProgressStyleSheet.uss?fileID=7433441132597879392&amp;guid=4751047fcee548047b1c6a340bb828a0&amp;type=3#ProgressStyleSheet"/>
+    <ui:VisualElement name="construction-progress-panel" class="progress-panel" style="padding-top: 2px; padding-bottom: 2px; padding-left: 2px; padding-right: 2px; width: 60px; background-color: rgba(35, 35, 35, 0.5);">
+        <ui:VisualElement name="construction-progress-background" class="progress-background" style="height: 8px; background-color: rgba(80, 80, 80, 0.5);">
             <ui:VisualElement name="construction-progress-fill" class="progress-fill"/>
         </ui:VisualElement>
+        <ui:Label name="construction-progress-label" text="0%" style="color: rgba(255, 255, 255, 0.5); font-size: 6px; margin-top: 0; -unity-text-align: middle-left; padding-top: 0; padding-bottom: 0; position: absolute; margin-bottom: 0;"/>
     </ui:VisualElement>
 </ui:UXML>

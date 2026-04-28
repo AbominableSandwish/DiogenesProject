@@ -1,4 +1,6 @@
-﻿public class ConstructionSite : Structure
+﻿using Unity.VisualScripting;
+
+public class ConstructionSite : Structure
 {
     public override string TileAssetReference => "ConstructionSite";
     public override StructureType Type => StructureType.ConstructionSite;

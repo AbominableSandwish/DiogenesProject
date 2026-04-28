@@ -3,10 +3,15 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using static UnityEditor.PlayerSettings;
 
-public class StructureMap<TMap> : MonoBehaviour
+public interface IStructureMap
+{
+    Tilemap Tilemap { get; }
+}
+public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 {
     #region Private Data
-    [SerializeField] public Tilemap Tilemap;
+    [SerializeField] private Tilemap _tilemap;
+    public Tilemap Tilemap => _tilemap;
     public Dictionary<Vector3Int, Structure> structures;
 
     public int Width, Height;
@@ -113,16 +118,19 @@ public class StructureMap<TMap> : MonoBehaviour
 
     [SerializeField] private ConstructionSiteView constructionSiteViewPrefab;
 
-    protected void SpawnConstructionView(Vector3Int cell, ConstructionSite site)
+    public void SpawnConstructionView(Vector3Int cell, ConstructionSite site)
     {
-        Vector3 worldPos = Tilemap.GetCellCenterWorld(cell);
+        Tilemap tilemap = _map.GetMapByLayer(site.Layer).Tilemap; // ou ta tilemap principale visuelle
+
+        Vector3 worldPos = tilemap.GetCellCenterWorld(cell);
+
         ConstructionSiteView view = Instantiate(
             constructionSiteViewPrefab,
-            worldPos + new Vector3(0f, 0.7f, 0f),
+            worldPos + new Vector3(0f, 0.8f, 0f),
             Quaternion.identity
         );
 
-        view.Bind(site);
+        view.Bind(site, cell, tilemap, _map);
     }
 
 }

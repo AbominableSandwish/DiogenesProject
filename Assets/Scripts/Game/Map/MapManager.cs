@@ -179,6 +179,17 @@ public class MapManager : MonoBehaviour
         public List<string> savedFiles = new();
     }
 
+    public IStructureMap GetMapByLayer(StructureLayer layer)
+    {
+        return layer switch
+        {
+            StructureLayer.Basic => _basicMap,
+            StructureLayer.Utility => _utilityMap,
+            StructureLayer.Decoration => _decorationMap,
+            _ => null
+        };
+    }
+
     [ContextMenu("Save World (Single File)")]
     public void SaveWorld(string fileName = "World")
     {

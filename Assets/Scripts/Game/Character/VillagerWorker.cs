@@ -72,9 +72,6 @@ public class VillagerWorker : MonoBehaviour
 
     private void FinishConstruction(ConstructionSite site)
     {
-        mapManager.RemoveStructure(site, currentTask.TargetPosition);
-        mapManager.AddStructure(site.TargetStructure, currentTask.TargetPosition);
-
         taskManager.CompleteTask(currentTask);
 
         currentTask = null;

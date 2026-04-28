@@ -31,8 +31,12 @@ public class ConstructionProgressUI : MonoBehaviour
         progressFill.style.width = Length.Percent(progress * 100f);
         progressLabel.text = $"{Mathf.RoundToInt(progress * 100f)}%";
 
-        if (currentSite.IsCompleted)
+        if (currentSite.IsCompleted || currentSite == null)
+        {
             Hide();
+            Destroy(this.gameObject);
+        }
+           
     }
 
     public void Show(ConstructionSite site)
@@ -45,5 +49,6 @@ public class ConstructionProgressUI : MonoBehaviour
     {
         currentSite = null;
         root.style.display = DisplayStyle.None;
+
     }
 }
