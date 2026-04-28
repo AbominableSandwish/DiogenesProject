@@ -13,7 +13,7 @@ class DecorationMap : StructureMap<DecorationMap>
     #region Public Method
     override public TileBase GetTile(Vector3Int position)
     {
-        return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
+        return Tilemap      .GetTile(new Vector3Int(position.x, position.y, 0));
     }
 
     public bool IsWalkable(Vector3Int gridPos)

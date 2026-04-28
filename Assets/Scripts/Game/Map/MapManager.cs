@@ -275,7 +275,6 @@ public class MapManager : MonoBehaviour
         OnExecute?.Invoke();
     }
     #endregion
-
 }
 
 public static class WorldStorage

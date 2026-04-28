@@ -35,9 +35,14 @@ public class BasicMap : StructureMap<BasicMap>
             return false;
 
         TileBase tileBase = _tileRegistry.Get(structure.TileAssetReference);
-        object[] args = { _tilemap, position.x, position.y };
+        object[] args = { Tilemap, position.x, position.y };
         structures.Add(position, structure);
-        _tilemap.SetTile(position, tileBase);
+        Tilemap.SetTile(position, tileBase);
+
+        if(structures.GetType() == typeof(ConstructionSite))
+        {
+            SpawnConstructionView(position, (ConstructionSite)structure);
+        }
         return true;
     }
 
@@ -47,7 +52,7 @@ public class BasicMap : StructureMap<BasicMap>
         if (canRemove)
         {
             structures[pos] = null;
-            _tilemap.SetTile(pos, null);
+            Tilemap.SetTile(pos, null);
         }  
         return canRemove;
     }
@@ -65,8 +70,8 @@ public class BasicMap : StructureMap<BasicMap>
                 {
                     string name = value.TileAssetReference;
                     tileBase = _tileRegistry.Get(name); 
-                    object[] args = { _tilemap, i, j };
-                    _tilemap.SetTile(key, tileBase);
+                    object[] args = { Tilemap, i, j };
+                    Tilemap.SetTile(key, tileBase);
                 }
             }
         }
@@ -87,7 +92,7 @@ public class BasicMap : StructureMap<BasicMap>
 
     override public TileBase GetTile(Vector3Int position)
     {
-        return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
+        return Tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
     }
 
     public bool IsWalkable(Vector3Int gridPos)
@@ -123,7 +128,7 @@ public class BasicMap : StructureMap<BasicMap>
     public override void Restore(MapData data)
     {
         Tilemap tilemap = GetComponent<Tilemap>();
-        _tilemap.ClearAllTiles();
+        Tilemap.ClearAllTiles();
         structures.Clear();
         Circuit circuit = new Circuit();
 

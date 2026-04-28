@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
-using static Circuit;
-using static Structure;
 
 public class UtilityMap : StructureMap<UtilityMap>
 {
@@ -119,25 +114,25 @@ public class UtilityMap : StructureMap<UtilityMap>
                 
                 Sprite sprite = TileRegistry.Instance.Get(new Coil().TileAssetReference).sprite;
 
-                if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || _tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
+                if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || Tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
                     connectCounter++;
                     rightConnect = true;
                 }
 
-                if (_electric.GetTile(new Vector3Int(pos.x - 1, pos.y)) != null || _tilemap.GetTile(new Vector3Int(pos.x - 1, pos.y)) != null)
+                if (_electric.GetTile(new Vector3Int(pos.x - 1, pos.y)) != null || Tilemap.GetTile(new Vector3Int(pos.x - 1, pos.y)) != null)
                 {
                     connectCounter++;
                     leftConnect = true;
                 }
 
-                if (_electric.GetTile(new Vector3Int(pos.x, pos.y + 1)) != null || _tilemap.GetTile(new Vector3Int(pos.x, pos.y + 1)) != null)
+                if (_electric.GetTile(new Vector3Int(pos.x, pos.y + 1)) != null || Tilemap.GetTile(new Vector3Int(pos.x, pos.y + 1)) != null)
                 {
                     connectCounter++;
                     upConnect = true;
                 }
 
-                if (_electric.GetTile(new Vector3Int(pos.x, pos.y - 1)) != null || _tilemap.GetTile(new Vector3Int(pos.x, pos.y - 1)) != null)
+                if (_electric.GetTile(new Vector3Int(pos.x, pos.y - 1)) != null || Tilemap.GetTile(new Vector3Int(pos.x, pos.y - 1)) != null)
                 {
                     connectCounter++;
                     downConnect = true;
@@ -262,8 +257,20 @@ public class UtilityMap : StructureMap<UtilityMap>
                 canAdd = true;
                 break;
             case var cls when cls == typeof(ConstructionSite):
+                // View
                 structures.Add(position, structure);
+                
+                Tile tile = new Tile
+                {
+                    name = typeof(ConstructionSite) + _counterGenerator.ToString(),
+                    sprite = _tileRegistry.Get(structure.TileAssetReference).sprite,
+                    colliderType = Tile.ColliderType.Grid
+                };
+                Tilemap.SetTile(position, tile);
                 Refresh();
+
+                SpawnConstructionView(position, (ConstructionSite)structure);
+
                 canAdd = true;
                 break;
         }
@@ -272,7 +279,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     public bool AddCoil(Vector3Int position)
     {
-        if (_tilemap.GetTile(position) != null || _electric.GetTile(position) != null)
+        if (Tilemap.GetTile(position) != null || _electric.GetTile(position) != null)
             return false;
 
         // =====================
@@ -390,7 +397,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             return false;
 
         // Self
-        object[] args = { _tilemap, position };
+        object[] args = { Tilemap, position };
         Engine instance = (Engine)typeof(T).Instantiate(true, args);
         structures.Add(position, instance);
 
@@ -401,7 +408,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             colliderType = Tile.ColliderType.Grid
         };
 
-        _tilemap.SetTile(position, _tileRegistry.Get(instance.TileAssetReference));
+        Tilemap.SetTile(position, _tileRegistry.Get(instance.TileAssetReference));
 
         instance.OnTilePlaced();
         _counterEngine++;
@@ -481,7 +488,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             return false;
 
         // Self
-        object[] args = { _tilemap, position };
+        object[] args = { Tilemap, position };
         Generator generator = (Generator)typeof(T).Instantiate(true, args);
         structures.Add(position, generator);
 
@@ -492,7 +499,7 @@ public class UtilityMap : StructureMap<UtilityMap>
             sprite = _tileRegistry.Get(generator.TileAssetReference).sprite,
             colliderType = Tile.ColliderType.Grid
         };
-        _tilemap.SetTile(position, tile);
+        Tilemap.SetTile(position, tile);
 
         generator.OnTilePlaced();
         _counterGenerator++;
@@ -589,6 +596,12 @@ public class UtilityMap : StructureMap<UtilityMap>
             case var cls when cls == typeof(Lamp):
                 RemoveEngine(position);
                 break;
+            case var cls when cls == typeof(ConstructionSite):
+                structures.Remove(position);
+                // Supprimer le rendu
+                Tilemap.SetTile(position, null);
+                Tilemap.RefreshTile(position);
+                break;
         }
         return canRemove;
     }
@@ -641,15 +654,15 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (structures[position].Type != StructureType.Generator)
             return false;
 
-        if (_tilemap.GetTile(position) == null)
+        if (Tilemap.GetTile(position) == null)
             return false;
 
         if (!OwnerAt.TryGetValue(position, out Circuit target))
             return false;
 
         // Supprimer le rendu
-        _tilemap.SetTile(position, null);
-        _tilemap.RefreshTile(position);
+        Tilemap.SetTile(position, null);
+        Tilemap.RefreshTile(position);
 
         // Supprimer de la map globale
         structures.Remove(position);
@@ -689,15 +702,15 @@ public class UtilityMap : StructureMap<UtilityMap>
         if (structures[position].Type != StructureType.Engine)
             return false;
 
-        if (_tilemap.GetTile(position) == null)
+        if (Tilemap.GetTile(position) == null)
             return false;
 
         if (!OwnerAt.TryGetValue(position, out Circuit target))
             return false;
 
         // Supprimer le rendu
-        _tilemap.SetTile(position, null);
-        _tilemap.RefreshTile(position);
+        Tilemap.SetTile(position, null);
+        Tilemap.RefreshTile(position);
 
         // Supprimer de la map globale
         structures.Remove(position);
@@ -810,7 +823,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         for (int d = 0; d < 4; d++)
         {
             var n = center + DIRS[d];
-            if (_electric.GetTile(n) != null || _tilemap.GetTile(n) != null)
+            if (_electric.GetTile(n) != null || Tilemap.GetTile(n) != null)
                 result.Add(n, structures[n]);
         }
         return result;
@@ -981,7 +994,7 @@ public class UtilityMap : StructureMap<UtilityMap>
     {
         Tilemap tilemap = GetComponent<Tilemap>();
         _electric.ClearAllTiles();
-        _tilemap.ClearAllTiles();
+        Tilemap.ClearAllTiles();
         structures.Clear();
         Circuit circuit = new Circuit();
 
@@ -1010,8 +1023,8 @@ public class UtilityMap : StructureMap<UtilityMap>
             {
                 Vector3Int key = new Vector3Int(i, j, 0);
                 tileBase = _tileRegistry.Get(structures[key].TileAssetReference);
-                object[] args = { _tilemap, i, j };
-                _tilemap.SetTile(key, tileBase);
+                object[] args = { Tilemap, i, j };
+                Tilemap.SetTile(key, tileBase);
             }
         }
     }

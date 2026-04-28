@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849ba40bf615ce0448628c85b42f849e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TilemapPlacer
-  previewTilemap: {fileID: 0}
+  previewTilemap: {fileID: 4083411192838512689}
   mapManager: {fileID: 0}
   previewTile: {fileID: 11400000, guid: 9e323f2f37b62ac42ab28a60ba11d708, type: 2}
   previewColor: {r: 1, g: 1, b: 1, a: 0.5}
@@ -196,9 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46606bb20f590bc4ebea9be5e6cab6fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 513706940382593115}
+  Tilemap: {fileID: 2800498965264914020}
   Width: 0
   Height: 0
+  constructionSiteViewPrefab: {fileID: 6468030172513216667, guid: 8d16d3b8f3163db49bc9e55c8cc16486, type: 3}
   _electric: {fileID: 2800498965264914020}
   _circuits: []
   _circuitDebugRenderer: {fileID: 682325634722271915}
@@ -809,6 +810,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pathfinder
   grid: {fileID: 7936246769134783645}
+  specialConnections: []
 --- !u!1 &5997503777537047548
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,9 +951,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4b48defd4684f46afad144aa353d4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilemap: {fileID: 7492133978088724592}
+  Tilemap: {fileID: 7492133978088724592}
   Width: 0
   Height: 0
+  constructionSiteViewPrefab: {fileID: 6468030172513216667, guid: 8d16d3b8f3163db49bc9e55c8cc16486, type: 3}
 --- !u!1 &8644146492215007401
 GameObject:
   m_ObjectHideFlags: 0

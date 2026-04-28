@@ -6,7 +6,7 @@ using static UnityEditor.PlayerSettings;
 public class StructureMap<TMap> : MonoBehaviour
 {
     #region Private Data
-    [SerializeField] protected Tilemap _tilemap;
+    [SerializeField] public Tilemap Tilemap;
     public Dictionary<Vector3Int, Structure> structures;
 
     public int Width, Height;
@@ -36,7 +36,7 @@ public class StructureMap<TMap> : MonoBehaviour
         if (canRemove)
         {
             structures.Remove(position);
-            _tilemap.SetTile(position, null);
+            Tilemap.SetTile(position, null);
         }
 
         return canRemove;
@@ -67,7 +67,7 @@ public class StructureMap<TMap> : MonoBehaviour
 
     public virtual TileBase GetTile(Vector3Int position)
     {
-        return _tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
+        return Tilemap.GetTile(new Vector3Int(position.x, position.y, 0));
     }
     #endregion  
 
@@ -100,15 +100,29 @@ public class StructureMap<TMap> : MonoBehaviour
     {
         structures.Clear();
 
-        if (_tilemap != null)
+        if (Tilemap != null)
         {
             structures.Clear();
-            _tilemap.ClearAllTiles();
+            Tilemap.ClearAllTiles();
         }
         else
         {
             Debug.LogWarning("Tilemap is null in ClearMap");
         }
+    }
+
+    [SerializeField] private ConstructionSiteView constructionSiteViewPrefab;
+
+    protected void SpawnConstructionView(Vector3Int cell, ConstructionSite site)
+    {
+        Vector3 worldPos = Tilemap.GetCellCenterWorld(cell);
+        ConstructionSiteView view = Instantiate(
+            constructionSiteViewPrefab,
+            worldPos + new Vector3(0f, 0.7f, 0f),
+            Quaternion.identity
+        );
+
+        view.Bind(site);
     }
 
 }

@@ -1,0 +1,23 @@
+:root {
+
+}
+
+.progress-panel {
+    width: 180px;
+    padding: 8px;
+    background-color: rgb(35, 35, 35);
+    border-radius: 6px;
+}
+
+.progress-background {
+    height: 14px;
+    background-color: rgb(80, 80, 80);
+    border-radius: 4px;
+}
+
+.progress-fill {
+    height: 14px;
+    width: 0%;
+    background-color: rgb(220, 170, 60);
+    border-radius: 4px;
+}
