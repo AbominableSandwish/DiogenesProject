@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-CC--BY--NC%204.0-lightgrey)](https://creativecommons.org/licenses/by-nc/4.0/)
+
 # 🚀 Diogenes Project
 
 ## 🧠 Présentation
