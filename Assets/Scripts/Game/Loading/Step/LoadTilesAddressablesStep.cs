@@ -1,6 +1,12 @@
-﻿using System.Collections;
+﻿/*
+ * Copyright (c) 2026 Dylan von Arx
+ * Licensed under CC BY-NC 4.0
+ *
+ * You may use, modify, and share this code for non-commercial purposes only.
+ */
+
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;

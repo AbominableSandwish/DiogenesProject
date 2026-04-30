@@ -1,5 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.Rendering.Universal;
+﻿/*
+ * Copyright (c) 2026 Dylan von Arx
+ * Licensed under CC BY-NC 4.0
+ *
+ * You may use, modify, and share this code for non-commercial purposes only.
+ */
+
 using UnityEngine.Tilemaps;
 
 class WoodPlateform : Structure

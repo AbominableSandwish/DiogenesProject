@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2026 Dylan von Arx
+ * Licensed under CC BY-NC 4.0
+ *
+ * You may use, modify, and share this code for non-commercial purposes only.
+ */
+
+using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
-using static Structure;
-using static UnityEditor.PlayerSettings;
-using static UnityResolver;
 
 public class Pathfinder : MonoBehaviour
 {
