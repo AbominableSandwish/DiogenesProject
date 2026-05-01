@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 public class MapManager : MonoBehaviour
 {
 
@@ -23,6 +24,8 @@ public class MapManager : MonoBehaviour
     [SerializeField] private DecorationMap _decorationMap;
 
     [SerializeField] private bool GenerationMap = false;
+
+    private HashSet<Vector3Int> _blocked = new();
     #endregion
 
 
@@ -44,6 +47,12 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Mono
+
+    public MapManager(int width = 40, int height = 40)
+    {
+        this.Width = width;
+        this.Height = height;
+    }
     public void Awake()
     {
         Instance = this;
@@ -91,8 +100,23 @@ public class MapManager : MonoBehaviour
         }
         return structure;
     }
-    public bool IsWalkable(Vector3Int position, StructureLayer layer)
+
+    public void SetBlocked(Vector3Int pos)
     {
+        _blocked.Add(pos);
+    }
+
+
+public bool IsWalkable(Vector3Int position, StructureLayer layer)
+    {
+        if (position.x < 0 || position.x >= _width) return false;
+        if (position.y < 0 || position.y >= _height) return false;
+
+        if (_blocked.Contains(position))
+        {
+            return false;
+        }
+
         bool isWalkable = false;
         switch (layer)
         {

@@ -19,6 +19,14 @@ public class Pathfinder : MonoBehaviour
         grid = UnityResolver.Resolve(grid, this, "MapManager");
     }
 
+    public Pathfinder(MapManager grid = null)
+    {
+        if(grid != null)
+        {
+            this.grid = grid;
+        }
+    }
+
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)
     {
         Debug.Log($"FindPath start={start} end={end}");
