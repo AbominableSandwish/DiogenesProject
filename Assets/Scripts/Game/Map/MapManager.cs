@@ -94,6 +94,11 @@ public class MapManager : MonoBehaviour
     #endregion
 
     #region Public Method
+
+    public UtilityMap GetUtilityMap()
+    {
+        return _utilityMap;
+    }
     public Structure GetStructure(Vector3Int position, StructureLayer layer)
     {
         Structure structure = null;

@@ -1094,5 +1094,26 @@ public class UtilityMap : StructureMap<UtilityMap>
         }
     }
 
+    public Circuit GetCircuitAt(Vector3Int position)
+    {
+        if (OwnerAt == null)
+            return null;
+
+        OwnerAt.TryGetValue(position, out Circuit circuit);
+        return circuit;
+    }
+
+    public bool TryGetCircuitAt(Vector3Int position, out Circuit circuit)
+    {
+        circuit = null;
+
+        if (OwnerAt == null)
+            return false;
+
+        return OwnerAt.TryGetValue(position, out circuit);
+    }
+
+    public int CircuitCount => _circuits?.Count ?? 0;
+
     #endregion
 }
