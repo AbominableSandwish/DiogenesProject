@@ -30,6 +30,14 @@ public class MapManager : MonoBehaviour
 
 
     #region Public Data
+
+#if UNITY_INCLUDE_TESTS
+    public void InitForTests()
+    {
+        _blocked = new HashSet<Vector3Int>();
+    }
+#endif
+
     public static MapManager Instance { get => _instance; protected set => _instance = value; }
     public int Height { get => _height; set => _height = value; }
     public int Width { get => _width; set => _width = value; }
