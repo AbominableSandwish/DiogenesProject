@@ -91,7 +91,71 @@ Par exemple :
 git clone https://github.com/AbominableSandwish/DiogenesProject.git
 ```
 ## 🎥 Aperçu
+
 ![Electricity](Docs/ElectricityV2.gif)
+
+🔌 Système électrique (circuits)
+
+👉 Mise en place d’un système de circuits dynamiques :
+
+Un générateur produit de l’énergie
+Les câbles (coils) transportent le courant
+Les lampes s’activent lorsqu’elles sont connectées
+
+Le réseau se met à jour automatiquement :
+
+création de circuits
+fusion de réseaux
+séparation lors de suppression
+
+![LoadingAdressable](Docs/LoadingAdressable.gif)
+
+📦 Chargement des assets (Addressables)
+
+👉 Mise en place du système de chargement via les Addressables de Unity :
+
+Chargement des assets de manière asynchrone
+Suivi de la progression en temps réel
+Interface de chargement avec barre de progression
+
+Ce système permet une meilleure gestion des ressources et prépare le projet pour des scènes plus complexes.
+
+![GenerationMap](Docs/GenerationMap.gif)
+
+🗺️ Génération procédurale de la map
+
+👉 Mise en place d’un système de génération basé sur un pipeline :
+
+Génération contrôlée via une seed
+Enchaînement de différentes étapes (steps)
+Résultat modulable et reproductible
+
+Chaque étape du pipeline permet de transformer progressivement la map, ce qui rend le système flexible et facile à étendre.
+
+![EditorMap](Docs/EditorMap.gif)
+
+🛠️ Éditeur de map
+
+👉 Mise en place d’un éditeur permettant de construire la map directement :
+
+Placement manuel des structures sur la grille
+Interface simple pour tester rapidement des configurations
+Export et import des maps
+
+Cet outil facilite énormément le debug et la création de scénarios spécifiques.
+
+![ConstructionSite](Docs/ConstructionSite.gif)
+
+🏗️ Planification de construction
+
+👉 Mise en place d’un système de planification des constructions :
+
+Placement de ConstructionSite sur la grille
+Les villageois détectent les tâches de construction
+Déplacement jusqu’au site puis interaction
+Progression de la construction au fil du temps
+
+Ce système permet de séparer la planification (ce que le joueur veut construire) de l’exécution (les villageois qui réalisent).
 
 ## 🔍 Technical Highlights
 

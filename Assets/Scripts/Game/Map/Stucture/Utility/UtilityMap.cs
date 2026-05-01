@@ -595,19 +595,20 @@ public class UtilityMap : StructureMap<UtilityMap>
         switch (structure.GetType())
         {
             case var cls when cls == typeof(Coil):
-                RemoveCoil(position);
+                canRemove = RemoveCoil(position);
                 break;
             case var cls when cls == typeof(SolarPanel):
-                RemoveGenerator(position);
+                canRemove = RemoveGenerator(position);
                 break;
             case var cls when cls == typeof(Lamp):
-                RemoveEngine(position);
+                canRemove =RemoveEngine(position);
                 break;
             case var cls when cls == typeof(ConstructionSite):
                 structures.Remove(position);
                 // Supprimer le rendu
                 Tilemap.SetTile(position, null);
                 Tilemap.RefreshTile(position);
+                canRemove = true;
                 break;
         }
         return canRemove;
