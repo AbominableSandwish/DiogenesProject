@@ -52,9 +52,12 @@ public class MapManager : MonoBehaviour
     {
         this.Width = width;
         this.Height = height;
+
+        _blocked = new HashSet<Vector3Int>();
     }
     public void Awake()
     {
+        _blocked = new HashSet<Vector3Int>();
         Instance = this;
     }
 
