@@ -2,17 +2,25 @@ name: Unity Tests
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - "feature/**"
   pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-      
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Cache Library
         uses: actions/cache@v4
@@ -38,3 +46,18 @@ jobs:
         with:
           name: test-results
           path: artifacts
+
+      - name: Merge feature into main
+        if: success() && startsWith(github.ref, 'refs/heads/feature/')
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          CURRENT_BRANCH="${GITHUB_REF#refs/heads/}"
+
+          git fetch origin main
+          git checkout main
+          git pull origin main
+
+          git merge origin/$CURRENT_BRANCH --no-ff -m "Auto-merge $CURRENT_BRANCH into main"
+          git push origin main
