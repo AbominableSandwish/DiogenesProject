@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Game
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -190,7 +190,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 267
+    width: 296
     height: 651
   m_MinSize: {x: 201, y: 226}
   m_MaxSize: {x: 4001, y: 4026}
@@ -214,9 +214,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 267
+    x: 296
     y: 0
-    width: 1186
+    width: 1157
     height: 651
   m_MinSize: {x: 52, y: 76}
   m_MaxSize: {x: 4002, y: 4026}
@@ -1172,7 +1172,7 @@ MonoBehaviour:
   m_Position:
     m_Target: {x: 43.199722, y: -20.749908, z: -0.58094543}
     speed: 2
-    m_Value: {x: 8.266552, y: -0.19603911, z: -0.091435246}
+    m_Value: {x: 43.199722, y: -20.749908, z: -0.58094543}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1225,7 +1225,7 @@ MonoBehaviour:
   m_Size:
     m_Target: 58.80864
     speed: 2
-    m_Value: 9.857642
+    m_Value: 58.80864
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1282,7 +1282,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 24
-    width: 266
+    width: 295
     height: 625
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -1304,7 +1304,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -1392
+      - m_Data: -1442
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1352,9 +1352,9 @@ MonoBehaviour:
     m_TextWithWhitespace: "Game\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 268
+    x: 297
     y: 24
-    width: 1184
+    width: 1155
     height: 625
   m_SerializedDataModeController:
     m_DataMode: 0
@@ -1411,23 +1411,23 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
-      width: 1184
+      width: 1155
       height: 604
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 592, y: 302}
+    m_Translation: {x: 577.5, y: 302}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -592
+      x: -577.5
       y: -302
-      width: 1184
+      width: 1155
       height: 604
     m_MinimalGUI: 1
   m_defaultScale: 1
-  m_LastWindowPixelSize: {x: 1184, y: 625}
+  m_LastWindowPixelSize: {x: 1155, y: 625}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -1754,7 +1754,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Game/Map/Stucture
+    - Assets/Scripts/Game/Map/Stucture/Basic
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1764,30 +1764,30 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 74
   m_LastFolders:
-  - Assets/Scripts/Game/Map/Stucture
+  - Assets/Scripts/Game/Map/Stucture/Basic
   m_LastFoldersGridSize: 74
   m_LastProjectPath: C:\Git\Personnal\CleanSim
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 276}
+    scrollPos: {x: 0, y: 396}
     m_SelectedIDs:
-    - m_Data: 54824
+    - m_Data: 54916
     m_LastClickedID:
-      m_Data: 54824
+      m_Data: 54916
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54910
-    - m_Data: 54912
-    - m_Data: 54914
-    - m_Data: 54916
-    - m_Data: 54918
-    - m_Data: 54920
-    - m_Data: 54922
-    - m_Data: 54924
-    - m_Data: 54926
-    - m_Data: 54928
+    - m_Data: 54812
+    - m_Data: 54814
+    - m_Data: 54816
+    - m_Data: 54818
+    - m_Data: 54820
+    - m_Data: 54822
+    - m_Data: 54824
+    - m_Data: 54826
+    - m_Data: 54828
+    - m_Data: 54830
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1821,16 +1821,16 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 54910
-    - m_Data: 54912
-    - m_Data: 54914
-    - m_Data: 54916
-    - m_Data: 54918
-    - m_Data: 54920
-    - m_Data: 54922
-    - m_Data: 54924
-    - m_Data: 54926
-    - m_Data: 54928
+    - m_Data: 54812
+    - m_Data: 54814
+    - m_Data: 54816
+    - m_Data: 54818
+    - m_Data: 54820
+    - m_Data: 54822
+    - m_Data: 54824
+    - m_Data: 54826
+    - m_Data: 54828
+    - m_Data: 54830
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1858,10 +1858,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_Data: 53428
+    m_SelectedInstanceIDs: []
     m_LastClickedEntityId:
-      m_Data: 53428
+      m_Data: 0
     m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs:
     - m_Data: 55278

@@ -24,6 +24,6 @@ public enum StructureType
     Lamp,
     WoodPlateform,
     Glass,
-
+    FakeStructure,
     LENGTH
 }
