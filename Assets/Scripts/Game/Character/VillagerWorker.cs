@@ -15,6 +15,7 @@ public class VillagerWorker : MonoBehaviour
     [SerializeField] private MapManager mapManager;
 
     [SerializeField] private float workSpeed = 10f;
+    [SerializeField] private int buildRange = 1;
 
     private Task currentTask;
     private Coroutine workRoutine;
@@ -51,8 +52,17 @@ public class VillagerWorker : MonoBehaviour
         if (currentTask == null)
             return;
 
-        if (currentTask.Type == TaskType.Build)
+        if (currentTask.Type == TaskType.Build) 
         {
+
+            Vector3Int workerPosition = new Vector3Int((int)this.transform.position.x, (int)this.transform.position.y);
+
+            if (!IsInBuildRange(workerPosition, currentTask.TargetPosition))
+            {
+                Debug.LogWarning("Construction site is out of build range.");
+                return;
+            }
+
             Structure structure = mapManager.GetStructure(
                 currentTask.TargetPosition,
                 currentTask.StructureToBuild.Layer
@@ -63,6 +73,14 @@ public class VillagerWorker : MonoBehaviour
                 workRoutine = StartCoroutine(WorkOnConstruction(site));
             }
         }
+    }
+
+    private bool IsInBuildRange(Vector3Int workerPosition, Vector3Int targetPosition)
+    {
+        int dx = Mathf.Abs(workerPosition.x - targetPosition.x);
+        int dy = Mathf.Abs(workerPosition.y - targetPosition.y);
+
+        return Mathf.Max(dx, dy) <= buildRange;
     }
 
     private IEnumerator WorkOnConstruction(ConstructionSite site)
@@ -94,6 +112,16 @@ public class VillagerWorker : MonoBehaviour
     public void SetCurrentTaskForTests(Task task)
     {
         currentTask = task;
+    }
+
+    public void SetBuildRangeForTests(int range)
+    {
+        buildRange = range;
+    }
+
+    public bool IsInBuildRangeForTests(Vector3Int workerPosition, Vector3Int targetPosition)
+    {
+        return IsInBuildRange(workerPosition, targetPosition);
     }
 #endif
 }

@@ -46,4 +46,15 @@ public class VillagerWorkerConstructionTests
 
         Assert.Greater(site.Progress, 0f);
     }
+
+    [Test]
+    public void IsInBuildRange_Should_ReturnTrue_WhenTargetIsAdjacent()
+    {
+        worker.SetBuildRangeForTests(1);
+
+        Vector3Int workerPosition = new Vector3Int(2, 2, 0);
+        Vector3Int targetPosition = new Vector3Int(3, 2, 0);
+
+        Assert.IsTrue(worker.IsInBuildRangeForTests(workerPosition, targetPosition));
+    }
 }
