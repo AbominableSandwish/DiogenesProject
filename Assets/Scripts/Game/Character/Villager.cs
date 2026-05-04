@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class Villager : MonoBehaviour
 {
+    [SerializeField] protected Animator animator;
     [SerializeField] private Agent agent;
 
     public enum State
@@ -17,26 +18,33 @@ public class Villager : MonoBehaviour
         Moving
     }
 
+    protected void Update()
+    {
+
+    }
+
     public State currentState = State.Idle;
     private System.Action _onMoveFinishedCallback;
 
-    private void Awake()
+    protected void Awake()
     {
+        animator = UnityResolver.Resolve(animator, this, nameof(Animator));
         agent = UnityResolver.Resolve(agent, this, nameof(Agent));
+        animator.SetFloat("Velocity", 0.0f);
     }
 
     public void MoveTo(Vector3Int target, System.Action onFinished = null)
     {
         _onMoveFinishedCallback = onFinished;
 
-
+        animator.SetFloat("Velocity", 1.0f);
         currentState = State.Moving;
         agent.MoveTo(target, OnMoveFinished);
     }
 
     private void OnMoveFinished()
     {
-
+        animator.SetFloat("Velocity", 0.0f);
         currentState = State.Idle;
 
         _onMoveFinishedCallback?.Invoke();

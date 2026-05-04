@@ -8,9 +8,8 @@
 using System.Collections;
 using UnityEngine;
 
-public class VillagerWorker : MonoBehaviour
+public class VillagerWorker : Villager
 {
-    [SerializeField] private Villager villager;
     [SerializeField] private TaskManager taskManager;
     [SerializeField] private MapManager mapManager;
 
@@ -20,15 +19,16 @@ public class VillagerWorker : MonoBehaviour
     private Task currentTask;
     private Coroutine workRoutine;
 
-    private void Awake()
+    protected void Awake()
     {
-        villager = UnityResolver.Resolve(villager, this, nameof(Villager));
+        base.Awake();
         taskManager = UnityResolver.Resolve(taskManager, this, nameof(TaskManager));
         mapManager = UnityResolver.Resolve(mapManager, this, nameof(MapManager));
     }
 
     private void Update()
     {
+        base.Update();
         if (currentTask != null)
             return;
 
@@ -44,7 +44,7 @@ public class VillagerWorker : MonoBehaviour
         currentTask = task;
         currentTask.AssignedWorkers++;
 
-        villager.MoveTo(currentTask.WorkPosition, OnArrived);
+        MoveTo(currentTask.WorkPosition, OnArrived);
     }
 
     public void OnArrived()
@@ -70,6 +70,7 @@ public class VillagerWorker : MonoBehaviour
 
             if (structure is ConstructionSite site)
             {
+                animator.SetBool("IsWorking", true);
                 workRoutine = StartCoroutine(WorkOnConstruction(site));
             }
         }
@@ -98,6 +99,7 @@ public class VillagerWorker : MonoBehaviour
     private void FinishConstruction(ConstructionSite site)
     {
         taskManager.CompleteTask(currentTask);
+        animator.SetBool("IsWorking", false);
 
         currentTask = null;
         workRoutine = null;
