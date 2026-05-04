@@ -84,4 +84,16 @@ public class VillagerWorker : MonoBehaviour
         currentTask = null;
         workRoutine = null;
     }
+
+#if UNITY_INCLUDE_TESTS
+    public void InitForTests(MapManager manager)
+    {
+        mapManager = manager;
+    }
+
+    public void SetCurrentTaskForTests(Task task)
+    {
+        currentTask = task;
+    }
+#endif
 }
