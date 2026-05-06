@@ -40,7 +40,6 @@ public class CircuitMapTests
         bool removed = mapManager.GetUtilityMap().RemoveCoil(position);
 
         Circuit circuit = mapManager.GetUtilityMap().GetCircuitAt(position);
-
         Assert.IsTrue(removed);
         Assert.IsNull(circuit);
         Assert.AreEqual(0, mapManager.GetUtilityMap().CircuitCount);
