@@ -11,7 +11,6 @@ using System.IO;
 using UnityEngine;
 public class MapManager : MonoBehaviour
 {
-
     #region Private Data
     //Self
     private static MapManager _instance = null;
@@ -26,7 +25,6 @@ public class MapManager : MonoBehaviour
 
     private HashSet<Vector3Int> _blocked = new();
     #endregion
-
 
     #region Public Data
 
