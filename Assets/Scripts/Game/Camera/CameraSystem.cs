@@ -6,7 +6,6 @@
  */
 
 using UnityEngine;
-using static UnityResolver;
 
 public class CameraSystem : MonoBehaviour
 {

@@ -18,12 +18,22 @@ public class TaskManager : MonoBehaviour
         _tasks.Add(task);
     }
 
-    public Task GetBestTask()
+
+    public Task GetBestTask(Vector3Int workerPosition)
     {
         return _tasks
-            .Where(t => !t.IsCompleted && t.CanAssignWorker())
+            .Where(t => t.Type != TaskType.None)
             .OrderByDescending(t => t.Priority)
+            .ThenBy(t => GridDistance(workerPosition, t.TargetPosition))
             .FirstOrDefault();
+    }
+
+    private int GridDistance(Vector3Int a, Vector3Int b)
+    {
+        int dx = Mathf.Abs(a.x - b.x);
+        int dy = Mathf.Abs(a.y - b.y);
+
+        return Mathf.Max(dx, dy);
     }
 
     public void CompleteTask(Task task)
@@ -31,4 +41,6 @@ public class TaskManager : MonoBehaviour
         task.IsCompleted = true;
         _tasks.Remove(task);
     }
+
+
 }

@@ -32,7 +32,7 @@ public class VillagerWorker : Villager
         if (currentTask != null)
             return;
 
-        Task task = taskManager.GetBestTask();
+        Task task = taskManager.GetBestTask(new Vector3Int((int)transform.position.x, (int)transform.position.y));
         if (task == null)
             return;
 
@@ -44,7 +44,7 @@ public class VillagerWorker : Villager
         currentTask = task;
         currentTask.AssignedWorkers++;
 
-        MoveTo(currentTask.WorkPosition, OnArrived);
+        MoveTo(currentTask.TargetPosition, OnArrived);
     }
 
     public void OnArrived()

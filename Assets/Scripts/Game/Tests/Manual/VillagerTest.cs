@@ -1,7 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using static UnityResolver;
 
 public class VillagerTest : MonoBehaviour
 {

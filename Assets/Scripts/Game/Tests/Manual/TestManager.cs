@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using static UnityResolver;
 
 public class TestManager : MonoBehaviour
 {
