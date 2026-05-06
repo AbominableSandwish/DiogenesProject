@@ -1,7 +1,6 @@
-﻿using NUnit.Framework;
-using Unity.VisualScripting;
+﻿#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
 using UnityEngine;
-
 public class CircuitMapTests
 {
     private MapManager mapManager;
@@ -105,3 +104,4 @@ public class CircuitMapTests
         Assert.AreEqual(2, mapManager.GetUtilityMap().CircuitCount);
     }
 }
+#endif

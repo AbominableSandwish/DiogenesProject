@@ -7,7 +7,6 @@
 
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static Structure;
 class DecorationMap : StructureMap<DecorationMap>
 {
     #region Nested Method

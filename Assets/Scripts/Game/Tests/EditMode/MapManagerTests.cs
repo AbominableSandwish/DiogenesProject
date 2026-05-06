@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
 using UnityEngine;
 
 public class MapManagerTests
@@ -58,3 +59,4 @@ public class MapManagerTests
         });
     }
 }
+#endif

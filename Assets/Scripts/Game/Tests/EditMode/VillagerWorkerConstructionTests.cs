@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿#if UNITY_INCLUDE_TESTS
+using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 public class VillagerWorkerConstructionTests
 {
@@ -58,3 +58,4 @@ public class VillagerWorkerConstructionTests
         Assert.IsTrue(worker.IsInBuildRangeForTests(workerPosition, targetPosition));
     }
 }
+#endif

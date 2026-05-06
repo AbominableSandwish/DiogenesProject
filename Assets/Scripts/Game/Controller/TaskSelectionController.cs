@@ -172,9 +172,9 @@ public class TaskSelectionController : MonoBehaviour
         Task task = new Task
         {
             Type = TaskType.Build,
-            Priority = TaskPriority.Normal,
+            Priority = 1,
             TargetPosition = cell,
-            WorkPosition = FindWorkPositionNear(cell),
+            //WorkPosition = FindWorkPositionNear(cell),
             StructureToBuild = plannedStructure,
             MaxWorkers = 3
         };

@@ -15,22 +15,15 @@ public enum TaskType
     Repair,
     Transport
 }
-public enum TaskPriority
-{
-    Low = 0,
-    Normal = 1,
-    High = 2,
-    Urgent = 3
-}
 
 public class Task
 {
     public TaskType Type;
-    public TaskPriority Priority;
 
-    public Vector3Int TargetPosition;
-    public Vector3Int WorkPosition;
+    [Range(1, 9)]
+    public int Priority;
 
+    public Vector3Int TargetPosition; 
     public Structure StructureToBuild;
 
     public int AssignedWorkers;
@@ -42,3 +35,4 @@ public class Task
         return AssignedWorkers < MaxWorkers;
     }
 }
+

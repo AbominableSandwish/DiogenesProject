@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 public class MapManager : MonoBehaviour
 {
 

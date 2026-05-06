@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 public class TestGrid
@@ -79,3 +80,4 @@ public class PathfindingTests
         Assert.IsFalse(path.Contains(new Vector3Int(1, 1, 0)));
     }
 }
+#endif
