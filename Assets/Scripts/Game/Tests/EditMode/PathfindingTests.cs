@@ -31,13 +31,30 @@ public class TestGrid
 
 public class PathfindingTests
 {
+
+    private MapManager mapManager; 
+    private Pathfinder pathFinder;
+
+    [SetUp]
+    public void SetUp()
+    {
+        GameObject go = new GameObject("MapManager");
+        mapManager = go.AddComponent<MapManager>();
+
+         go = new GameObject("PathFinder");
+        pathFinder = go.AddComponent<Pathfinder>();
+
+        // À adapter selon ton init réelle
+        mapManager.InitForTests();
+    }
+
     [Test]
     public void Path_Exists_OnFlatGround()
     {
-        MapManager grid = new MapManager(5, 5);
-        Pathfinder pathfinder = new Pathfinder(grid);
+        mapManager.InitForTests(5, 5);
+        pathFinder.Init(mapManager);
 
-        List<Vector3Int> path = pathfinder.FindPath(
+        List<Vector3Int> path = pathFinder.FindPath(
             new Vector3Int(0, 0, 0),
             new Vector3Int(4, 0, 0)
         );
@@ -49,12 +66,11 @@ public class PathfindingTests
     [Test]
     public void Path_IsBlocked_ByObstacle()
     {
-        MapManager grid = new MapManager(3, 1);
-        grid.SetBlocked(new Vector3Int(1, 0, 0));
+        mapManager.InitForTests(3, 1);
+        mapManager.SetBlocked(new Vector3Int(1, 0, 0));
+        pathFinder.Init(mapManager);
 
-        Pathfinder pathfinder = new Pathfinder(grid);
-
-        List<Vector3Int> path = pathfinder.FindPath(
+        List<Vector3Int> path = pathFinder.FindPath(
             new Vector3Int(0, 0, 0),
             new Vector3Int(2, 0, 0)
         );
@@ -65,12 +81,11 @@ public class PathfindingTests
     [Test]
     public void Path_CanGoAroundObstacle()
     {
-        MapManager grid = new MapManager(3, 3);
-        grid.SetBlocked(new Vector3Int(1, 1, 0));
+        mapManager.InitForTests(3, 3);
+        mapManager.SetBlocked(new Vector3Int(1, 1, 0));
+        pathFinder.Init(mapManager);
 
-        Pathfinder pathfinder = new Pathfinder(grid);
-
-        List<Vector3Int> path = pathfinder.FindPath(
+        List<Vector3Int> path = pathFinder.FindPath(
             new Vector3Int(0, 1, 0),
             new Vector3Int(2, 1, 0)
         );

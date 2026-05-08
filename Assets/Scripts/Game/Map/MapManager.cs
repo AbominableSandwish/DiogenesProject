@@ -29,8 +29,23 @@ public class MapManager : MonoBehaviour
     #region Public Data
 
 #if UNITY_INCLUDE_TESTS
-    public void InitForTests()
+    public void InitForTests(int width = 10, int height = 10)
     {
+        Width = width;
+        Height = height;
+
+        GameObject basic = new GameObject("BasicMap");
+        GameObject utility = new GameObject("UtilityMap");
+        GameObject decoration = new GameObject("DecorationMap");
+
+        _basicMap = basic.AddComponent<BasicMap>();
+        _utilityMap = utility.AddComponent<UtilityMap>();
+        _decorationMap = decoration.AddComponent<DecorationMap>();
+
+        _basicMap.Init();
+        _utilityMap.Init();
+        _decorationMap.Init();
+
         _blocked = new HashSet<Vector3Int>();
     }
 #endif

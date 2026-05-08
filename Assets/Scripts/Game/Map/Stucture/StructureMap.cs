@@ -27,8 +27,8 @@ public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 
     #region Public Method
     public virtual void Init(int width, int height)
-    { 
-    
+    {
+        structures = new Dictionary<Vector3Int, Structure>();
     }
 
     public virtual bool AddStructure(Structure structure, Vector3Int position)
@@ -53,9 +53,12 @@ public class StructureMap<TMap> : MonoBehaviour, IStructureMap
         return canRemove;
     }
 
-    public void Init()
+    public void Init(bool Generation = false)
     {
+        _game = GameManager.Instance;
+        _map = MapManager.Instance;
 
+        structures = new Dictionary<Vector3Int, Structure>();
     }
 
     public virtual Structure GetStructure(Vector3Int position)

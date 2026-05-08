@@ -14,7 +14,7 @@ public class ConstructionSiteTests
     {
         ConstructionSite site = new ConstructionSite(new FakeStructure());
         site.AddWork(50f);
-        Assert.AreEqual(0.5f, site.Progress);
+        Assert.AreEqual(50.0f, site.Progress);
     }
 
     [Test]

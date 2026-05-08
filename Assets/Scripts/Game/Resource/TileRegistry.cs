@@ -17,6 +17,12 @@ public class TileRegistry : MonoBehaviour
 
     private void Awake()
     {
+        Init();
+    }
+
+
+    public void Init()
+    {
         if (Instance != null) { Destroy(this.gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(this.gameObject);

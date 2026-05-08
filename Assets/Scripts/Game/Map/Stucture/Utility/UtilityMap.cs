@@ -59,7 +59,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         _circuitDebugRenderer = UnityResolver.Resolve(_circuitDebugRenderer, this, "CircuitDebugRenderer");
     }
 
-    public void Init(bool Generation = false)
+    public new void Init(bool Generation = false)
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;
@@ -295,7 +295,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = new Tile
         {
             name = "Coil_" + _counterCoil.ToString(),
-            sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite,
+            sprite = GetTileForTestsOrRuntime(new Coil().TileAssetReference).sprite,
             colliderType = Tile.ColliderType.Grid
         };
 
@@ -1117,4 +1117,14 @@ public class UtilityMap : StructureMap<UtilityMap>
     public int CircuitCount => _circuits?.Count ?? 0;
 
     #endregion
+
+    private Tile GetTileForTestsOrRuntime(string assetReference)
+    {
+#if UNITY_INCLUDE_TESTS
+        if (_tileRegistry == null)
+            return ScriptableObject.CreateInstance<Tile>();
+#endif
+
+        return _tileRegistry.Get(assetReference);
+    }
 }
