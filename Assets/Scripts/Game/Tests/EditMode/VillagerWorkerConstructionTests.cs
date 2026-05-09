@@ -1,7 +1,8 @@
 ﻿#if UNITY_INCLUDE_TESTS
-using System.Collections;
 using NUnit.Framework;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 public class VillagerWorkerConstructionTests
 {
@@ -21,7 +22,7 @@ public class VillagerWorkerConstructionTests
         worker.InitForTests(mapManager);
     }
 
-    [Test]
+    [UnityTest]
     public IEnumerator OnArrived_WithConstructionSite_ShouldIncreaseProgress()
     {
         Vector3Int position = new Vector3Int(2, 2, 0);
@@ -39,6 +40,8 @@ public class VillagerWorkerConstructionTests
         };
 
         worker.SetCurrentTaskForTests(buildTask);
+        worker.SetBuildRangeForTests(1);
+        worker.SetCurrentGridPositionForTests(new Vector3Int(2, 1, 0));
 
         worker.OnArrived();
 
