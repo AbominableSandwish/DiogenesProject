@@ -44,6 +44,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19304246cf6132b4f9ba7ae3a2cc110d
+    m_Address: Assets/Resources_moved/Tile/Number/Number_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c341b88ee984df48946def798030e4e
+    m_Address: Assets/Resources_moved/Tile/Number/Number_6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2273a7657fa9548429ed09cbac7c682c
+    m_Address: Assets/Resources_moved/Tile/Number/Number_8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2b24e786ea3a4a746ab116d4d9853bd3
     m_Address: Tile/Coils/2_connect/CableCoil_8
     m_ReadOnly: 0
@@ -116,6 +134,18 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6673cb3c3694ef54a9b3f003f040dff1
+    m_Address: Assets/Resources_moved/Tile/Number/Number_4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 670d489928d65a14bae42f6908dbc6f4
+    m_Address: Assets/Resources_moved/Tile/Number/Number_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 704204d5bf3b4e648b8c454233bc14b0
     m_Address: Tile/Utility/Coils/0_connect/Coil.asset
     m_ReadOnly: 0
@@ -157,6 +187,24 @@ MonoBehaviour:
     m_SerializedLabels:
     - Tile
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a62c3c46a7e69d04eac0bed7b36be025
+    m_Address: Assets/Resources_moved/Tile/Number/Number_7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4c56566144812b40aa0a063cea0e0db
+    m_Address: Assets/Resources_moved/Tile/Number/Number_9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0197793e75125d40a495f16646d6b23
+    m_Address: Assets/Resources_moved/Tile/Number/Number_5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cff43e19b70cb2a469e9884084358b2a
     m_Address: Assets/Resources_moved/SceneTest/World 0.json
     m_ReadOnly: 0
@@ -171,6 +219,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d0ed8584f0c0a4642a72f3763a620f76
     m_Address: Assets/Basic/Water
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Tile
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d25b17329c1195a4aa0baf3c6504b3a5
+    m_Address: Assets/Resources_moved/Tile/Number/Number_1.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - Tile

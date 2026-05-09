@@ -59,7 +59,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         _circuitDebugRenderer = UnityResolver.Resolve(_circuitDebugRenderer, this, "CircuitDebugRenderer");
     }
 
-    public void Init(bool Generation = false)
+    public new void Init()
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;
@@ -69,6 +69,24 @@ public class UtilityMap : StructureMap<UtilityMap>
 
         _tileRegistry = TileRegistry.Instance;
     }
+
+#if UNITY_INCLUDE_TESTS
+    public void InitForTests()
+    {
+        _game = GameManager.Instance;
+        _map = MapManager.Instance;
+
+        structures = new Dictionary<Vector3Int, Structure>();
+        _circuits = new List<Circuit>();
+        GameObject go = new GameObject("Electric");
+        go.transform.SetParent(this.gameObject.transform);
+
+
+        _electric = go.AddComponent<Tilemap>();
+        _tilemap = this.AddComponent<Tilemap>();
+        _tileRegistry = TileRegistry.Instance;
+    }
+#endif
 
     public void FixedUpdate()
     {
@@ -115,11 +133,11 @@ public class UtilityMap : StructureMap<UtilityMap>
         {
             if (_electric.GetTile(pos) != null)
             {
-                if (_electric.GetTile(pos) == null)
+                if (_electric.GetTile(pos) == null) 
                     return;
 
                 
-                Sprite sprite = TileRegistry.Instance.Get(new Coil().TileAssetReference).sprite;
+                Sprite sprite = GetTileForTestsOrRuntime(new Coil().TileAssetReference).sprite;
 
                 if (_electric.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null  || Tilemap.GetTile(new Vector3Int(pos.x + 1, pos.y)) != null)
                 {
@@ -149,22 +167,22 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect)
                     {
-                        sprite = _tileRegistry.Get(OneConnect[0]).sprite;
+                        sprite = GetTileForTestsOrRuntime(OneConnect[0]).sprite;
                     }
 
                     if (upConnect)
                     {
-                        sprite = _tileRegistry.Get(OneConnect[1]).sprite;
+                        sprite = GetTileForTestsOrRuntime(OneConnect[1]).sprite;
                     }
 
                     if (rightConnect)
                     {
-                        sprite = _tileRegistry.Get(OneConnect[2]).sprite;
+                        sprite = GetTileForTestsOrRuntime(OneConnect[2]).sprite;
                     }
 
                     if (downConnect)
                     {
-                        sprite = _tileRegistry.Get(OneConnect[3]).sprite;
+                        sprite = GetTileForTestsOrRuntime(OneConnect[3]).sprite;
                     }
                 }
 
@@ -172,32 +190,32 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect && upConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[0]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[0]).sprite;
                     }
 
                     if (leftConnect && rightConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[1]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[1]).sprite;
                     }
 
                     if (leftConnect && downConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[2]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[2]).sprite;
                     }
 
                     if (upConnect && downConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[3]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[3]).sprite;
                     }
 
                     if (upConnect && rightConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[4]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[4]).sprite;
                     }
 
                     if (rightConnect && downConnect)
                     {
-                        sprite = _tileRegistry.Get(TwoConnect[5]).sprite;
+                        sprite = GetTileForTestsOrRuntime(TwoConnect[5]).sprite;
                     }   
                 }
 
@@ -205,28 +223,28 @@ public class UtilityMap : StructureMap<UtilityMap>
                 {
                     if (leftConnect && upConnect && rightConnect)
                     {
-                        sprite = _tileRegistry.Get(ThreeConnect[0]).sprite;
+                        sprite = GetTileForTestsOrRuntime(ThreeConnect[0]).sprite;
                     }
 
                     if (upConnect && rightConnect && downConnect)
                     {
-                        sprite = _tileRegistry.Get(ThreeConnect[1]).sprite;
+                        sprite = GetTileForTestsOrRuntime(ThreeConnect[1]).sprite;
                     }
 
                     if (leftConnect && downConnect && rightConnect)
                     {
-                        sprite = _tileRegistry.Get(ThreeConnect[2]).sprite;
+                        sprite = GetTileForTestsOrRuntime(ThreeConnect[2]).sprite;
                     }
 
                     if (downConnect && leftConnect && upConnect)
                     {
-                        sprite = _tileRegistry.Get(ThreeConnect[3]).sprite;
+                        sprite = GetTileForTestsOrRuntime(ThreeConnect[3]).sprite;
                     }
                 }
 
                 if (connectCounter == 4)
                 {
-                    sprite = _tileRegistry.Get(FourConnect).sprite;
+                    sprite = GetTileForTestsOrRuntime(FourConnect).sprite;
                 }
 
                 Tile tile = (Tile)_electric.GetTile(pos);
@@ -270,7 +288,7 @@ public class UtilityMap : StructureMap<UtilityMap>
                 Tile tile = new Tile
                 {
                     name = typeof(ConstructionSite) + _counterGenerator.ToString(),
-                    sprite = _tileRegistry.Get(structure.TileAssetReference).sprite,
+                    sprite = GetTileForTestsOrRuntime(structure.TileAssetReference).sprite,
                     colliderType = Tile.ColliderType.Grid
                 };
                 Tilemap.SetTile(position, tile);
@@ -286,7 +304,7 @@ public class UtilityMap : StructureMap<UtilityMap>
 
     public bool AddCoil(Vector3Int position)
     {
-        if (Tilemap.GetTile(position) != null || _electric.GetTile(position) != null)
+        if (_electric.GetTile(position) != null)
             return false;
 
         // =====================
@@ -295,7 +313,7 @@ public class UtilityMap : StructureMap<UtilityMap>
         Tile tile = new Tile
         {
             name = "Coil_" + _counterCoil.ToString(),
-            sprite = _tileRegistry.Get(new Coil().TileAssetReference).sprite,
+            sprite = GetTileForTestsOrRuntime(new Coil().TileAssetReference).sprite,
             colliderType = Tile.ColliderType.Grid
         };
 
@@ -1117,4 +1135,14 @@ public class UtilityMap : StructureMap<UtilityMap>
     public int CircuitCount => _circuits?.Count ?? 0;
 
     #endregion
+
+    private Tile GetTileForTestsOrRuntime(string assetReference)
+    {
+#if UNITY_INCLUDE_TESTS
+        if (_tileRegistry == null)
+            return ScriptableObject.CreateInstance<Tile>();
+#endif
+
+        return _tileRegistry.Get(assetReference);
+    }
 }

@@ -70,7 +70,7 @@ public class VillagerWorker : Villager
 
             if (structure is ConstructionSite site)
             {
-                animator.SetBool("IsWorking", true);
+                animator?.SetBool("IsWorking", true);
                 workRoutine = StartCoroutine(WorkOnConstruction(site));
             }
         }
@@ -124,6 +124,11 @@ public class VillagerWorker : Villager
     public bool IsInBuildRangeForTests(Vector3Int workerPosition, Vector3Int targetPosition)
     {
         return IsInBuildRange(workerPosition, targetPosition);
+    }
+
+    public void SetCurrentGridPositionForTests(Vector3Int position)
+    {
+        transform.position = position; // adapte au nom réel de ta variable
     }
 #endif
 }

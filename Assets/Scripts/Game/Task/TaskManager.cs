@@ -13,6 +13,11 @@ public class TaskManager : MonoBehaviour
 {
     private readonly List<Task> _tasks = new();
 
+    public List<Task> GetTasks()
+    {
+        return _tasks;
+    }
+
     public void AddTask(Task task)
     {
         _tasks.Add(task);

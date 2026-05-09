@@ -8,6 +8,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class BasicMap : StructureMap<BasicMap>
 {
@@ -40,25 +41,42 @@ public class BasicMap : StructureMap<BasicMap>
         if (HasStructure(position))
             return false;
 
-        TileBase tileBase = _tileRegistry.Get(structure.TileAssetReference);
+        TileBase tileBase = GetTileForTestsOrRuntime(structure.TileAssetReference);
         object[] args = { Tilemap, position.x, position.y };
         structures.Add(position, structure);
-        Tilemap.SetTile(position, tileBase);
+        SetTile(Tilemap, position, tileBase);
 
-        if(structures.GetType() == typeof(ConstructionSite))
+        if (structures.GetType() == typeof(ConstructionSite))
         {
             SpawnConstructionView(position, (ConstructionSite)structure);
         }
         return true;
     }
 
-    public override bool RemoveStructure(Vector3Int pos)
+    protected void SetTile(Tilemap tilemap, Vector3Int position, TileBase tile)
     {
-        bool canRemove = structures.ContainsKey(pos);
+#if !UNITY_INCLUDE_TESTS
+    tilemap.SetTile(position, tile);
+#endif
+    }
+
+    public new void Init(bool Generation = false)
+    {
+        _game = GameManager.Instance;
+        _map = MapManager.Instance;
+
+        structures = new Dictionary<Vector3Int, Structure>();
+        _tileRegistry = TileRegistry.Instance;
+    }
+
+    public override bool RemoveStructure(Vector3Int position)
+    {
+        bool canRemove = structures.ContainsKey(position);
         if (canRemove)
         {
-            structures[pos] = null;
-            Tilemap.SetTile(pos, null);
+            structures[position] = null;
+
+            SetTile(Tilemap, position, null);
         }  
         return canRemove;
     }
@@ -117,7 +135,7 @@ public class BasicMap : StructureMap<BasicMap>
                belowStruct.Type == StructureType.Ladder ||
                belowStruct.Type == StructureType.Limit;
     }
-    #endregion
+#endregion
 
     public override MapData Capture()  // si tu as virtual dans la base
     {
@@ -194,5 +212,15 @@ public class BasicMap : StructureMap<BasicMap>
         }
        
         return list;
+    }
+
+    private Tile GetTileForTestsOrRuntime(string assetReference)
+    {
+#if UNITY_INCLUDE_TESTS
+        if (_tileRegistry == null)
+            return ScriptableObject.CreateInstance<Tile>();
+#endif
+
+        return _tileRegistry.Get(assetReference);
     }
 }

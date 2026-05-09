@@ -16,7 +16,7 @@ public interface IStructureMap
 public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 {
     #region Private Data
-    [SerializeField] private Tilemap _tilemap;
+    [SerializeField] protected Tilemap _tilemap;
     public Tilemap Tilemap => _tilemap;
     public Dictionary<Vector3Int, Structure> structures;
 
@@ -27,8 +27,8 @@ public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 
     #region Public Method
     public virtual void Init(int width, int height)
-    { 
-    
+    {
+        structures = new Dictionary<Vector3Int, Structure>();
     }
 
     public virtual bool AddStructure(Structure structure, Vector3Int position)
@@ -55,7 +55,10 @@ public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 
     public void Init()
     {
+        _game = GameManager.Instance;
+        _map = MapManager.Instance;
 
+        structures = new Dictionary<Vector3Int, Structure>();
     }
 
     public virtual Structure GetStructure(Vector3Int position)

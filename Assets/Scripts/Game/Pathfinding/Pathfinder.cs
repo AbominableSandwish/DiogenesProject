@@ -21,10 +21,17 @@ public class Pathfinder : MonoBehaviour
 
     public Pathfinder(MapManager grid = null)
     {
-        if(grid != null)
+        Init(grid);
+    }
+
+    public void Init(MapManager grid = null)
+    {
+        if (grid != null)
         {
             this.grid = grid;
         }
+
+        specialConnections = new();
     }
 
     public List<Vector3Int> FindPath(Vector3Int start, Vector3Int end)

@@ -11,7 +11,6 @@ using System.IO;
 using UnityEngine;
 public class MapManager : MonoBehaviour
 {
-
     #region Private Data
     //Self
     private static MapManager _instance = null;
@@ -27,12 +26,26 @@ public class MapManager : MonoBehaviour
     private HashSet<Vector3Int> _blocked = new();
     #endregion
 
-
     #region Public Data
 
 #if UNITY_INCLUDE_TESTS
-    public void InitForTests()
+    public void InitForTests(int width = 10, int height = 10)
     {
+        Width = width;
+        Height = height;
+
+        GameObject basic = new GameObject("BasicMap");
+        GameObject utility = new GameObject("UtilityMap");
+        GameObject decoration = new GameObject("DecorationMap");
+
+        _basicMap = basic.AddComponent<BasicMap>();
+        _utilityMap = utility.AddComponent<UtilityMap>();
+        _decorationMap = decoration.AddComponent<DecorationMap>();
+
+        _basicMap.Init();
+        _utilityMap.InitForTests();
+        _decorationMap.Init();
+
         _blocked = new HashSet<Vector3Int>();
     }
 #endif
@@ -76,7 +89,7 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         BasicMap?.Init(_width, _height);
-        _utilityMap?.Init(GenerationMap);
+        _utilityMap?.Init();
     }
 
     public void Execute()

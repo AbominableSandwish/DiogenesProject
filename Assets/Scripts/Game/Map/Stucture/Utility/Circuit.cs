@@ -204,6 +204,7 @@ public bool HasEnoughPower => PowerProduced >= PowerConsumed;
 
     public void Clear()
     {
+        _coils.Clear();
         _generators.Clear();
         _engines.Clear();
         _storages.Clear();

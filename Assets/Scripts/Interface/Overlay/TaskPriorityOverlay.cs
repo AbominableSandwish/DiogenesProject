@@ -1,80 +1,90 @@
-﻿//using System.Collections.Generic;
-//using UnityEditor.AddressableAssets.Build;
-//using UnityEngine;
-//using UnityEngine.Audio;
-//using UnityEngine.Tilemaps;
-//using UnityEngine.UIElements;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Tilemaps;
 
-//public class TaskPriorityOverlay : MonoBehaviour
-//{
-//    [Header("References")]
-//    [SerializeField] private Tilemap overlayTilemap;
-//    [SerializeField] private TileRegistry tileRegistry;
+public class TaskPriorityOverlay : MonoBehaviour
+{
+    [Header("References")]
+    [SerializeField] private Tilemap overlayTilemap;
+    [SerializeField] private TileRegistry tileRegistry;
+    [SerializeField] private TaskManager taskManager;
 
-//    [Header("Priority Tiles")]
-//    [SerializeField] private List<TileBase> priorityTiles;
-//    [SerializeField] private string priorityTileName = "Number_";
+    [Header("Priority Tiles")]
+    [SerializeField] private List<TileBase> priorityTiles;
+    [SerializeField] private string priorityTileName = "Number_";
 
-//    private readonly Dictionary<Vector3Int, Task> displayedTasks = new();
+    private readonly Dictionary<Vector3Int, Task> displayedTasks = new();
 
-//    public void Refresh(IEnumerable<Task> tasks)
-//    {
-//        overlayTilemap.ClearAllTiles();
-//        displayedTasks.Clear();
+    private void Start()
+    {
+        overlayTilemap = UnityResolver.Resolve(overlayTilemap, this, nameof(Tilemap));
+        taskManager = UnityResolver.Resolve(taskManager, this, nameof(TaskManager));
+        tileRegistry = UnityResolver.Resolve(tileRegistry, this, nameof(TileRegistry));
+    }
 
-//        foreach (Task task in tasks)
-//        {
-//            if (task == null)
-//                continue;
+    private void Update()
+    {
+        Refresh(taskManager.GetTasks());
+    }
 
-//            TileBase tile = GetTileForPriority(task.Priority);
-//            // View
+    public void Refresh(IEnumerable<Task> tasks)
+    {
+        overlayTilemap.ClearAllTiles();
+        displayedTasks.Clear();
 
+        foreach (Task task in tasks)
+        {
+            if (task == null)
+                continue;
 
-//            if (tile == null)
-//                continue;
+            TileBase tile = GetTileForPriority(task.Priority);
+            if (tile == null)
+                continue;
 
+            overlayTilemap.SetTile(task.TargetPosition, tile);
+            displayedTasks[task.TargetPosition] = task;
+        }
+    }
 
+    public void ShowTask(Task task)
+    {
+        if (task == null)
+            return;
 
-//            overlayTilemap.SetTile(task.TargetPosition, tile);
-//            displayedTasks[task.TargetPosition] = task;
-//        }
-//    }
+        Tile tile = GetTileForPriority(task.Priority);
 
-//    public void ShowTask(Task task)
-//    {
-//        if (task == null)
-//            return;
+        if (tile == null)
+            return;
 
-//        TileBase tile = GetTileForPriority(task.Priority);
+        overlayTilemap.SetTile(task.TargetPosition, tile);
+        displayedTasks[task.TargetPosition] = task;
+    }
 
-//        if (tile == null)
-//            return;
+    public void HideTask(Task task)
+    {
+        if (task == null)
+            return;
 
-//        overlayTilemap.SetTile(task.TargetPosition, tile);
-//        displayedTasks[task.TargetPosition] = task;
-//    }
+        overlayTilemap.SetTile(task.TargetPosition, null);
+        displayedTasks.Remove(task.TargetPosition);
+    }
 
-//    public void HideTask(Task task)
-//    {
-//        if (task == null)
-//            return;
+    private Tile GetTileForPriority(int priority)
+    {
+        priority = Mathf.Clamp(priority, 1, 9);
 
-//        overlayTilemap.SetTile(task.TargetPosition, null);
-//        displayedTasks.Remove(task.TargetPosition);
-//    }
+        string name = priorityTileName + priority.ToString();
+        Tile tile = new Tile
+        {   
+            sprite = tileRegistry.Get(name).sprite,
+            colliderType = Tile.ColliderType.Grid
+        };
 
-//    private TileBase GetTileForPriority(int priority)
-//    {
-//        priority = Mathf.Clamp(priority, 1, 9);
+        return tile;
+    }
 
-//        Tile tile = new Tile
-//        {
-//            name = priorityTileName + priority.ToString(),
-//            sprite = _tileRegistry.Get(name).sprite,
-//            colliderType = Tile.ColliderType.Grid
-//        };
-//        Tilemap.SetTile(position, tile);
-//        return
-//    }
-//}
+    private void OnEnable()
+    {
+        Refresh(taskManager.GetTasks());
+    }
+}

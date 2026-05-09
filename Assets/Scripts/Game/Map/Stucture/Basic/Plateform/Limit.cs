@@ -5,10 +5,9 @@
  * You may use, modify, and share this code for non-commercial purposes only.
  */
 
-using UnityEngine;
 using UnityEngine.Tilemaps;
 
-class Limit : Structure
+public class Limit : Structure
 {
     new protected string _name = "Limit";
     public override string TileAssetReference => "Limit";
@@ -24,5 +23,4 @@ class Limit : Structure
     }
 
     #endregion
-
 }
