@@ -16,7 +16,7 @@ public interface IStructureMap
 public class StructureMap<TMap> : MonoBehaviour, IStructureMap
 {
     #region Private Data
-    [SerializeField] private Tilemap _tilemap;
+    [SerializeField] protected Tilemap _tilemap;
     public Tilemap Tilemap => _tilemap;
     public Dictionary<Vector3Int, Structure> structures;
 
@@ -53,7 +53,7 @@ public class StructureMap<TMap> : MonoBehaviour, IStructureMap
         return canRemove;
     }
 
-    public void Init(bool Generation = false)
+    public void Init()
     {
         _game = GameManager.Instance;
         _map = MapManager.Instance;

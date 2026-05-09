@@ -43,7 +43,7 @@ public class MapManager : MonoBehaviour
         _decorationMap = decoration.AddComponent<DecorationMap>();
 
         _basicMap.Init();
-        _utilityMap.Init();
+        _utilityMap.InitForTests();
         _decorationMap.Init();
 
         _blocked = new HashSet<Vector3Int>();
@@ -89,7 +89,7 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         BasicMap?.Init(_width, _height);
-        _utilityMap?.Init(GenerationMap);
+        _utilityMap?.Init();
     }
 
     public void Execute()
