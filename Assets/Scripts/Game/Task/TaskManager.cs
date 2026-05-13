@@ -27,7 +27,7 @@ public class TaskManager : MonoBehaviour
     public Task GetBestTask(Vector3Int workerPosition)
     {
         return _tasks
-            .Where(t => t.Type != TaskType.None)
+            .Where(t => t.CanAssignWorker())
             .OrderByDescending(t => t.Priority)
             .ThenBy(t => GridDistance(workerPosition, t.TargetPosition))
             .FirstOrDefault();

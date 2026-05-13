@@ -69,7 +69,7 @@ public class VillagerTest : MonoBehaviour
         Debug.Log($"END = {targetPosition}");
         Debug.Log($"Villager start = {villager.transform.position}");
         // Le villageois cherche un chemin jusqu’au niveau supérieur
-        villager.MoveTo(targetPosition);
+        villager.TryMoveToTask(targetPosition);
 
         _result.text = "";
         _result.color = Color.white;
