@@ -6,6 +6,7 @@
  */
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class VillagerWorker : Villager
@@ -18,6 +19,11 @@ public class VillagerWorker : Villager
 
     private Task currentTask;
     private Coroutine workRoutine;
+
+    private readonly HashSet<Task> _failedTasksThisSearch = new();
+
+    [SerializeField] private float taskSearchCooldown = 1f;
+    private float _nextTaskSearchTime;
 
     protected void Awake()
     {
@@ -32,13 +38,36 @@ public class VillagerWorker : Villager
         if (currentTask != null)
             return;
 
-        Task task = taskManager.GetBestTask(new Vector3Int((int)transform.position.x, (int)transform.position.y));
-        if (task == null)
+        TryFindNewTask();
+    }
+ 
+    private void TryFindNewTask()
+    {
+        if (Time.time < _nextTaskSearchTime)
             return;
 
-        AssignTask(task);
-    }
+        _nextTaskSearchTime = Time.time + taskSearchCooldown;
 
+        _failedTasksThisSearch.Clear();
+
+        while (true)
+        {
+            Task task = taskManager.GetBestTask(new Vector3Int((int)transform.position.x, (int)transform.position.y), _failedTasksThisSearch);
+
+            if (task == null)
+            {
+                currentState = State.Idle;
+                return;
+            }
+
+            bool assigned = TryAssignTask(task);
+
+            if (assigned)
+                return;
+
+            _failedTasksThisSearch.Add(task);
+        }
+    }
     private void AbandonCurrentTask()
     {
         if (currentTask != null)
@@ -50,16 +79,22 @@ public class VillagerWorker : Villager
         currentState = State.Idle;
     }
 
-
-    private void AssignTask(Task task)
+    private bool TryAssignTask(Task task)
     {
+        if (task == null || !task.CanAssignWorker())
+            return false;
+    
         currentTask = task;
         currentTask.AssignTo(this);
-
+    
         if (!TryMoveToTask(currentTask.TargetPosition, OnArrived))
         {
+            currentTask.MarkTemporaryUnreachable(3f);
             AbandonCurrentTask();
+            return false;
         }
+    
+        return true;
     }
 
     public void OnArrived()
