@@ -39,12 +39,27 @@ public class VillagerWorker : Villager
         AssignTask(task);
     }
 
+    private void AbandonCurrentTask()
+    {
+        if (currentTask != null)
+        {
+            currentTask.Release(this);
+            currentTask = null;
+        }
+
+        currentState = State.Idle;
+    }
+
+
     private void AssignTask(Task task)
     {
         currentTask = task;
-        currentTask.AssignedWorkers++;
+        currentTask.AssignTo(this);
 
-        MoveTo(currentTask.TargetPosition, OnArrived);
+        if (!TryMoveToTask(currentTask.TargetPosition, OnArrived))
+        {
+            AbandonCurrentTask();
+        }
     }
 
     public void OnArrived()
@@ -105,6 +120,7 @@ public class VillagerWorker : Villager
         workRoutine = null;
     }
 
+    #region Test
 #if UNITY_INCLUDE_TESTS
     public void InitForTests(MapManager manager)
     {
@@ -131,4 +147,5 @@ public class VillagerWorker : Villager
         transform.position = position; // adapte au nom réel de ta variable
     }
 #endif
+    #endregion
 }

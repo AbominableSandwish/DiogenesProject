@@ -33,13 +33,22 @@ public class Villager : MonoBehaviour
         animator.SetFloat("Velocity", 0.0f);
     }
 
-    public void MoveTo(Vector3Int target, System.Action onFinished = null)
+    public bool TryMoveToTask(Vector3Int target, System.Action onFinished = null)
     {
         _onMoveFinishedCallback = onFinished;
+        bool canMove = agent.TryMoveToTask(target, OnMoveFinished);
+
+        if (!canMove)
+        {
+            _onMoveFinishedCallback = null;
+            animator.SetFloat("Velocity", 0f);
+            currentState = State.Idle;
+            return false;
+        }
 
         animator.SetFloat("Velocity", 1.0f);
         currentState = State.Moving;
-        agent.MoveTo(target, OnMoveFinished);
+        return true;
     }
 
     private void OnMoveFinished()

@@ -5,6 +5,7 @@
  * You may use, modify, and share this code for non-commercial purposes only.
  */
 
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum TaskType
@@ -26,13 +27,36 @@ public class Task
     public Vector3Int TargetPosition; 
     public Structure StructureToBuild;
 
-    public int AssignedWorkers;
     public int MaxWorkers = 3;
     public bool IsCompleted;
 
+    public bool IsAssigned { get; private set; }
+    private readonly List<VillagerWorker> assignedWorkers = new();
+
     public bool CanAssignWorker()
     {
-        return AssignedWorkers < MaxWorkers;
+        return assignedWorkers.Count < MaxWorkers;
+    }
+
+    public void AssignTo(VillagerWorker worker)
+    {
+        if (worker == null)
+            return;
+
+        if (assignedWorkers.Contains(worker))
+            return;
+
+        if (!CanAssignWorker())
+            return;
+
+        assignedWorkers.Add(worker);
+    }
+    public void Release(VillagerWorker worker)
+    {
+        if (worker == null)
+            return;
+
+        assignedWorkers.Remove(worker);
     }
 }
 

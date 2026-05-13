@@ -38,7 +38,7 @@ public class Agent : MonoBehaviour
         }
     }
 
-    public void MoveTo(Vector3Int newTarget, System.Action onFinished = null)
+    public bool TryMoveToTask(Vector3Int newTarget, System.Action onFinished = null)
     {
         _onMoveFinished = onFinished;
 
@@ -51,9 +51,10 @@ public class Agent : MonoBehaviour
         {
             Debug.LogWarning($"No path found from {currentPosition} to {newTarget}", this);
             FinishMove();
+            return false;
         }
+        return true;
     }
-
     private void FinishMove()
     {
         path = null;
