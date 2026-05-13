@@ -24,10 +24,13 @@ public class TaskManager : MonoBehaviour
     }
 
 
-    public Task GetBestTask(Vector3Int workerPosition)
+    public Task GetBestTask(Vector3Int workerPosition, HashSet<Task> ignoredTasks = null)
     {
         return _tasks
             .Where(t => t.CanAssignWorker())
+            .Where(t => ignoredTasks == null || !ignoredTasks.Contains(t))
+            .Where(t => t.CanAssignWorker())
+            .Where(t => t.CanBeRetried)
             .OrderByDescending(t => t.Priority)
             .ThenBy(t => GridDistance(workerPosition, t.TargetPosition))
             .FirstOrDefault();

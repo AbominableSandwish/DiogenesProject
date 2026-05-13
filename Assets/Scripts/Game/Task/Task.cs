@@ -33,10 +33,20 @@ public class Task
     public bool IsAssigned { get; private set; }
     private readonly List<VillagerWorker> assignedWorkers = new();
 
+    public float RetryAfterTime { get; private set; }
+    public bool CanBeRetried => Time.time >= RetryAfterTime;
+
+    public void MarkTemporaryUnreachable(float delay)
+    {
+        RetryAfterTime = Time.time + delay;
+    }
+
     public bool CanAssignWorker()
     {
         return assignedWorkers.Count < MaxWorkers;
     }
+
+
 
     public void AssignTo(VillagerWorker worker)
     {
