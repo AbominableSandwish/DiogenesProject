@@ -8,6 +8,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Codice.Client.Common.WebApi.WebApiEndpoints;
 
 public class VillagerWorker : Villager
 {
@@ -30,6 +31,8 @@ public class VillagerWorker : Villager
         base.Awake();
         taskManager = UnityResolver.Resolve(taskManager, this, nameof(TaskManager));
         mapManager = UnityResolver.Resolve(mapManager, this, nameof(MapManager));
+
+        agent.OnMoveFailed += HandleMoveFailed;
     }
 
     private void Update()
@@ -153,6 +156,15 @@ public class VillagerWorker : Villager
 
         currentTask = null;
         workRoutine = null;
+    }
+
+    private void HandleMoveFailed()
+    {
+        if (currentTask == null)
+            return;
+
+        currentTask.MarkTemporaryUnreachable(5f);
+        AbandonCurrentTask();
     }
 
     #region Test

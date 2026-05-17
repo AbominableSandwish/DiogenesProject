@@ -10,7 +10,7 @@ using UnityEngine;
 public class Villager : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
-    [SerializeField] private Agent agent;
+    [SerializeField] protected Agent agent;
 
     public enum State
     {
