@@ -10,6 +10,17 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
+    public enum AgentState
+    {
+        Idle,
+        WaitingForPath,
+        Moving
+    }
+
+    public event System.Action OnMoveFailed;
+
+    private AgentState state = AgentState.Idle;
+
     [SerializeField] private Pathfinder pathfinder;
     [SerializeField] private float moveSpeed = 3f;
 
@@ -40,6 +51,9 @@ public class Agent : MonoBehaviour
 
     public bool TryMoveToTask(Vector3Int newTarget, System.Action onFinished = null)
     {
+        if (state == AgentState.WaitingForPath || state == AgentState.Moving)
+            return false;
+
         _onMoveFinished = onFinished;
 
         Vector3Int currentPosition = GetCurrentGridPosition();
@@ -50,18 +64,34 @@ public class Agent : MonoBehaviour
         if (path == null || path.Count == 0)
         {
             Debug.LogWarning($"No path found from {currentPosition} to {newTarget}", this);
-            FinishMove();
+            FailMove();
             return false;
         }
+
+        state = AgentState.Moving;
         return true;
+    }
+
+    private void FailMove()
+    {
+        path = null;
+        currentIndex = 0;
+        state = AgentState.Idle;
+
+        _onMoveFinished = null;
+
+        OnMoveFailed?.Invoke();
     }
     private void FinishMove()
     {
         path = null;
         currentIndex = 0;
+        state = AgentState.Idle;
 
-        _onMoveFinished?.Invoke();
+        System.Action callback = _onMoveFinished;
         _onMoveFinished = null;
+
+        callback?.Invoke();
     }
 
     private void Update()
