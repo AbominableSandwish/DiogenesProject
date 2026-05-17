@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 4180469790099792740}
   - component: {fileID: 7936246769134783645}
   - component: {fileID: 7969643173860786121}
+  - component: {fileID: 165324225143163329}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -812,6 +813,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Pathfinder
   grid: {fileID: 7936246769134783645}
   specialConnections: []
+--- !u!114 &165324225143163329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3361180927583502058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113aa059b2a154d4184ecb4aad174711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Diogenes.Runtime::PathRequestManager
+  maxRequestsPerFrame: 4
 --- !u!1 &5997503777537047548
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,15 +1017,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TaskPriorityOverlay
   overlayTilemap: {fileID: 8889421881849316965}
-  priority1Tile: {fileID: 0}
-  priority2Tile: {fileID: 0}
-  priority3Tile: {fileID: 0}
-  priority4Tile: {fileID: 0}
-  priority5Tile: {fileID: 0}
-  priority6Tile: {fileID: 0}
-  priority7Tile: {fileID: 0}
-  priority8Tile: {fileID: 0}
-  priority9Tile: {fileID: 0}
+  tileRegistry: {fileID: 0}
+  taskManager: {fileID: 0}
+  priorityTiles: []
+  priorityTileName: Number_
 --- !u!1839735485 &8889421881849316965
 Tilemap:
   m_ObjectHideFlags: 0

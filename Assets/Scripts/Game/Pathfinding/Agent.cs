@@ -7,9 +7,11 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using static Codice.CM.Common.Merge.MergePathResolver;
 
 public class Agent : MonoBehaviour
 {
+
     public enum AgentState
     {
         Idle,
@@ -21,6 +23,7 @@ public class Agent : MonoBehaviour
 
     private AgentState state = AgentState.Idle;
 
+    [SerializeField] private PathRequestManager pathRequestManager;
     [SerializeField] private Pathfinder pathfinder;
     [SerializeField] private float moveSpeed = 3f;
 
@@ -32,6 +35,7 @@ public class Agent : MonoBehaviour
     private void Awake()
     {
         pathfinder = UnityResolver.Resolve(pathfinder, this, nameof(Pathfinder));
+        pathRequestManager = UnityResolver.Resolve(pathRequestManager, this, nameof(PathRequestManager));
     }
 
     public void SetTarget(Vector3Int newTarget)
@@ -59,6 +63,13 @@ public class Agent : MonoBehaviour
         Vector3Int currentPosition = GetCurrentGridPosition();
 
         path = pathfinder.FindPath(currentPosition, newTarget);
+        pathRequestManager.RequestPath(
+            pathfinder,
+            currentPosition,
+            newTarget,
+            OnPathCalculated
+        );
+
         currentIndex = 0;
 
         if (path == null || path.Count == 0)
@@ -70,6 +81,24 @@ public class Agent : MonoBehaviour
 
         state = AgentState.Moving;
         return true;
+    }
+
+    private void OnPathCalculated(List<Vector3Int> newPath)
+    {
+        if (state != AgentState.WaitingForPath)
+            return;
+
+        path = newPath;
+        currentIndex = 0;
+
+        if (path == null || path.Count == 0)
+        {
+            Debug.LogWarning("No path found", this);
+            FailMove();
+            return;
+        }
+
+        state = AgentState.Moving;
     }
 
     private void FailMove()
