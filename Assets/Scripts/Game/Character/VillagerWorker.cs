@@ -74,6 +74,7 @@ public class VillagerWorker : Villager
     {
         if (currentTask != null)
         {
+            currentTask.ReleaseWorkPosition(this);
             currentTask.Release(this);
             currentTask = null;
         }
@@ -88,14 +89,26 @@ public class VillagerWorker : Villager
     
         currentTask = task;
         currentTask.AssignTo(this);
-    
-        if (!TryMoveToTask(currentTask.TargetPosition, OnArrived))
+
+        if (!currentTask.TryReserveWorkPosition(
+        this,
+        currentTask.TargetPosition,
+        buildRange,
+        mapManager,
+        out Vector3Int workPosition))
+        {
+            AbandonCurrentTask();
+            TryFindNewTask();
+            return false;
+        }
+
+        if (!TryMoveToTask(workPosition, OnArrived))
         {
             currentTask.MarkTemporaryUnreachable(3f);
             AbandonCurrentTask();
             return false;
         }
-    
+
         return true;
     }
 
@@ -145,16 +158,23 @@ public class VillagerWorker : Villager
         }
 
         if (currentTask != null && site.IsCompleted)
-            FinishConstruction(site);
+            CompleteCurrentTask();
     }
 
-    private void FinishConstruction(ConstructionSite site)
+    private void CompleteCurrentTask()
     {
-        taskManager.CompleteTask(currentTask);
-        animator.SetBool("IsWorking", false);
+        if (currentTask != null)
+        {
+            animator.SetBool("IsWorking", false);
+            taskManager.CompleteTask(currentTask);
 
-        currentTask = null;
-        workRoutine = null;
+            currentTask.ReleaseWorkPosition(this);
+            currentTask.Release(this);
+            currentTask = null;
+              workRoutine = null;
+        }
+
+        currentState = State.Idle;
     }
 
     private void HandleMoveFailed()
