@@ -1,9 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class PathRequestManager : MonoBehaviour
 {
+    //Debug
+    [SerializeField] private bool debugPaths = true;
+    [SerializeField] private float debugDuration = 2f;
+
+    private readonly List<PathDebugData> debugPathsData = new();
+    public IReadOnlyList<PathDebugData> DebugPaths => debugPathsData;
+
+    //Params
     [SerializeField] private int maxRequestsPerFrame = 2;
 
     private readonly Queue<PathRequest> requests = new();
@@ -24,7 +34,21 @@ public class PathRequestManager : MonoBehaviour
             request.Callback?.Invoke(path);
 
             count++;
+
+            if (debugPaths)
+            {
+                debugPathsData.Add(new PathDebugData
+                {
+                    Start = request.Start,
+                    End = request.End,
+                    Path = path,
+                    Success = path != null && path.Count > 0,
+                    ExpireTime = Time.time + debugDuration
+                });
+            }
         }
+
+        debugPathsData.RemoveAll(d => Time.time >= d.ExpireTime);
     }
 
     public void RequestPath(

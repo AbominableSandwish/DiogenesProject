@@ -740,6 +740,7 @@ GameObject:
   - component: {fileID: 7936246769134783645}
   - component: {fileID: 7969643173860786121}
   - component: {fileID: 165324225143163329}
+  - component: {fileID: 2547103133684764480}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -825,7 +826,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 113aa059b2a154d4184ecb4aad174711, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Diogenes.Runtime::PathRequestManager
+  debugPaths: 1
+  debugDuration: 2
   maxRequestsPerFrame: 4
+--- !u!114 &2547103133684764480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3361180927583502058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d040aa682d5c7d5479d692c729fade11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Diogenes.Runtime::PathDebugDrawer
+  pathRequestManager: {fileID: 165324225143163329}
 --- !u!1 &5997503777537047548
 GameObject:
   m_ObjectHideFlags: 0

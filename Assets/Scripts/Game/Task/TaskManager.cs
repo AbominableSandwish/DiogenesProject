@@ -50,5 +50,4 @@ public class TaskManager : MonoBehaviour
         _tasks.Remove(task);
     }
 
-
 }
