@@ -197,7 +197,8 @@ MonoBehaviour:
   taskManager: {fileID: 0}
   mapManager: {fileID: 0}
   workSpeed: 10
-  buildRange: 3
+  buildRange: 1
+  taskSearchCooldown: 1
 --- !u!114 &2585116700154063799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e633c34550fd32444a3f3b63009da2e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Agent
+  pathRequestManager: {fileID: 0}
   pathfinder: {fileID: 0}
   moveSpeed: 6
 --- !u!95 &-6823171302604621154
