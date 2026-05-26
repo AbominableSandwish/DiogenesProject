@@ -16,7 +16,9 @@ public class ConstructionSiteView : MonoBehaviour
     [SerializeField] private float heightOffset = 0.8f;
 
     private VisualElement root;
-    private VisualElement fill;
+    private VisualElement progressfill;
+    private VisualElement progressBackground;
+    private VisualElement progressShine;
     private Label label;
 
     MapManager mapManager;
@@ -28,7 +30,9 @@ public class ConstructionSiteView : MonoBehaviour
     private void Awake()
     {
         root = document.rootVisualElement;
-        fill = root.Q<VisualElement>("construction-progress-fill");
+        progressfill = root.Q<VisualElement>("construction-progress-fill");      
+        progressShine = root.Q<VisualElement>("construction-progress-shine");
+        progressBackground = root.Q<VisualElement>("construction-progress-background");
         label = root.Q<Label>("construction-progress-label");
 
         if (targetCamera == null)
@@ -83,8 +87,36 @@ public class ConstructionSiteView : MonoBehaviour
     {
         float progress = site.Progress;
 
-        fill.style.width = Length.Percent(progress);
+        progressfill.style.width = Length.Percent(progress);
         label.text = $"{Mathf.RoundToInt(progress)}%";
+
+        AnimateProgressBar();
+    }
+
+    private void AnimateProgressBar()
+    {
+        if (site == null || progressShine == null)
+            return;
+
+        if (!site.IsBeingWorked)
+        {
+            progressShine.style.display = DisplayStyle.None;
+            return;
+        }
+
+        progressShine.style.display = DisplayStyle.Flex;
+
+        float barWidth = progressBackground.worldBound.width;
+
+        if (barWidth <= 1f)
+            return;
+
+        float shineWidth = 4f;
+        float speed = 120;
+
+        float x = (Time.time * speed) % (barWidth + shineWidth) - shineWidth;
+
+        progressShine.style.translate = new Translate(x, 0, 0);
     }
 
 

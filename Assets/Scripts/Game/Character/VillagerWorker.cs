@@ -154,11 +154,15 @@ public class VillagerWorker : Villager
         while (currentTask != null && !site.IsCompleted)
         {
             site.AddWork(workSpeed * Time.deltaTime);
+            site.SetBeingWorked(true);
             yield return null;
         }
 
         if (currentTask != null && site.IsCompleted)
+        {
             CompleteCurrentTask();
+            site.SetBeingWorked(false);
+        }
     }
 
     private void CompleteCurrentTask()

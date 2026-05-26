@@ -16,6 +16,13 @@ public class ConstructionSite : Structure
 
     public Structure TargetStructure;
 
+    public bool IsBeingWorked { get; private set; }
+
+    public void SetBeingWorked(bool value)
+    {
+        IsBeingWorked = value;
+    }
+
     public ConstructionSite(Structure targetStructure)
     {
         TargetStructure = targetStructure;
