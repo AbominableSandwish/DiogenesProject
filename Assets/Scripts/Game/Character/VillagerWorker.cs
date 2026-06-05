@@ -7,6 +7,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class VillagerWorker : Villager
@@ -24,6 +25,8 @@ public class VillagerWorker : Villager
 
     [SerializeField] private float taskSearchCooldown = 1f;
     private float _nextTaskSearchTime;
+
+    private Task rememberedTask;
 
     protected void Awake()
     {
@@ -46,6 +49,8 @@ public class VillagerWorker : Villager
                 if (currentState == State.Idle)
                 {
                     if (currentTask != null)
+                        return;
+                    if (TryResumeRememberedTask())
                         return;
                     TryFindNewTask();
                 }
@@ -75,14 +80,27 @@ public class VillagerWorker : Villager
 
         if (currentTask != null)
         {
+            if (!currentTask.IsCompleted)
+                rememberedTask = currentTask;
+
             currentTask.ReleaseWorkPosition(this);
             currentTask.Release(this);
+
+            Structure structure = mapManager.GetStructure(
+                currentTask.TargetPosition,
+                currentTask.StructureToBuild.Layer
+            );
+
+            if (structure is ConstructionSite site)
+            {
+                site.SetBeingWorked(false);
+            }
+
             currentTask = null;
         }
 
         currentState = State.Idle;
     }
-
     private void GoSleep()
     {
         StopWorking();
@@ -90,6 +108,30 @@ public class VillagerWorker : Villager
         currentState = State.Sleeping;
 
         animator.SetFloat("Velocity", 0f);
+    }
+
+    private bool TryResumeRememberedTask()
+    {
+        if (rememberedTask == null)
+            return false;
+
+        if (rememberedTask.IsCompleted)
+        {
+            rememberedTask = null;
+            return false;
+        }
+
+        //if (!rememberedTask.IsRetryAllowed)
+        //    return false;
+
+        if (!rememberedTask.CanAssignWorker())
+            return false;
+
+        Task taskToResume = rememberedTask;
+        rememberedTask = null;
+
+        TryAssignTask(taskToResume);
+        return true;
     }
 
     private void TryFindNewTask()
@@ -125,6 +167,17 @@ public class VillagerWorker : Villager
         {
             currentTask.ReleaseWorkPosition(this);
             currentTask.Release(this);
+
+            Structure structure = mapManager.GetStructure(
+                currentTask.TargetPosition,
+                currentTask.StructureToBuild.Layer
+            );
+
+            if (structure is ConstructionSite site)
+            {
+                site.SetBeingWorked(false);
+            }
+
             currentTask = null;
         }
 
@@ -138,6 +191,13 @@ public class VillagerWorker : Villager
     
         currentTask = task;
         currentTask.AssignTo(this);
+
+        if (transform.position == currentTask.TargetPosition ||
+        IsInBuildRange(new Vector3Int((int)transform.position.x, (int)transform.position.y), currentTask.TargetPosition))
+        {
+            OnArrived();
+            return true;
+        }
 
         if (!currentTask.TryReserveWorkPosition(
         this,

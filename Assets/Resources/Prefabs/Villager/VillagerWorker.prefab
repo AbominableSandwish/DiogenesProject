@@ -193,6 +193,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VillagerWorker
   animator: {fileID: -6823171302604621154}
   agent: {fileID: 2585116700154063799}
+  schedule: {fileID: 11400000, guid: 993a6af2c5129ea4c8bbb6aafdf14020, type: 2}
+  timeManager: {fileID: 0}
   currentState: 0
   taskManager: {fileID: 0}
   mapManager: {fileID: 0}
