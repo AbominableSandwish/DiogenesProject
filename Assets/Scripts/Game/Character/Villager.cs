@@ -11,16 +11,23 @@ public class Villager : MonoBehaviour
 {
     [SerializeField] protected Animator animator;
     [SerializeField] protected Agent agent;
+    [SerializeField] private Schedule schedule;
+    [SerializeField] private TimeManager timeManager;
+
+    public VillagerActivity CurrentActivity =>
+        schedule.GetActivity(timeManager.Hour);
 
     public enum State
     {
         Idle,
-        Moving
+        Moving,
+        Working,
+        Sleeping
     }
 
     protected void Update()
     {
-
+       
     }
 
     public State currentState = State.Idle;
@@ -30,6 +37,7 @@ public class Villager : MonoBehaviour
     {
         animator = UnityResolver.Resolve(animator, this, nameof(Animator));
         agent = UnityResolver.Resolve(agent, this, nameof(Agent));
+        timeManager = UnityResolver.Resolve(timeManager, this, nameof(TimeManager));
         animator.SetFloat("Velocity", 0.0f);
     }
 

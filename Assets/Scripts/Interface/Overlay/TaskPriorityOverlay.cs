@@ -15,10 +15,13 @@ public class TaskPriorityOverlay : MonoBehaviour
 
     private readonly Dictionary<Vector3Int, Task> displayedTasks = new();
 
+    private void Awake()
+    {
+        taskManager = UnityResolver.Resolve(taskManager, this, nameof(TaskManager));
+    }
     private void Start()
     {
-        overlayTilemap = UnityResolver.Resolve(overlayTilemap, this, nameof(Tilemap));
-        taskManager = UnityResolver.Resolve(taskManager, this, nameof(TaskManager));
+        overlayTilemap = UnityResolver.Resolve(overlayTilemap, this, nameof(Tilemap));       
         tileRegistry = UnityResolver.Resolve(tileRegistry, this, nameof(TileRegistry));
     }
 

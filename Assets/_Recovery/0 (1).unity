@@ -1154,7 +1154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3744ff1ab00d44942a2f310b7d9dff39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Diogenes.Runtime::TimeManager
-  realSecondsPerGameDay: 30
+  realSecondsPerGameDay: 300
   startTimeOfDay: 0.25
   sunriseHour: 6
   sunsetHour: 20
