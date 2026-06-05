@@ -37,12 +37,61 @@ public class VillagerWorker : Villager
     private void Update()
     {
         base.Update();
-        if (currentTask != null)
-            return;
+        switch (CurrentActivity)
+        {
+            case VillagerActivity.Work:
+                if (currentState == State.Sleeping)
+                    currentState = State.Idle;
 
-        TryFindNewTask();
+                if (currentState == State.Idle)
+                {
+                    if (currentTask != null)
+                        return;
+                    TryFindNewTask();
+                }
+
+                break;
+
+            case VillagerActivity.Leisure:
+                if (currentState == State.Working || currentState == State.Moving)
+                    StopWorking();
+                break;
+
+            case VillagerActivity.Sleep:
+                if (currentState != State.Sleeping)
+                    GoSleep();
+                
+                break;
+        }
     }
- 
+
+    private void StopWorking()
+    {
+        if (workRoutine != null)
+        {
+            StopCoroutine(workRoutine);
+            workRoutine = null;
+        }
+
+        if (currentTask != null)
+        {
+            currentTask.ReleaseWorkPosition(this);
+            currentTask.Release(this);
+            currentTask = null;
+        }
+
+        currentState = State.Idle;
+    }
+
+    private void GoSleep()
+    {
+        StopWorking();
+
+        currentState = State.Sleeping;
+
+        animator.SetFloat("Velocity", 0f);
+    }
+
     private void TryFindNewTask()
     {
         if (Time.time < _nextTaskSearchTime)
