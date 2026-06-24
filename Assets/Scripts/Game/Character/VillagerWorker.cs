@@ -18,15 +18,15 @@ public class VillagerWorker : Villager
     [SerializeField] private float workSpeed = 10f;
     [SerializeField] private int buildRange = 1;
 
-    private Task currentTask;
+    private VillagerTask currentTask;
     private Coroutine workRoutine;
 
-    private readonly HashSet<Task> _failedTasksThisSearch = new();
+    private readonly HashSet<VillagerTask> _failedTasksThisSearch = new();
 
     [SerializeField] private float taskSearchCooldown = 1f;
     private float _nextTaskSearchTime;
 
-    private Task rememberedTask;
+    private VillagerTask rememberedTask;
 
     protected void Awake()
     {
@@ -127,7 +127,7 @@ public class VillagerWorker : Villager
         if (!rememberedTask.CanAssignWorker())
             return false;
 
-        Task taskToResume = rememberedTask;
+        VillagerTask taskToResume = rememberedTask;
         rememberedTask = null;
 
         TryAssignTask(taskToResume);
@@ -145,7 +145,7 @@ public class VillagerWorker : Villager
 
         while (true)
         {
-            Task task = taskManager.GetBestTask(new Vector3Int((int)transform.position.x, (int)transform.position.y), _failedTasksThisSearch);
+            VillagerTask task = taskManager.GetBestTask(new Vector3Int((int)transform.position.x, (int)transform.position.y), _failedTasksThisSearch);
 
             if (task == null)
             {
@@ -184,7 +184,7 @@ public class VillagerWorker : Villager
         currentState = State.Idle;
     }
 
-    private bool TryAssignTask(Task task)
+    private bool TryAssignTask(VillagerTask task)
     {
         if (task == null || !task.CanAssignWorker())
             return false;
@@ -306,7 +306,7 @@ public class VillagerWorker : Villager
         mapManager = manager;
     }
 
-    public void SetCurrentTaskForTests(Task task)
+    public void SetCurrentTaskForTests(VillagerTask task)
     {
         currentTask = task;
     }

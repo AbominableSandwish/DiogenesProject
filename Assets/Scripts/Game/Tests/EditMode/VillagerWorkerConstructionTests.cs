@@ -32,7 +32,7 @@ public class VillagerWorkerConstructionTests
 
         mapManager.AddStructure(site, position);
 
-        Task buildTask = new Task
+        VillagerTask buildTask = new VillagerTask
         {
             Type = TaskType.Build,
             TargetPosition = position,
