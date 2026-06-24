@@ -13,7 +13,7 @@ public class TaskPriorityOverlay : MonoBehaviour
     [SerializeField] private List<TileBase> priorityTiles;
     [SerializeField] private string priorityTileName = "Number_";
 
-    private readonly Dictionary<Vector3Int, Task> displayedTasks = new();
+    private readonly Dictionary<Vector3Int, VillagerTask> displayedTasks = new();
 
     private void Awake()
     {
@@ -30,12 +30,12 @@ public class TaskPriorityOverlay : MonoBehaviour
         Refresh(taskManager.GetTasks());
     }
 
-    public void Refresh(IEnumerable<Task> tasks)
+    public void Refresh(IEnumerable<VillagerTask> tasks)
     {
         overlayTilemap.ClearAllTiles();
         displayedTasks.Clear();
 
-        foreach (Task task in tasks)
+        foreach (VillagerTask task in tasks)
         {
             if (task == null)
                 continue;
@@ -49,7 +49,7 @@ public class TaskPriorityOverlay : MonoBehaviour
         }
     }
 
-    public void ShowTask(Task task)
+    public void ShowTask(VillagerTask task)
     {
         if (task == null)
             return;
@@ -63,7 +63,7 @@ public class TaskPriorityOverlay : MonoBehaviour
         displayedTasks[task.TargetPosition] = task;
     }
 
-    public void HideTask(Task task)
+    public void HideTask(VillagerTask task)
     {
         if (task == null)
             return;

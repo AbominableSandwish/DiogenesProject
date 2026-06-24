@@ -17,7 +17,7 @@ public enum TaskType
     Transport
 }
 
-public class Task
+public class VillagerTask
 {
     public TaskType Type;
 

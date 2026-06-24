@@ -11,20 +11,20 @@ using UnityEngine;
 
 public class TaskManager : MonoBehaviour
 {
-    private readonly List<Task> _tasks = new();
+    private readonly List<VillagerTask> _tasks = new();
 
-    public List<Task> GetTasks()
+    public List<VillagerTask> GetTasks()
     {
         return _tasks;
     }
 
-    public void AddTask(Task task)
+    public void AddTask(VillagerTask task)
     {
         _tasks.Add(task);
     }
 
 
-    public Task GetBestTask(Vector3Int workerPosition, HashSet<Task> ignoredTasks = null)
+    public VillagerTask GetBestTask(Vector3Int workerPosition, HashSet<VillagerTask> ignoredTasks = null)
     {
         return _tasks
             .Where(t => t.CanAssignWorker())
@@ -44,7 +44,7 @@ public class TaskManager : MonoBehaviour
         return Mathf.Max(dx, dy);
     }
 
-    public void CompleteTask(Task task)
+    public void CompleteTask(VillagerTask task)
     {
         task.IsCompleted = true;
         _tasks.Remove(task);

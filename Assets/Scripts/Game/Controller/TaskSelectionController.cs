@@ -169,7 +169,7 @@ public class TaskSelectionController : MonoBehaviour
             return;
         }
 
-        Task task = new Task
+        VillagerTask task = new VillagerTask
         {
             Type = TaskType.Build,
             Priority = 1,
