@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 5000058499138303756}
   - component: {fileID: 2585116700154063799}
   - component: {fileID: -6823171302604621154}
+  - component: {fileID: 4929555332306045825}
   m_Layer: 0
   m_Name: VillagerWorker
   m_TagString: Untagged
@@ -238,3 +239,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4929555332306045825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088080072830319640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65cdedc005c532c46974718bc81c9a69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Diogenes.Runtime::BT.VillagerBehaviourTree
+  worker: {fileID: 5000058499138303756}

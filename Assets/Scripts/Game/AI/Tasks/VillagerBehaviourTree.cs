@@ -14,15 +14,14 @@ namespace BT
 
         private void Awake()
         {
+            if (worker == null)
+                worker = GetComponent<VillagerWorker>();
+
             blackboard = new VillagerBlackboard(worker);
             root = BuildTree();
-        }
 
-        private void Update()
-        {
-            root?.Evaluate();
+            FindAnyObjectByType<AIManager>()?.Register(this);
         }
-
         private Node BuildTree()
         {
             return new Selector(new List<Node>
@@ -69,6 +68,16 @@ namespace BT
         {
             // Le villageois attend ou cherche plus tard
             return NodeState.Running;
+        }
+
+        public void Tick()
+        {
+            root?.Evaluate();
+        }
+
+        private void OnDestroy()
+        {
+            FindAnyObjectByType<AIManager>()?.Unregister(this);
         }
     }
 }
