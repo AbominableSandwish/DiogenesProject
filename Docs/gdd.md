@@ -465,26 +465,22 @@ Selector (Leisure)
 │   ├── IsAccessible
 │   ├── MoveTo
 │   └── Drink
-
 ├── Sequence (Manger)
 │   ├── NeedHungry
 │   ├── FindFood
 │   ├── IsAvailable
 │   ├── MoveTo
 │   └── Eat
-
 ├── Sequence (Divertissement)
 │   ├── NeedEntertainment
 │   ├── FindLeisureBuilding
 │   ├── IsAccessible
 │   ├── MoveTo
 │   └── Entertain
-
 ├── Sequence (Social)
 │   ├── NeedSocial
 │   ├── FindNearbyVillager
 │   └── Socialize
-
 └── Wander
 ```
 

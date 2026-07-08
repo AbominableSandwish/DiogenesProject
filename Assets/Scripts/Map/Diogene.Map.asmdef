@@ -1,0 +1,21 @@
+{
+    "name": "Diogene.Map",
+    "rootNamespace": "",
+    "references": [
+        "Diogenes.Runtime",
+        "Unity.RenderPipelines.Universal.2D.Runtime",
+        "Unity.TextMeshPro",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Unity.VisualScripting.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
