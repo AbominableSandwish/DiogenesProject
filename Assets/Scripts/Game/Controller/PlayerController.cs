@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviour
         {
             float action = contex.ReadValue<float>();
 
-            Vector3Int pos = new Vector3Int((int)_targetPos.x, (int)_targetPos.y);
+            Vector3Int pos = new((int)_targetPos.x, (int)_targetPos.y);
             AddStructure(pos);
         }
     }
